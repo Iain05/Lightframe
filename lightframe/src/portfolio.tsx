@@ -4,6 +4,7 @@ import "yet-another-react-lightbox/plugins/thumbnails.css";
 
 import { ColumnsPhotoAlbum } from "react-photo-album";
 import "react-photo-album/columns.css";
+import "./css/lightbox-override.css"
 
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
@@ -30,11 +31,9 @@ const Portfolio = () => {
           close={() => setIndex(-1)}
           slides={photos}
           plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
-          zoom={{
-            maxZoomPixelRatio: 2
-
-          }}
+          zoom={{ maxZoomPixelRatio: 2 }}
           controller={{ closeOnBackdropClick: true }}
+          thumbnails={{ vignette: false }}
         />
       </div>
     )
