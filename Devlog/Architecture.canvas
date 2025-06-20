@@ -1,0 +1,12 @@
+{
+	"nodes":[
+		{"id":"e208804fda7a5adc","type":"group","x":-560,"y":-320,"width":660,"height":220,"color":"2","label":"EC2 Instance"},
+		{"id":"fb04b1ef29d65c97","type":"text","text":"S3 Bucket\n\n/album/album1/\nimage.24x36.png","x":180,"y":-320,"width":200,"height":220,"color":"6"},
+		{"id":"0eac0e65ffcfc476","type":"text","text":"React Frontend","x":-500,"y":-240,"width":250,"height":60,"color":"5"},
+		{"id":"9bf3095b77dde497","type":"text","text":"Java SPRING Backend\n- Upload files\n- Get album\n- Delete files","x":-200,"y":-290,"width":250,"height":160,"color":"4"}
+	],
+	"edges":[
+		{"id":"b59fbdae41184a15","fromNode":"0eac0e65ffcfc476","fromSide":"right","toNode":"9bf3095b77dde497","toSide":"left","fromEnd":"arrow"},
+		{"id":"e40c0afcfb902138","fromNode":"9bf3095b77dde497","fromSide":"right","toNode":"fb04b1ef29d65c97","toSide":"left","fromEnd":"arrow"}
+	]
+}
