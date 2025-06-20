@@ -1,13 +1,25 @@
+/* @import url('https://fonts.googleapis.com/css2?family=Quattrocento:wght@400;700&display=swap'); */
 @import "tailwindcss";
 
 * {
   box-sizing: border-box;
 }
 
+@font-face {
+  font-family: 'Quattrocento';
+  src: local('Quattrocento'), url('./fonts/Quattrocento-Regular.ttf') format('truetype');
+}
+
+/* .quattrocento-regular {
+  font-family: "Quattrocento", serif;
+  font-weight: 400;
+  font-style: normal;
+} */
+
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
-    "Droid Sans", "Helvetica Neue", sans-serif;
+  font-family: "Quattrocento" !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -26,6 +38,7 @@ header h1 {
   margin: 0;
   padding: 8px;
   text-align: center;
+  font-family: "Quattrocento", serif;
 }
 
 header a {
