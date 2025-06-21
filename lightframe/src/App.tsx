@@ -14,7 +14,7 @@ function App() {
                 <BrowserRouter>
                     <Navbar />
                 </BrowserRouter>
-                <AlbumGallery albumName="portfolio" />
+                <AlbumGallery albumId="portfolio" />
             </div>
         </QueryClientProvider>
     );

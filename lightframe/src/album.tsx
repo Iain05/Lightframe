@@ -18,7 +18,7 @@ import type { Album } from './api/types';
 import type { Photo } from "react-photo-album";
 
 type AlbumGalleryProps = {
-  albumName: string;
+  albumId: string;
 }
 
 function AlbumGallery(props: AlbumGalleryProps) {
@@ -27,7 +27,7 @@ function AlbumGallery(props: AlbumGalleryProps) {
   const { data: album, isLoading, error } = useQuery<Album, Error>(
     'fetchAlbum',
     async () => {
-      const response = await fetch(`http://localhost:8080/api/album?name=${props.albumName}`);
+      const response = await fetch(`http://localhost:8080/api/album?id=${props.albumId}`);
       if (!response.ok) throw new Error('Failed to fetch album');
       return response.json();
     }

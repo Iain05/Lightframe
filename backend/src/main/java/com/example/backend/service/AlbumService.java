@@ -2,6 +2,7 @@ package com.example.backend.service;
 
 import com.example.backend.api.model.Album;
 import com.example.backend.api.model.Photo;
+import com.example.backend.exception.AlbumNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -42,10 +43,15 @@ public class AlbumService {
         albums.add(album2);
     }
 
-    public Album getAlbum(String name) {
-        Album album = albums.stream().filter(a -> a.getName().equals(name)).findFirst().orElse(null);
+    /**
+     * @param id the unique identifier of the album to get
+     * @return an Album with all its images
+     * @throws AlbumNotFoundException if the album doesn't exist
+     */
+    public Album getAlbum(String id) throws AlbumNotFoundException {
+        Album album = albums.stream().filter(a -> a.getId().equals(id)).findFirst().orElse(null);
         if (album == null) {
-            throw new NoSuchElementException("Album with name " + name + " not found");
+            throw new AlbumNotFoundException("Album with name " + id + " not found");
         }
         return album;
     }
