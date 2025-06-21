@@ -1,20 +1,19 @@
 package com.example.backend.api.model;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 public class Album {
     private String name;
     private String id;
+    private int index;
+    private String coverImage;
     private LocalDate dateCreated;
-    private List<Photo> photos;
 
-    public Album(String name, LocalDate dateCreated, List<Photo> photos) {
+    public Album(String name, String id, int index, String coverImage, LocalDate dateCreated) {
         this.name = name;
-        this.id = name.toLowerCase().replaceAll(" ", "-");
+        this.id = id;
+        this.index = index;
+        this.coverImage = coverImage;
         this.dateCreated = dateCreated;
-        this.photos = new ArrayList<>(photos);
     }
 
     public String getName() {
@@ -29,7 +28,11 @@ public class Album {
         return this.id;
     }
 
-    public ArrayList<Photo> getPhotos() {
-        return new ArrayList<>(this.photos);
+    public int getIndex() {
+        return this.index;
+    }
+
+    public String getCoverImage() {
+        return this.coverImage;
     }
 }

@@ -3,13 +3,6 @@
   src: local('Lovelyn'), url('./fonts/Lovelyn Free Personal Use.otf') format('opentype');
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Lovelyn', serif !important;
-  background-color: #fcfcfc;
-}
-
 .container {
   max-width: 1100px;
   margin: 0 auto;
@@ -24,6 +17,7 @@ body {
   height: 80px;
   background-color: #fef7e5;
   position: relative;
+  font-family: 'Lovelyn', serif !important;
 }
 
 .logo {

@@ -5,7 +5,7 @@ import "yet-another-react-lightbox/plugins/thumbnails.css";
 
 import { ColumnsPhotoAlbum } from "react-photo-album";
 import "react-photo-album/columns.css";
-import "./css/lightbox-override.css"
+import "@src/css/lightbox-override.css";
 
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
@@ -14,7 +14,7 @@ import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 
-import type { Album } from './api/types';
+import type { AlbumResponse } from '../api/types';
 import type { Photo } from "react-photo-album";
 
 type AlbumGalleryProps = {
@@ -22,15 +22,16 @@ type AlbumGalleryProps = {
 }
 
 function AlbumGallery(props: AlbumGalleryProps) {
+    console.log('AlbumGallery rendered');
   const [index, setIndex] = useState(-1);
 
-  const { data: album, isLoading, error } = useQuery<Album, Error>(
-    'fetchAlbum',
+  const { data: album, isLoading, error } = useQuery<AlbumResponse, Error>(
+    ['fetchAlbum', props.albumId],
     async () => {
       const response = await fetch(`http://localhost:8080/api/album?id=${props.albumId}`);
       if (!response.ok) throw new Error('Failed to fetch album');
       return response.json();
-    }
+    },
   );
 
   const breakpoints = [1080, 640, 384, 256, 128, 96, 64, 48];
@@ -46,6 +47,8 @@ function AlbumGallery(props: AlbumGalleryProps) {
       })),
     }
   }) || [];
+
+  console.log("Final photo urls:", photos);
 
   if (isLoading) return <div className="flex justify-center">Loading...</div>;
   if (error) return <div className="flex justify-center">Error: {error.message}</div>;

@@ -1,9 +1,11 @@
 import './css/App.css';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 import Navbar from './navbar';
-import AlbumGallery from './album';
+import AlbumGallery from './albums/album-gallery';
+import AlbumGalleryWrapper from './albums/album-gallery-wrapper';
+import Collection from './collections/collection';
 
 const queryClient = new QueryClient();
 
@@ -13,8 +15,12 @@ function App() {
             <div className="App">
                 <BrowserRouter>
                     <Navbar />
+                    <Routes>
+                        <Route path="/events" element={<Collection />} />
+                        <Route path="/" element={<AlbumGallery albumId="portfolio" />} />
+                        <Route path="/album/:albumId" element={<AlbumGalleryWrapper />} />
+                    </Routes>
                 </BrowserRouter>
-                <AlbumGallery albumId="portfolio" />
             </div>
         </QueryClientProvider>
     );

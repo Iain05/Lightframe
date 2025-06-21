@@ -1,4 +1,4 @@
-export interface Album {
+export interface AlbumResponse {
     name: string;
     dateCreated: string;
     photos: AlbumPhotos[];
@@ -10,4 +10,18 @@ interface AlbumPhotos {
     height: number;
     index: number;
     dateTaken?: string;
+}
+
+export interface CollectionResponse {
+    name: string;
+    count: number;
+    albums: CollectionAlbum[];
+}
+
+interface CollectionAlbum {
+    id: string;
+    index: number;
+    name: string;
+    coverImage: string;
+    dateCreated: string;
 }

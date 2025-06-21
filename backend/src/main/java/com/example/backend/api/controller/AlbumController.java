@@ -1,7 +1,7 @@
 package com.example.backend.api.controller;
 
 
-import com.example.backend.api.model.Album;
+import com.example.backend.api.model.AlbumImages;
 import com.example.backend.exception.AlbumNotFoundException;
 import com.example.backend.service.AlbumService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,8 +44,7 @@ public class AlbumController {
      * @return An album as formatted above, null otherwise
      */
     @GetMapping("/api/album")
-    public Album getAlbum(@RequestParam String id) {
-        Album album;
+    public AlbumImages getAlbum(@RequestParam String id) {
         try {
             return albumService.getAlbum(id);
         } catch (AlbumNotFoundException e) {
