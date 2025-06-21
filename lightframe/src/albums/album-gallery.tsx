@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from 'react-query';
 
 import "yet-another-react-lightbox/plugins/thumbnails.css";
@@ -22,8 +22,8 @@ type AlbumGalleryProps = {
 }
 
 function AlbumGallery(props: AlbumGalleryProps) {
-    console.log('AlbumGallery rendered');
   const [index, setIndex] = useState(-1);
+  const [fadeIn, setFadeIn] = useState(false);
 
   const { data: album, isLoading, error } = useQuery<AlbumResponse, Error>(
     ['fetchAlbum', props.albumId],
@@ -33,6 +33,12 @@ function AlbumGallery(props: AlbumGalleryProps) {
       return response.json();
     },
   );
+
+  useEffect(() => {
+    setFadeIn(false);
+    const timeout = setTimeout(() => setFadeIn(true), 0);
+    return () => clearTimeout(timeout);
+  }, [props.albumId]);
 
   const breakpoints = [1080, 640, 384, 256, 128, 96, 64, 48];
   const photos: Photo[] = album?.photos.map(({ url, width, height }) => {
@@ -54,7 +60,11 @@ function AlbumGallery(props: AlbumGalleryProps) {
   if (error) return <div className="flex justify-center">Error: {error.message}</div>;
 
   return (
-    <div className="w-5/6 flex justify-center mx-auto mt-2">
+    <div
+      className={`w-5/6 flex justify-center mx-auto mt-2 transform transition-opacity duration-500 ease-in-out ${
+        fadeIn ? 'opacity-100' : 'opacity-0'
+      }`}
+    >
       <ColumnsPhotoAlbum
         photos={photos}
         columns={2}
