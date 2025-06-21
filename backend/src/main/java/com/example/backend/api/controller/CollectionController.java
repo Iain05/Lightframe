@@ -1,11 +1,8 @@
 package com.example.backend.api.controller;
 
 
-import com.example.backend.api.model.AlbumImages;
 import com.example.backend.api.model.Collection;
-import com.example.backend.exception.AlbumNotFoundException;
 import com.example.backend.exception.CollectionNotFoundException;
-import com.example.backend.service.AlbumService;
 import com.example.backend.service.CollectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,7 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 public class CollectionController {
 
-    private CollectionService collectionService;
+    private final CollectionService collectionService;
 
     @Autowired
     public CollectionController(CollectionService collectionService) {
@@ -27,18 +24,20 @@ public class CollectionController {
     }
 
     /**
-     * Get a photo album formatted as
+     *
+     * Get an album collection formatted as
      * <pre><code>
      *     {
      *         "name": String,
-     *         "dateCreated": String,
-     *         "photos": [
+     *         "count": int,
+     *         "albums": [
      *             {
-     *                  "url": "example/image.jpg",
-     *                  "width": int,
-     *                  "height": int,
+     *                  "id": String,
      *                  "index": int,
-     *                  "dateTaken": String,
+     *                  "name": String,
+     *                  "coverImage": String,
+     *                  "dateCreated": String,
+     *                  "numPhotos": int,
      *             }
      *         ]
      *     }

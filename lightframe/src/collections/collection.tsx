@@ -27,6 +27,8 @@ const Collection = () => {
     name: album.name,
     coverImage: album.coverImage,
     link: `/album/${album.id}`,
+    dateCreated: album.dateCreated,
+    numPhotos: album.numPhotos,
   })) || [];
 
   if (isLoading) return <div className="flex justify-center">Loading...</div>;
@@ -37,7 +39,7 @@ const Collection = () => {
       {albums.map((album, index) => (
         <div
           key={album.id}
-          className={`relative cursor-pointer group overflow-hidden transform transition-opacity duration-500 ease-in-out ${
+          className={`relative cursor-pointer group overflow-hidden transform transition-opacity duration-500 ease-in-out rounded-md ${
             fadeIn ? 'opacity-100' : 'opacity-0'
           }`}
           style={{ transitionDelay: `${index * 150}ms` }}
@@ -48,10 +50,16 @@ const Collection = () => {
             alt={album.name}
             className="w-full h-70 object-cover rounded-md transform transition-transform duration-500 group-hover:scale-110"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-50 rounded-md"></div>
-          <div className="absolute bottom-4 left-6 text-white text-xl font-semibold">
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-50"></div>
+          <div className="absolute bottom-7 left-6 text-white text-xl font-semibold">
             {album.name}
           </div>
+          <span className="absolute bottom-2 right-6 text-white text-md">
+            {album.dateCreated}
+          </span>
+          <span className="absolute bottom-2 left-6 text-white text-md">
+            {album.numPhotos} photos
+          </span>
         </div>
       ))}
     </div>

@@ -13,7 +13,7 @@ function AlbumGalleryWrapper() {
         return <div className="flex justify-center">Album ID is required</div>;
     }
 
-    return <AlbumGallery albumId={memoizedAlbumId} />;
+    return <AlbumGallery albumId={memoizedAlbumId} albumHeader={ true } layout="rows" />;
 }
 
 export default AlbumGalleryWrapper;

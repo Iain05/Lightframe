@@ -17,7 +17,7 @@ function App() {
                     <Navbar />
                     <Routes>
                         <Route path="/events" element={<Collection />} />
-                        <Route path="/" element={<AlbumGallery albumId="portfolio" />} />
+                        <Route path="/" element={<AlbumGallery albumId="portfolio" layout="columns" />} />
                         <Route path="/album/:albumId" element={<AlbumGalleryWrapper />} />
                     </Routes>
                 </BrowserRouter>

@@ -7,13 +7,15 @@ public class Album {
     private int index;
     private String coverImage;
     private LocalDate dateCreated;
+    private int numPhotos;
 
-    public Album(String name, String id, int index, String coverImage, LocalDate dateCreated) {
+    public Album(String name, String id, int index, String coverImage, LocalDate dateCreated, int numPhotos) {
         this.name = name;
         this.id = id;
         this.index = index;
         this.coverImage = coverImage;
         this.dateCreated = dateCreated;
+        this.numPhotos = numPhotos;
     }
 
     public String getName() {
@@ -34,5 +36,13 @@ public class Album {
 
     public String getCoverImage() {
         return this.coverImage;
+    }
+
+    public int getNumPhotos() {
+        return this.numPhotos;
+    }
+
+    public void setNumPhotos(int numPhotos) {
+        this.numPhotos = numPhotos;
     }
 }

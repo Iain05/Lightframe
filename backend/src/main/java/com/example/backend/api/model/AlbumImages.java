@@ -8,7 +8,7 @@ public class AlbumImages extends Album {
     private List<Photo> photos;
 
     public AlbumImages(String name, String id, int index, String coverImage, LocalDate dateCreated, List<Photo> photos) {
-        super(name, id, index, coverImage, dateCreated);
+        super(name, id, index, coverImage, dateCreated, photos.size());
         this.photos = new ArrayList<>(photos);
     }
 

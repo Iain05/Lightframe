@@ -16,7 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 public class AlbumController {
 
-    private AlbumService albumService;
+    private final AlbumService albumService;
 
     @Autowired
     public AlbumController(AlbumService albumService) {
@@ -29,6 +29,10 @@ public class AlbumController {
      *     {
      *         "name": String,
      *         "dateCreated": String,
+     *         "id": String,
+     *         "index": int,
+     *         "coverImage": String,
+     *         "numPhotos": int,
      *         "photos": [
      *             {
      *                  "url": "example/image.jpg",
@@ -41,7 +45,7 @@ public class AlbumController {
      *     }
      * </code></pre>
      * @param id is the unique identifier of the album, should also be the url
-     * @return An album as formatted above, null otherwise
+     * @return An album as formatted above, http not found if the album doesn't exist
      */
     @GetMapping("/api/album")
     public AlbumImages getAlbum(@RequestParam String id) {

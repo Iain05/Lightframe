@@ -26,6 +26,7 @@ returns
 	"id": String,
 	"index": int,
 	"coverImage": String,
+	"numPhotos": int,
 	"photos": [
 		{
 			"url": String,
@@ -55,7 +56,8 @@ and then it will need to return
 			"index": int,
 			"name": String,
 			"coverImage": String, // url to the image
-			"dateCreated": String
+			"dateCreated": String,
+			"numPhotos": int,
 		}
 	]
 }

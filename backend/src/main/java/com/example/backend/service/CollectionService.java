@@ -16,8 +16,8 @@ public class CollectionService {
 
     public CollectionService() {
         collections = new ArrayList<>();
-        Album album1 = new Album("Portfolio", "portfolio", 1, "./photos/image0.jpg", LocalDate.now());
-        Album album2 = new Album("Album 2", "album2", 2, "./photos/image5.jpg", LocalDate.now());
+        Album album1 = new Album("Portfolio", "portfolio", 1, "./photos/image0.jpg", LocalDate.now(), 4);
+        Album album2 = new Album("Album 2", "album2", 2, "./photos/image5.jpg", LocalDate.now(), 3);
         List<Album> albums = new ArrayList<>();
         albums.add(album1);
         albums.add(album2);
