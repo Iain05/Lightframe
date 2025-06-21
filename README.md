@@ -25,3 +25,7 @@ Lowkey this will probably bite me in the butt later, and when that happens I wil
 - Yeah, java, because I write real code (cope)
 
 We are keeping things simple because I want this to actually be a usable website by the time I retire. 
+
+> [!NOTE]
+> Okay literally the next day I went back on my decision, not having a database is kinda stupid because you can't really get photo specific statistics or details. I am has dum.
+ 

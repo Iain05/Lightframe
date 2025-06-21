@@ -1,23 +1,23 @@
-import './css/App.css'
-
+import './css/App.css';
 import { BrowserRouter } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import Navbar from './navbar';
-import Portfolio from './portfolio';
+import AlbumGallery from './album';
+
+const queryClient = new QueryClient();
 
 function App() {
-
-
     return (
-        <div className="App">
-            <BrowserRouter>
-                <Navbar />
-            </BrowserRouter>
-
-            <Portfolio />
-
-        </div>
-    )
+        <QueryClientProvider client={queryClient}>
+            <div className="App">
+                <BrowserRouter>
+                    <Navbar />
+                </BrowserRouter>
+                <AlbumGallery albumName="portfolio" />
+            </div>
+        </QueryClientProvider>
+    );
 }
 
-export default App
+export default App;
