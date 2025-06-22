@@ -2,13 +2,10 @@ package com.example.backend.service;
 
 import com.example.backend.api.Repository.AlbumRepository;
 import com.example.backend.api.model.Album;
-import com.example.backend.api.model.AlbumDB;
 import com.example.backend.api.model.Collection;
 import com.example.backend.exception.CollectionNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,7 +23,7 @@ public class CollectionService {
      * @throws CollectionNotFoundException if not collection is found
      */
     public Collection getCollection(String id) throws CollectionNotFoundException {
-        List<AlbumDB> albumsInCollection = albumRepository.findAlbumsByCollection(id);
+        List<Album> albumsInCollection = albumRepository.findAlbumsByCollection(id);
         if (albumsInCollection.isEmpty()) {
             throw new CollectionNotFoundException(id);
         }

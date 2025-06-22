@@ -28,16 +28,18 @@ public class CollectionController {
      * Get an album collection formatted as
      * <pre><code>
      *     {
-     *         "name": String,
+     *         "id": String,
      *         "count": int,
      *         "albums": [
      *             {
      *                  "id": String,
      *                  "index": int,
      *                  "name": String,
+     *                  "description": String,
      *                  "coverImage": String,
      *                  "dateCreated": String,
      *                  "numPhotos": int,
+     *                  "collection": String,
      *             }
      *         ]
      *     }

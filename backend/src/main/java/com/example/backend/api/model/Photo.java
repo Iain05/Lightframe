@@ -1,19 +1,41 @@
 package com.example.backend.api.model;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 import java.time.LocalDateTime;
 
+@Entity
+@Table(name = "photos")
 public class Photo {
+    @Id
+    private int id;
+
+    @Column(name = "album_id")
+    private String albumId;
+
     private String url;
+
     private int width;
+
     private int height;
-    private int index;
+
+    @Column(name = "photo_index")
+    private Integer index;
+
+    @Column(name = "date_taken")
     private LocalDateTime dateTaken;
 
-    public Photo(String url, int width, int height, int index, LocalDateTime dateTaken) {
-        this.url = url;
-        this.width = width;
-        this.height = height;
-        this.index = index;
-        this.dateTaken = dateTaken;
+    @Column(name = "created_at")
+    private LocalDateTime dateCreated;
+
+    public int getId() {
+        return id;
+    }
+
+    public String getAlbumId() {
+        return albumId;
     }
 
     public String getUrl() {
@@ -28,7 +50,7 @@ public class Photo {
         return this.height;
     }
 
-    public int getIndex() {
+    public Integer getIndex() {
         return index;
     }
 
@@ -38,5 +60,9 @@ public class Photo {
 
     public LocalDateTime getDateTaken() {
         return dateTaken;
+    }
+
+    public LocalDateTime getDateCreated() {
+        return dateCreated;
     }
 }

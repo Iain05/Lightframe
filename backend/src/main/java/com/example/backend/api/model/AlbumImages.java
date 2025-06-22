@@ -12,6 +12,11 @@ public class AlbumImages extends Album {
         this.photos = new ArrayList<>(photos);
     }
 
+    public AlbumImages(Album album, List<Photo> photos) {
+        super(album.getName(), album.getId(), album.getCoverImage(), album.getDateCreated(), photos.size());
+        this.photos = new ArrayList<>(photos);
+    }
+
     public List<Photo> getPhotos() {
         return new ArrayList<>(photos);
     }

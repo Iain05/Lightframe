@@ -6,6 +6,7 @@ import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 
 import PhotoAlbum from "react-photo-album";
+// import ServerPhotoAlbum from "react-photo-album";
 import "react-photo-album/styles.css";
 import "@src/css/lightbox-override.css";
 
@@ -43,7 +44,7 @@ function AlbumGallery(props: AlbumGalleryProps) {
     setFadeIn(false);
     const timeout = setTimeout(() => setFadeIn(true), 0);
     return () => clearTimeout(timeout);
-  }, [props.albumId]);
+  }, [props.albumId, fadeIn]);
 
   const breakpoints = [1080, 640, 384, 256, 128, 96, 64, 48];
   const photos: Photo[] = album?.photos.map(({ url, width, height }) => ({

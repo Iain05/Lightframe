@@ -6,9 +6,9 @@ import java.util.List;
 public class Collection {
     private String id;
     private int count;
-    private List<AlbumDB> albums;
+    private List<Album> albums;
 
-    public Collection(String id, List<AlbumDB> albums) {
+    public Collection(String id, List<Album> albums) {
         this.id = id;
         this.count = albums.size();
         this.albums = new ArrayList<>(albums);
@@ -22,7 +22,7 @@ public class Collection {
         return this.count;
     }
 
-    public List<AlbumDB> getAlbums() {
+    public List<Album> getAlbums() {
         return new ArrayList<>(this.albums);
     }
 }
