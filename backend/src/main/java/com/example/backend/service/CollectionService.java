@@ -1,6 +1,8 @@
 package com.example.backend.service;
 
+import com.example.backend.api.Repository.AlbumRepository;
 import com.example.backend.api.model.Album;
+import com.example.backend.api.model.AlbumDB;
 import com.example.backend.api.model.Collection;
 import com.example.backend.exception.CollectionNotFoundException;
 import org.springframework.stereotype.Service;
@@ -12,18 +14,10 @@ import java.util.List;
 @Service
 public class CollectionService {
 
-    private List<Collection> collections;
+    private final AlbumRepository albumRepository;
 
-    public CollectionService() {
-        collections = new ArrayList<>();
-        Album album1 = new Album("Portfolio", "portfolio", 1, "./photos/image0.jpg", LocalDate.now(), 4);
-        Album album2 = new Album("Album 2", "album2", 2, "./photos/image5.jpg", LocalDate.now(), 3);
-        List<Album> albums = new ArrayList<>();
-        albums.add(album1);
-        albums.add(album2);
-
-        Collection collection = new Collection("Main Collection", "main-collection", albums.size(), albums);
-        collections.add(collection);
+    public CollectionService(AlbumRepository albumRepository) {
+        this.albumRepository = albumRepository;
     }
 
     /**
@@ -32,10 +26,10 @@ public class CollectionService {
      * @throws CollectionNotFoundException if not collection is found
      */
     public Collection getCollection(String id) throws CollectionNotFoundException {
-        Collection collection = collections.stream().filter(c -> c.getId().equals(id)).findFirst().orElse(null);
-        if (collection == null) {
+        List<AlbumDB> albumsInCollection = albumRepository.findAlbumsByCollection(id);
+        if (albumsInCollection.isEmpty()) {
             throw new CollectionNotFoundException(id);
         }
-        return collection;
+        return new Collection(id, albumsInCollection);
     }
 }

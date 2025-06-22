@@ -48,7 +48,8 @@ public class CollectionController {
     @GetMapping("/api/collection")
     public Collection getCollection(@RequestParam String id) {
         try {
-            return collectionService.getCollection(id);
+            Collection collection = collectionService.getCollection(id);
+            return collection;
         } catch (CollectionNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {

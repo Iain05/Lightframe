@@ -28,7 +28,7 @@ public class AlbumService {
         photos.add(photo3);
         photos.add(photo4);
 
-        AlbumImages album1 = new AlbumImages("Portfolio", "portfolio", 1, photo1.getUrl(), LocalDate.now(), photos);
+        AlbumImages album1 = new AlbumImages("Portfolio", "portfolio", photo1.getUrl(), LocalDate.now(), photos);
 
         photos.removeAll(photos);
         Photo photo5 = new Photo("http://localhost:3000/photos/image4.jpg", 1920, 709, 4, LocalDateTime.now());
@@ -37,7 +37,7 @@ public class AlbumService {
         photos.add(photo5);
         photos.add(photo6);
         photos.add(photo7);
-        AlbumImages album2 = new AlbumImages("album2", "album2", 2, photo5.getUrl(), LocalDate.now(), photos);
+        AlbumImages album2 = new AlbumImages("album2", "album2", photo5.getUrl(), LocalDate.now(), photos);
 
         albums.add(album1);
         albums.add(album2);

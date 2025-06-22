@@ -30,7 +30,6 @@ public class AlbumController {
      *         "name": String,
      *         "dateCreated": String,
      *         "id": String,
-     *         "index": int,
      *         "coverImage": String,
      *         "numPhotos": int,
      *         "photos": [

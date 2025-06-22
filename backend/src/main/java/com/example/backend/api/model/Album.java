@@ -4,18 +4,18 @@ import java.time.LocalDate;
 public class Album {
     private String name;
     private String id;
-    private int index;
     private String coverImage;
+    private String description;
     private LocalDate dateCreated;
     private int numPhotos;
 
-    public Album(String name, String id, int index, String coverImage, LocalDate dateCreated, int numPhotos) {
+    public Album(String name, String id, String coverImage, LocalDate dateCreated, int numPhotos) {
         this.name = name;
         this.id = id;
-        this.index = index;
         this.coverImage = coverImage;
         this.dateCreated = dateCreated;
         this.numPhotos = numPhotos;
+        this.description = "description";
     }
 
     public String getName() {
@@ -30,10 +30,6 @@ public class Album {
         return this.id;
     }
 
-    public int getIndex() {
-        return this.index;
-    }
-
     public String getCoverImage() {
         return this.coverImage;
     }
@@ -44,5 +40,9 @@ public class Album {
 
     public void setNumPhotos(int numPhotos) {
         this.numPhotos = numPhotos;
+    }
+
+    public void getDescription(String description) {
+        this.description = description;
     }
 }

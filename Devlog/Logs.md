@@ -24,7 +24,6 @@ returns
 	"name": String,
 	"dateCreated": String,
 	"id": String,
-	"index": int,
 	"coverImage": String,
 	"numPhotos": int,
 	"photos": [
@@ -53,7 +52,6 @@ and then it will need to return
 	"albums": [
 		{
 			"id": String,
-			"index": int,
 			"name": String,
 			"coverImage": String, // url to the image
 			"dateCreated": String,
@@ -64,3 +62,49 @@ and then it will need to return
 ```
 
 Since I'm not returning images with this one, I should probably change the class setup. We should have this just be an Album, and then have an AlbumImages that extends it?
+
+According to chatgpt we'll want four tables
+```sql
+CREATE TABLE albums (
+  id VARCHAR(100) PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  description TEXT,
+  cover_image VARCHAR(255),
+  num_photos INT,
+  collection VARCHAR(100);
+  date_created DATE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE photos (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  album_id VARCHAR(100) NOT NULL,
+  url VARCHAR(255) NOT NULL,  -- or full S3/URL path
+  width INT,
+  height INT,
+  photo_index INT,
+  date_taken DATETIME,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (album_id) REFERENCES albums(id)
+);
+```
+and that all seems to check out to me. 
+
+ChatGPT also generated triggers for met o keep track of album count
+```sql
+CREATE TRIGGER after_photo_insert
+AFTER INSERT ON photos
+FOR EACH ROW
+UPDATE albums
+SET num_photos = num_photos + 1
+WHERE id = NEW.album_id;
+
+CREATE TRIGGER after_photo_delete
+AFTER DELETE ON photos
+FOR EACH ROW
+UPDATE albums
+SET num_photos = num_photos - 1
+WHERE id = OLD.album_id;
+```
+god bless ChatGPT like honestly. Makes my life so easy.
+
+Okay the backend is now able to get collections from the database I am an programming god.

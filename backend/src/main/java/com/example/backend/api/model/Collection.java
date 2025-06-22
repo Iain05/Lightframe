@@ -4,20 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Collection {
-    private String name;
     private String id;
     private int count;
-    private List<Album> albums;
+    private List<AlbumDB> albums;
 
-    public Collection(String name, String id, int count, List<Album> albums) {
-        this.name = name;
+    public Collection(String id, List<AlbumDB> albums) {
         this.id = id;
-        this.count = count;
+        this.count = albums.size();
         this.albums = new ArrayList<>(albums);
-    }
-
-    public String getName() {
-        return this.name;
     }
 
     public String getId() {
@@ -28,7 +22,7 @@ public class Collection {
         return this.count;
     }
 
-    public List<Album> getAlbums() {
+    public List<AlbumDB> getAlbums() {
         return new ArrayList<>(this.albums);
     }
 }
