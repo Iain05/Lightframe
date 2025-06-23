@@ -1,12 +1,19 @@
 {
 	"nodes":[
-		{"id":"e208804fda7a5adc","type":"group","x":-560,"y":-320,"width":660,"height":220,"color":"2","label":"EC2 Instance"},
-		{"id":"9bf3095b77dde497","type":"text","text":"Java SPRING Backend\n- Upload files\n- Get album\n- Delete files","x":-200,"y":-290,"width":250,"height":160,"color":"4"},
+		{"id":"e208804fda7a5adc","type":"group","x":-560,"y":-320,"width":400,"height":485,"color":"2","label":"Oracle Cloud Compute"},
+		{"id":"830a8f24790a6db6","x":-100,"y":-60,"width":400,"height":225,"color":"3","type":"group","label":"Database"},
+		{"id":"23f76537a698a0ca","type":"group","x":-100,"y":-320,"width":400,"height":220,"color":"6","label":"Bucket"},
 		{"id":"0eac0e65ffcfc476","type":"text","text":"React Frontend\n- React Photo Album\n- Yet Another React lightbox","x":-500,"y":-282,"width":250,"height":145,"color":"5"},
-		{"id":"fb04b1ef29d65c97","type":"text","text":"S3 Bucket\n\n/collection/album/\nimage.24x36.png","x":160,"y":-319,"width":200,"height":220,"color":"6"}
+		{"id":"9bf3095b77dde497","type":"text","text":"Java SPRING Backend\n- Upload files\n- Get album\n- Delete files","x":-500,"y":-20,"width":250,"height":160,"color":"4"},
+		{"id":"dcc3d05e8efeee81","type":"text","text":"low resolution storage\nbase_url/preview/album_id/image.jpg","x":-80,"y":-300,"width":360,"height":90},
+		{"id":"a31fcd32e3ef5f9f","type":"text","text":"full resolution storage\nbase_url/full/album_id/image.jpg","x":-80,"y":-200,"width":360,"height":85},
+		{"id":"7b00c307d1918520","type":"text","text":"albums\nalbum_id, num_photos, date_created, etc","x":-80,"y":-40,"width":360,"height":85},
+		{"id":"d191aacf967da91f","type":"text","text":"photos\nalbum_id, url, width, height, etc","x":-80,"y":60,"width":360,"height":80}
 	],
 	"edges":[
-		{"id":"b59fbdae41184a15","fromNode":"0eac0e65ffcfc476","fromSide":"right","toNode":"9bf3095b77dde497","toSide":"left","fromEnd":"arrow"},
-		{"id":"e40c0afcfb902138","fromNode":"9bf3095b77dde497","fromSide":"right","toNode":"fb04b1ef29d65c97","toSide":"left","fromEnd":"arrow"}
+		{"id":"61966e6e2ddb6393","fromNode":"9bf3095b77dde497","fromSide":"top","toNode":"0eac0e65ffcfc476","toSide":"bottom","fromEnd":"arrow"},
+		{"id":"73014ce8f45de4d6","fromNode":"9bf3095b77dde497","fromSide":"right","toNode":"23f76537a698a0ca","toSide":"left"},
+		{"id":"b0a879355b8b721d","fromNode":"9bf3095b77dde497","fromSide":"right","toNode":"830a8f24790a6db6","toSide":"left"},
+		{"id":"deaf7edfe28fe88c","fromNode":"0eac0e65ffcfc476","fromSide":"right","toNode":"23f76537a698a0ca","toSide":"left"}
 	]
 }

@@ -108,3 +108,15 @@ WHERE id = OLD.album_id;
 god bless ChatGPT like honestly. Makes my life so easy.
 
 Okay the backend is now able to get collections from the database I am an programming god.
+
+# June 22nd, 2025
+So today I decided to finally address an issue I have been electing to ignore since I started. Which admittedly hasn't been very long, pretty poor run tbh I expect better of myself. But basically how the fuck do you fetch a gigabyte of images every time the user opens an album. This has been a problem since the beginning of time dating back to the ancient greeks. Some say Euclid himself studied this problem. As far as I can tell from very little research there isn't a great way to solve this. It seems like the standard way is to just store multiple versions of the image which is kinda valid. The approach I've chosen is to just store a preview version and the full res version in a bucket. one at /preview/image and one at /full/image, just making it easy to find the same images corresponding url. 
+
+Thats all great but how do you actually serve it? Well i have two react libraries right, i have the react photo album and 'yet another react lightbox'. *As far as I understand things* I can just generate the list of photos once, give react photo album the list with the src as the /preview url, and then give the lightbox the identical version with the /full url. Then when you click one, triggering a lightbox render, it will fetch the full resolution, plus start fetching full resolution ones of surrounding images. Which should greatly improve ux. 
+
+Testing this method locally does generate some pretty slow load times for images, when trying to view the whole thing. its not bad, but probably can be improved, potentially by having another medium resolution one at 1080p that gets served faster until the full res one comes in. But that increases complexity a decent amount. I want to keep things simple for now. Im pretty close to have a usable version of this up. The most immediate things I need to do now are
+1. Figure out how to serve the frontend and backend on a compute instance
+2. connect the compute instance to the oracle database
+3. set up the oracle cloud database
+4. Test everything through cloud and make sure there are no glaring issues with my whole tech stack
+5. Uploading images 

@@ -16,6 +16,8 @@ With this project I want to create a deployable website that has all the *main* 
 I made this map 5 minutes before work don't make fun of me. You may be laughing because you think I forgot a database. But no I'm just cool like that. Databases are for losers, we will be storing everything we need in the S3 bucket. Album? Based on folder structure. Image size? In the file name. Index order? wait shit idk just do it by date. Checkmake SQLers.
 ![Architecture layout](./Images/architecture.png)
 Lowkey this will probably bite me in the butt later, and when that happens I will say holy fucking airball and double down.
+> [!NOTE]
+> Okay literally the next day I went back on my decision, not having a database is kinda stupid because you can't really get photo specific statistics or details. I am has dum.
 ### Frontend
 - Node, React, Nginx
 - Important libraries: [yet another react lightbox](https://github.com/igordanchenko/yet-another-react-lightbox), [react photo album](https://github.com/igordanchenko/react-photo-album)
@@ -26,6 +28,4 @@ Lowkey this will probably bite me in the butt later, and when that happens I wil
 
 We are keeping things simple because I want this to actually be a usable website by the time I retire. 
 
-> [!NOTE]
-> Okay literally the next day I went back on my decision, not having a database is kinda stupid because you can't really get photo specific statistics or details. I am has dum.
  

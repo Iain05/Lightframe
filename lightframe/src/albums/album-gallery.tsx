@@ -26,6 +26,19 @@ type AlbumGalleryProps = {
   layout: "columns" | "rows" | "masonry";
 }
 
+function generatePhotos(albumPhotos: AlbumResponse['photos'], basePath: string, breakpoints: number[]): Photo[] {
+  return albumPhotos.map(({ url, width, height }) => ({
+    src: `${basePath}/${url}`,
+    width: width,
+    height: height,
+    srcSet: breakpoints.map((breakpoint) => ({
+      src: `${basePath}/${url}`,
+      width: breakpoint,
+      height: Math.round((height / width) * breakpoint),
+    })),
+  }));
+}
+
 function AlbumGallery(props: AlbumGalleryProps) {
   const [index, setIndex] = useState(-1);
   const [fadeIn, setFadeIn] = useState(false);
@@ -47,16 +60,8 @@ function AlbumGallery(props: AlbumGalleryProps) {
   }, [props.albumId, fadeIn]);
 
   const breakpoints = [1080, 640, 384, 256, 128, 96, 64, 48];
-  const photos: Photo[] = album?.photos.map(({ url, width, height }) => ({
-    src: url,
-    width: width,
-    height: height,
-    srcSet: breakpoints.map((breakpoint) => ({
-      src: url,
-      width: breakpoint,
-      height: Math.round((height / width) * breakpoint),
-    })),
-  })) || [];
+  const photos = album ? generatePhotos(album.photos, `${import.meta.env.VITE_BUCKET_BASE}preview`, breakpoints) : [];
+  const fullPhotos = album ? generatePhotos(album.photos, `${import.meta.env.VITE_BUCKET_BASE}full`, breakpoints) : [];
 
   if (isLoading) return <div className="flex justify-center">Loading...</div>;
   if (error) return <div className="flex justify-center">Error: {error.message}</div>;
@@ -109,7 +114,7 @@ function AlbumGallery(props: AlbumGalleryProps) {
         open={index >= 0}
         index={index}
         close={() => setIndex(-1)}
-        slides={photos}
+        slides={fullPhotos}
         plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
         zoom={{ maxZoomPixelRatio: 2 }}
         controller={{ closeOnBackdropClick: true }}
