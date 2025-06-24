@@ -1,0 +1,18 @@
+services:
+  frontend:
+    build:
+      context: ./lightframe
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    # env_file:
+    #   - ./lightframe/.env
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./backend/.env

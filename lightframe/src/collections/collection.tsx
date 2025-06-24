@@ -10,7 +10,7 @@ const Collection = () => {
   const { data: collection, isLoading, error } = useQuery<CollectionResponse, Error>(
     'fetchCollection',
     async () => {
-      const response = await fetch('http://localhost:8080/api/collection?id=main-collection');
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/collection?id=main-collection`);
       if (!response.ok) throw new Error('Failed to fetch collection');
       return response.json();
     }
