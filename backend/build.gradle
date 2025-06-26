@@ -48,5 +48,5 @@ tasks.withType(Jar) {
 }
 
 tasks.named('test') {
-    useJUnitPlatform()
+//    useJUnitPlatform()
 }
