@@ -1,17 +1,10 @@
-FROM gradle:8.10-jdk17 AS build
-
-WORKDIR /app
-COPY . .
-
-RUN gradle build --no-daemon
-
 FROM openjdk:17-jdk-alpine
 
 WORKDIR /app
 
 COPY .env ./
 
-COPY --from=build /app/build/libs/*.jar app.jar
+COPY build/libs/*.jar app.jar
 
 EXPOSE 8080
 

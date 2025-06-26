@@ -71,8 +71,8 @@ CREATE TABLE albums (
   description TEXT,
   cover_image VARCHAR(255),
   num_photos INT,
-  collection VARCHAR(100);
-  date_created DATE DEFAULT CURRENT_TIMESTAMP
+  collection VARCHAR(100),
+  date_created DATE DEFAULT (CURRENT_DATE)
 );
 
 CREATE TABLE photos (
@@ -120,3 +120,12 @@ Testing this method locally does generate some pretty slow load times for images
 3. set up the oracle cloud database
 4. Test everything through cloud and make sure there are no glaring issues with my whole tech stack
 5. Uploading images 
+
+# June 25th, 2025
+holy shitballs i hate cloud services. I just want a free server man. I was like trying to do everything through oracle because i saw their crazy always free ampere tier thats like 24 GB and also their rates seem pretty decent for storage, database, and all that. But like I've spent two days running a script to automatically try and register one and they're just not available. So we pivoted to google. google has an "always free" tier as well (ill probably end up paying a bit for all the bandwidth on the bucket) and it lowkey sucks but itll get the job done. 1 GB ram may not be happy. But it seems fine so far...? Anyway right now I'm running the backend dockerfile and if this is all good the next thing I need to do is set up a database and bucket but for google this time. Once I have a database set up I need to change the environment variables credentials to access it and then we should just be good to go? Hopefully we have all the hosting stuff done by tomorrow, and then I can actually try this at some scale and implement uploading and authentication. Fuck the build just paused.
+
+i am a god amongst man. Okay well the stupid google server sucks as well but like i got my database actually working remotely properly. We have to tunnel to it so like basically right
+`ssh -i C:/Users/Iain/.ssh/key_to_vm -L 3307:${db.private.ip}:3306 ubuntu@${vm.public.ip}`
+will tunnel the database at 3306 to our localhost at 3307. 
+
+So then all i should need to do on my server is run that command to get the tunnel working, and then docker compose up and we should be balling. I also need to upload the jar because the server just crashes every time it tries to build the java project :skull:.
