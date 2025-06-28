@@ -12,7 +12,9 @@ public class FilterConfig {
     public static final String[] PROTECTED_ROUTES = {
         "/admin/*",
         "/auth/verify",
-        "/api/album/create"
+        "/api/album/create",
+        "/api/album/delete",
+        "/api/album/update",
     };
     
     @Bean

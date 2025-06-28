@@ -60,13 +60,14 @@ const Collection = (props: CollectionProps) => {
   const handleEditAlbum = (e: React.MouseEvent, album: {
     id: string;
     name: string;
+    description?: string;
     public: boolean;
   }) => {
     e.stopPropagation(); // Prevent navigation to album
     setEditingAlbum({
       id: album.id,
       name: album.name,
-      description: '', // We don't have description in the collection response
+      description: album.description,
       isPublic: album.public
     });
     setIsEditModalOpen(true);
@@ -81,8 +82,23 @@ const Collection = (props: CollectionProps) => {
     if (!editingAlbum) return;
     
     try {
-      // TODO: Implement API call to update album
-      console.log('Updating album:', editingAlbum.id, albumData);
+      const formData = new URLSearchParams();
+      formData.append('id', editingAlbum.id);
+      formData.append('name', albumData.name);
+      formData.append('description', albumData.description || '');
+      formData.append('isPublic', albumData.isPublic.toString());
+
+      const response = await api.put('/api/album/update', formData.toString(), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update album');
+      }
+
+      console.log('Album updated successfully:', editingAlbum.id);
       
       setIsEditModalOpen(false);
       setEditingAlbum(null);
@@ -96,13 +112,15 @@ const Collection = (props: CollectionProps) => {
 
   const handleDeleteAlbum = async (albumId: string) => {
     try {
-      // TODO: Implement API call to delete album
-      console.log('Deleting album:', albumId);
+      const response = await api.delete(`/api/album/delete?id=${albumId}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to delete album');
+      }
       
       setIsEditModalOpen(false);
       setEditingAlbum(null);
       
-      // Refresh the collection data to remove the deleted album
       queryClient.invalidateQueries('fetchCollection');
     } catch (error) {
       console.error('Error deleting album:', error);
@@ -126,10 +144,13 @@ const Collection = (props: CollectionProps) => {
       if (!response.ok) {
         throw new Error('Failed to create album');
       }
-
+      const albumId = await response.text();
+      
       setIsModalOpen(false);
       
       queryClient.invalidateQueries('fetchCollection');
+      
+      window.location.href = `/album/${albumId}`;
     } catch (error) {
       console.error('Error creating album:', error);
     }
