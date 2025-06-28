@@ -1,6 +1,7 @@
 export interface AlbumResponse {
     name: string;
     dateCreated: string;
+    public: boolean;
     id: string;
     index: number;
     coverImage: string;
@@ -26,6 +27,7 @@ interface CollectionAlbum {
     id: string;
     index: number;
     name: string;
+    public: boolean;
     coverImage: string;
     dateCreated: string;
     numPhotos: number;

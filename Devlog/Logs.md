@@ -68,6 +68,7 @@ According to chatgpt we'll want four tables
 CREATE TABLE albums (
   id VARCHAR(100) PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
+  public BOOLEAN DEFAULT (0),
   description TEXT,
   cover_image VARCHAR(255),
   num_photos INT,

@@ -1,8 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from 'react-query';
-import AddRounded from '@mui/icons-material/AddRounded';
+import AddAlbumModal from './add-album';
 import type { CollectionResponse } from '../api/types';
+
+import AddRounded from '@mui/icons-material/AddRounded';
+import LockRoundedIcon from '@mui/icons-material/LockRounded';
 
 type CollectionProps = {
   collection_id: string;
@@ -12,6 +15,7 @@ const Collection = (props: CollectionProps) => {
   const navigate = useNavigate();
   const [fadeIn, setFadeIn] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     // Check if user is logged in
@@ -35,66 +39,87 @@ const Collection = (props: CollectionProps) => {
   }, []);
 
   const handleAddAlbum = () => {
-    // TODO: Implement add album functionality
-    // This could open a modal, navigate to an add album page, etc.
-    console.log('Add new album clicked');
+    setIsModalOpen(true);
   };
 
-  const albums = collection?.albums.map((album) => ({
-    id: album.id,
-    name: album.name,
-    coverImage: album.coverImage,
-    link: `/album/${album.id}`,
-    dateCreated: album.dateCreated,
-    numPhotos: album.numPhotos,
-  })) || [];
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleSubmitAlbum = (albumData: { name: string; isPublic: boolean }) => {
+    // TODO: Implement API call to create album
+    console.log('Creating album:', albumData);
+    setIsModalOpen(false);
+  };
+
+  const albums = collection?.albums
+    .filter((album) => isLoggedIn || album.public)
+    .map((album) => ({
+      id: album.id,
+      name: album.name,
+      coverImage: album.coverImage,
+      link: `/album/${album.id}`,
+      dateCreated: album.dateCreated,
+      numPhotos: album.numPhotos,
+      public: album.public,
+    })) || [];
 
   if (isLoading) return <div className="flex justify-center">Loading...</div>;
   if (error) return <div className="flex justify-center">Error: {error.message}</div>;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4 max-w-screen-2xl mx-auto">
-      {isLoggedIn && (
-        <div
-          className={`relative cursor-pointer group overflow-hidden transform transition-opacity duration-500 ease-in-out rounded-md border-2 border-dashed border-gray-300 hover:border-gray-400 bg-gray-50 hover:bg-gray-100 flex items-center justify-center h-70 ${
-            fadeIn ? 'opacity-100' : 'opacity-0'
-          }`}
-          style={{ transitionDelay: '0ms' }}
-          onClick={handleAddAlbum}
-        >
-          <div className="flex flex-col items-center justify-center text-gray-500 group-hover:text-gray-600">
-            <AddRounded style={{ fontSize: '48px' }} />
-            <span className="mt-2 text-lg font-medium">Add New Album</span>
+    <>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4 max-w-screen-2xl mx-auto">
+        {isLoggedIn && (
+          <div
+            className={`relative cursor-pointer group overflow-hidden transform transition-opacity duration-500 ease-in-out rounded-md border-2 border-dashed border-gray-300 hover:border-gray-400 bg-gray-50 hover:bg-gray-100 flex items-center justify-center h-70 ${
+              fadeIn ? 'opacity-100' : 'opacity-0'
+            }`}
+            style={{ transitionDelay: '0ms' }}
+            onClick={handleAddAlbum}
+          >
+            <div className="flex flex-col items-center justify-center text-gray-500 group-hover:text-gray-600">
+              <AddRounded style={{ fontSize: '48px' }} />
+              <span className="mt-2 text-lg font-medium">Add New Album</span>
+            </div>
           </div>
-        </div>
-      )}
-      {albums.map((album, index) => (
-        <div
-          key={album.id}
-          className={`relative cursor-pointer group overflow-hidden transform transition-opacity duration-500 ease-in-out rounded-md ${
-            fadeIn ? 'opacity-100' : 'opacity-0'
-          }`}
-          style={{ transitionDelay: `${(index + (isLoggedIn ? 1 : 0)) * 150}ms` }}
-          onClick={() => navigate(album.link)}
-        >
-          <img
-            src={`${import.meta.env.VITE_BUCKET_BASE}preview/${album.coverImage}`}
-            alt={album.name}
-            className="w-full h-70 object-cover rounded-md transform transition-transform duration-500 group-hover:scale-110"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-50"></div>
-          <div className="absolute bottom-7 left-6 text-white text-xl font-semibold">
-            {album.name}
+        )}
+        {albums.map((album, index) => (
+          <div
+            key={album.id}
+            className={`relative cursor-pointer group overflow-hidden transform transition-opacity duration-500 ease-in-out rounded-md ${
+              fadeIn ? 'opacity-100' : 'opacity-0'
+            }`}
+            style={{ transitionDelay: `${(index + (isLoggedIn ? 1 : 0)) * 150}ms` }}
+            onClick={() => navigate(album.link)}
+          >
+            <img
+              src={`${import.meta.env.VITE_BUCKET_BASE}preview/${album.coverImage}`}
+              alt={album.name}
+              className="w-full h-70 object-cover rounded-md transform transition-transform duration-500 group-hover:scale-110"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-50"></div>
+            <div className="absolute bottom-7 left-4 text-white text-xl font-semibold">
+              {!album.public && isLoggedIn && (
+              <LockRoundedIcon sx={{ fontSize: 20, marginBottom: 0.5 }} />)}
+              {album.name}
+            </div>
+            <span className="absolute bottom-2 right-6 text-white text-md">
+              {album.dateCreated}
+            </span>
+            <span className="absolute bottom-2 left-6 text-white text-md">
+              {album.numPhotos} photos
+            </span>
           </div>
-          <span className="absolute bottom-2 right-6 text-white text-md">
-            {album.dateCreated}
-          </span>
-          <span className="absolute bottom-2 left-6 text-white text-md">
-            {album.numPhotos} photos
-          </span>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+      
+      <AddAlbumModal 
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onSubmit={handleSubmitAlbum}
+      />
+    </>
   );
 };
 

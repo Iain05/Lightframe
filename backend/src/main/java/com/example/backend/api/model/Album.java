@@ -17,6 +17,9 @@ public class Album {
 
     private String name;
 
+    @Column(name = "public")
+    private boolean isPublic;
+
     private String description;
 
     @Column(name = "cover_image")
@@ -30,9 +33,10 @@ public class Album {
     @Column(name = "date_created")
     private LocalDate dateCreated;
 
-    public Album(String name, String id, String coverImage, LocalDate dateCreated, int size) {
+    public Album(String name, String id, boolean isPublic, String coverImage, LocalDate dateCreated, int size) {
         this.name = name;
         this.id = id;
+        this.isPublic = isPublic;
         this.coverImage = coverImage;
         this.dateCreated = dateCreated;
         this.numPhotos = size;
@@ -51,6 +55,10 @@ public class Album {
 
     public String getName() {
         return name;
+    }
+
+    public boolean isPublic() {
+        return isPublic;
     }
 
     public String getDescription() {
