@@ -6,6 +6,7 @@ import Navbar from './navbar';
 import AlbumGallery from './albums/album-gallery';
 import AlbumGalleryWrapper from './albums/album-gallery-wrapper';
 import Collection from './collections/collection';
+import Login from './auth/login';
 
 const queryClient = new QueryClient();
 
@@ -16,9 +17,10 @@ function App() {
                 <BrowserRouter>
                     <Navbar />
                     <Routes>
-                        <Route path="/events" element={<Collection />} />
+                        <Route path="/events" element={<Collection collection_id="main-collection"/>} />
                         <Route path="/" element={<AlbumGallery albumId="portfolio" layout="columns" />} />
                         <Route path="/album/:albumId" element={<AlbumGalleryWrapper />} />
+                        <Route path="/login" element={<Login />} />
                     </Routes>
                 </BrowserRouter>
             </div>
