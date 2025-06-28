@@ -73,7 +73,7 @@ CREATE TABLE albums (
   cover_image VARCHAR(255),
   num_photos INT,
   collection VARCHAR(100),
-  date_created DATE DEFAULT (CURRENT_DATE)
+  date_created DATETIME DEFAULT (CURRENT_DATE)
 );
 
 CREATE TABLE photos (

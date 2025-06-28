@@ -34,4 +34,10 @@ public class AlbumService {
         }
         return new AlbumImages(album, photosInAlbum);
     }
+
+    public String createAlbum(String name, String description, String collection, boolean isPublic) {
+        Album album = new Album(name, description, collection, isPublic);
+        albumRepository.save(album);
+        return album.getId();
+    }
 }

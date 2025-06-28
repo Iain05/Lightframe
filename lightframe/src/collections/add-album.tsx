@@ -5,11 +5,12 @@ import './add-album.css';
 interface AddAlbumModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (albumData: { name: string; isPublic: boolean }) => void;
+  onSubmit: (albumData: { name: string; description?: string; isPublic: boolean }) => void;
 }
 
 const AddAlbumModal = ({ isOpen, onClose, onSubmit }: AddAlbumModalProps) => {
   const [albumName, setAlbumName] = useState('');
+  const [albumDescription, setAlbumDescription] = useState('');
   const [isPublic, setIsPublic] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
 
@@ -24,7 +25,8 @@ const AddAlbumModal = ({ isOpen, onClose, onSubmit }: AddAlbumModalProps) => {
     if (albumName.trim()) {
       onSubmit({
         name: albumName.trim(),
-        isPublic: isPublic
+        isPublic: isPublic,
+        description: albumDescription.trim() || '',
       });
       // Reset form
       setAlbumName('');
@@ -66,6 +68,16 @@ const AddAlbumModal = ({ isOpen, onClose, onSubmit }: AddAlbumModalProps) => {
               placeholder="Enter album name..."
               required
               autoFocus
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="albumDescription">Description (Optional)</label>
+            <input
+              type="text"
+              id="albumDescription"
+              value={albumDescription}
+              onChange={(e) => setAlbumDescription(e.target.value)}
+              placeholder="Description (optional)..."
             />
           </div>
 

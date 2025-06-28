@@ -3,6 +3,9 @@ package com.example.backend.api.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import com.example.backend.api.utils.RandomGenerators;
 
 /**
  * Represents an album in the database.
@@ -30,21 +33,31 @@ public class Album {
 
     private String collection;
 
-    @Column(name = "date_created")
-    private LocalDate dateCreated;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-    public Album(String name, String id, boolean isPublic, String coverImage, LocalDate dateCreated, int size) {
+    public Album(String name, String description, String collection, boolean isPublic) {
+        this.name = name;
+        this.description = description;
+        this.collection = collection;
+        this.isPublic = isPublic;
+        this.createdAt = LocalDateTime.now();
+        this.numPhotos = 0;
+        this.id = RandomGenerators.generateRandomString();
+    }
+
+    public Album(String name, String id, String description, boolean isPublic, String coverImage, LocalDateTime createdAt, Integer numPhotos) {
         this.name = name;
         this.id = id;
+        this.description = description;
         this.isPublic = isPublic;
         this.coverImage = coverImage;
-        this.dateCreated = dateCreated;
-        this.numPhotos = size;
-        this.description = "description";
+        this.createdAt = createdAt;
+        this.numPhotos = numPhotos;
     }
 
     public Album() {
-        this.dateCreated = LocalDate.now();
+        this.createdAt = LocalDateTime.now();
         this.numPhotos = 0;
         this.description = "description";
     }
@@ -73,8 +86,8 @@ public class Album {
         return numPhotos;
     }
 
-    public LocalDate getDateCreated() {
-        return dateCreated;
+    public LocalDateTime getDateCreated() {
+        return createdAt;
     }
 
     public String getCollection() {

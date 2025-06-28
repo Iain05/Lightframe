@@ -7,13 +7,15 @@ import java.util.List;
 public class AlbumImages extends Album {
     private List<Photo> photos;
 
-    public AlbumImages(String name, String id, boolean isPublic, String coverImage, LocalDate dateCreated, List<Photo> photos) {
-        super(name, id, isPublic, coverImage, dateCreated, photos.size());
-        this.photos = new ArrayList<>(photos);
-    }
-
     public AlbumImages(Album album, List<Photo> photos) {
-        super(album.getName(), album.getId(), album.isPublic(), album.getCoverImage(), album.getDateCreated(), photos.size());
+        super(album.getName(),
+                album.getId(),
+                album.getDescription(),
+                album.isPublic(),
+                album.getCoverImage(),
+                album.getDateCreated(),
+                photos.size()
+        );
         this.photos = new ArrayList<>(photos);
     }
 

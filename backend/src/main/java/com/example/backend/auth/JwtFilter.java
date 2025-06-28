@@ -17,6 +17,8 @@ public class JwtFilter extends OncePerRequestFilter {
     @Autowired
     private JwtUtil jwtUtil;
 
+    private final String[] protectedRoutes = FilterConfig.PROTECTED_ROUTES;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
@@ -45,6 +47,16 @@ public class JwtFilter extends OncePerRequestFilter {
 
     private boolean requiresAuth(HttpServletRequest request) {
         // Add custom logic: return true for protected routes
-        return request.getRequestURI().startsWith("/auth/verify");
+        String uri = request.getRequestURI();
+        return isProtectedRoute(uri);
+    }
+
+    private boolean isProtectedRoute(String uri) {
+        for (String route : protectedRoutes) {
+            if (uri.startsWith(route)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

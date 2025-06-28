@@ -1,11 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import AddAlbumModal from './add-album';
+import EditAlbumModal from './edit-album';
 import type { CollectionResponse } from '../api/types';
+import { api } from '../utils/api';
 
 import AddRounded from '@mui/icons-material/AddRounded';
 import LockRoundedIcon from '@mui/icons-material/LockRounded';
+import BorderColorRoundedIcon from '@mui/icons-material/BorderColorRounded';
 
 type CollectionProps = {
   collection_id: string;
@@ -13,9 +16,17 @@ type CollectionProps = {
 
 const Collection = (props: CollectionProps) => {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [fadeIn, setFadeIn] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingAlbum, setEditingAlbum] = useState<{
+    id: string;
+    name: string;
+    description?: string;
+    isPublic: boolean;
+  } | null>(null);
 
   useEffect(() => {
     // Check if user is logged in
@@ -26,7 +37,7 @@ const Collection = (props: CollectionProps) => {
   const { data: collection, isLoading, error } = useQuery<CollectionResponse, Error>(
     'fetchCollection',
     async () => {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/collection?id=${props.collection_id}`);
+      const response = await api.get(`/api/collection?id=${props.collection_id}`);
       if (!response.ok) throw new Error('Failed to fetch collection');
       return response.json();
     }
@@ -46,14 +57,87 @@ const Collection = (props: CollectionProps) => {
     setIsModalOpen(false);
   };
 
-  const handleSubmitAlbum = (albumData: { name: string; isPublic: boolean }) => {
-    // TODO: Implement API call to create album
-    console.log('Creating album:', albumData);
-    setIsModalOpen(false);
+  const handleEditAlbum = (e: React.MouseEvent, album: {
+    id: string;
+    name: string;
+    public: boolean;
+  }) => {
+    e.stopPropagation(); // Prevent navigation to album
+    setEditingAlbum({
+      id: album.id,
+      name: album.name,
+      description: '', // We don't have description in the collection response
+      isPublic: album.public
+    });
+    setIsEditModalOpen(true);
+  };
+
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false);
+    setEditingAlbum(null);
+  };
+
+  const handleSubmitEdit = async (albumData: { name: string; description?: string; isPublic: boolean }) => {
+    if (!editingAlbum) return;
+    
+    try {
+      // TODO: Implement API call to update album
+      console.log('Updating album:', editingAlbum.id, albumData);
+      
+      setIsEditModalOpen(false);
+      setEditingAlbum(null);
+      
+      // Refresh the collection data to show the updated album
+      queryClient.invalidateQueries('fetchCollection');
+    } catch (error) {
+      console.error('Error updating album:', error);
+    }
+  };
+
+  const handleDeleteAlbum = async (albumId: string) => {
+    try {
+      // TODO: Implement API call to delete album
+      console.log('Deleting album:', albumId);
+      
+      setIsEditModalOpen(false);
+      setEditingAlbum(null);
+      
+      // Refresh the collection data to remove the deleted album
+      queryClient.invalidateQueries('fetchCollection');
+    } catch (error) {
+      console.error('Error deleting album:', error);
+    }
+  };
+
+  const handleSubmitAlbum = async (albumData: { name: string; description?: string; isPublic: boolean }) => {
+    try {
+      const formData = new URLSearchParams();
+      formData.append('name', albumData.name);
+      formData.append('description', albumData.description || '');
+      formData.append('isPublic', albumData.isPublic.toString());
+      formData.append('collection', props.collection_id);
+
+      const response = await api.post('/api/album/create', formData.toString(), {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create album');
+      }
+
+      setIsModalOpen(false);
+      
+      queryClient.invalidateQueries('fetchCollection');
+    } catch (error) {
+      console.error('Error creating album:', error);
+    }
   };
 
   const albums = collection?.albums
     .filter((album) => isLoggedIn || album.public)
+    .sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime())
     .map((album) => ({
       id: album.id,
       name: album.name,
@@ -95,9 +179,17 @@ const Collection = (props: CollectionProps) => {
           >
             <img
               src={`${import.meta.env.VITE_BUCKET_BASE}preview/${album.coverImage}`}
-              alt={album.name}
               className="w-full h-70 object-cover rounded-md transform transition-transform duration-500 group-hover:scale-110"
             />
+            <div className="absolute top-4 right-4 text-white z-10">
+              {isLoggedIn && (
+                <BorderColorRoundedIcon 
+                  sx={{ fontSize: 25 }}
+                  onClick={(e) => handleEditAlbum(e, album)}
+                  className="cursor-pointer hover:opacity-75 transition-opacity drop-shadow-lg"
+                />
+              )}
+            </div>
             <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-50"></div>
             <div className="absolute bottom-7 left-4 text-white text-xl font-semibold">
               {!album.public && isLoggedIn && (
@@ -105,7 +197,7 @@ const Collection = (props: CollectionProps) => {
               {album.name}
             </div>
             <span className="absolute bottom-2 right-6 text-white text-md">
-              {album.dateCreated}
+              {new Date(album.dateCreated).toLocaleDateString()}
             </span>
             <span className="absolute bottom-2 left-6 text-white text-md">
               {album.numPhotos} photos
@@ -119,6 +211,21 @@ const Collection = (props: CollectionProps) => {
         onClose={handleCloseModal}
         onSubmit={handleSubmitAlbum}
       />
+      
+      {editingAlbum && (
+        <EditAlbumModal 
+          isOpen={isEditModalOpen}
+          onClose={handleCloseEditModal}
+          onSubmit={handleSubmitEdit}
+          onDelete={handleDeleteAlbum}
+          initialData={{
+            id: editingAlbum.id,
+            name: editingAlbum.name,
+            description: editingAlbum.description,
+            isPublic: editingAlbum.isPublic
+          }}
+        />
+      )}
     </>
   );
 };

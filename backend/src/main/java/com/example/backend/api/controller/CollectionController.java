@@ -6,14 +6,12 @@ import com.example.backend.exception.CollectionNotFoundException;
 import com.example.backend.service.CollectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 //@CrossOrigin(origins = {"http://localhost:3000", "http://localhost"})
 @RestController
+@RequestMapping("/api/collection")
 public class CollectionController {
 
     private final CollectionService collectionService;
@@ -47,7 +45,7 @@ public class CollectionController {
      * @param id is the unique identifier of the album, should also be the url
      * @return An album as formatted above, null otherwise
      */
-    @GetMapping("/api/collection")
+    @GetMapping("")
     public Collection getCollection(@RequestParam String id) {
         try {
             Collection collection = collectionService.getCollection(id);

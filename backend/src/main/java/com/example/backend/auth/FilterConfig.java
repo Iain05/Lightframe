@@ -8,12 +8,18 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class FilterConfig {
+
+    public static final String[] PROTECTED_ROUTES = {
+        "/admin/*",
+        "/auth/verify",
+        "/api/album/create"
+    };
     
     @Bean
     public FilterRegistrationBean<JwtFilter> jwtFilterRegistration(@Autowired JwtFilter jwtFilter) {
         FilterRegistrationBean<JwtFilter> reg = new FilterRegistrationBean<>();
         reg.setFilter(jwtFilter);
-        reg.addUrlPatterns("/admin/*", "/auth/verify"); // Protected routes
+        reg.addUrlPatterns(PROTECTED_ROUTES);
         return reg;
     }
 }

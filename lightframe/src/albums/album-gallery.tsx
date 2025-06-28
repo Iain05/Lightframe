@@ -79,7 +79,8 @@ function AlbumGallery(props: AlbumGalleryProps) {
             <ArrowBackRoundedIcon style={{ fontSize: 30 }} />
           </button>
           <h1 className="text-6xl font-bold text-center mb-4">{album.name}</h1>
-          <div className="flex flex-col items-center mt-8">
+          <div className="flex justify-center text-gray-600 text-xl">{album.description}</div>
+          <div className="flex flex-col items-center mt-4">
             <span className="text-xl text-center text-gray-600 flex items-center justify-center gap-5">
               <span>{album.numPhotos} photos</span>
               <span>•</span>

@@ -1,6 +1,7 @@
 export interface AlbumResponse {
     name: string;
     dateCreated: string;
+    description: string;
     public: boolean;
     id: string;
     index: number;
