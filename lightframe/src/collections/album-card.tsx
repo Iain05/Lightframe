@@ -34,7 +34,7 @@ const AlbumCard = ({ album, index, fadeIn, isLoggedIn, onEdit }: AlbumCardProps)
       onClick={() => navigate(album.link)}
     >
       <img
-        src={`${import.meta.env.VITE_BUCKET_BASE}preview/${album.coverImage}`}
+        src={`${import.meta.env.VITE_BUCKET_BASE}small/${album.coverImage}`}
         className="w-full h-70 object-cover rounded-md transform transition-transform duration-500 group-hover:scale-110"
       />
       <div className="absolute top-4 right-4 text-white z-10">

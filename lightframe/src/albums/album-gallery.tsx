@@ -54,8 +54,8 @@ function AlbumGallery(props: AlbumGalleryProps) {
 
 
   const breakpoints = [1080, 640, 384, 256, 128, 96, 64, 48];
-  const photos = album ? generatePhotos(album.photos, `${import.meta.env.VITE_BUCKET_BASE}preview`, breakpoints) : [];
-  const fullPhotos = album ? generatePhotos(album.photos, `${import.meta.env.VITE_BUCKET_BASE}full`, breakpoints) : [];
+  const photos = album ? generatePhotos(album.photos, `${import.meta.env.VITE_BUCKET_BASE}small`, breakpoints) : [];
+  const fullPhotos = album ? generatePhotos(album.photos, `${import.meta.env.VITE_BUCKET_BASE}large`, breakpoints) : [];
 
   if (isLoading) return <div className="flex justify-center">Loading...</div>;
   if (error) return <div className="flex justify-center">Error: {error.message}</div>;

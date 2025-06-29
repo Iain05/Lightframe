@@ -38,13 +38,24 @@ const Collection = (props: CollectionProps) => {
 
   useEffect(() => {
     setFadeIn(false);
-    const timeout = setTimeout(() => setFadeIn(true), 0);
-    return () => clearTimeout(timeout);
-  }, []);
+  }, [props.collection_id]);
 
-  // Event handlers
+  useEffect(() => {
+    if (collection && !isLoading) {
+      // Use requestAnimationFrame to ensure the DOM has rendered the initial state
+      let timeoutId: NodeJS.Timeout;
+      const rafId = requestAnimationFrame(() => {
+        timeoutId = setTimeout(() => setFadeIn(true), 50);
+      });
+      return () => {
+        cancelAnimationFrame(rafId);
+        if (timeoutId) clearTimeout(timeoutId);
+      };
+    }
+  }, [collection, isLoading]);
+
   const handleEditAlbum = (e: React.MouseEvent, album: Album) => {
-    e.stopPropagation(); // Prevent navigation to album
+    e.stopPropagation(); 
     modalState.openEditModal({
       id: album.id,
       name: album.name,
@@ -88,7 +99,7 @@ const Collection = (props: CollectionProps) => {
       description: '', // Collection response doesn't include description
     })) || [];
 
-  if (isLoading) return <div className="flex justify-center">Loading...</div>;
+  // if (isLoading) return <div className="flex justify-center">Loading...</div>;
   if (error) return <div className="flex justify-center">Error: {error.message}</div>;
 
   return (
