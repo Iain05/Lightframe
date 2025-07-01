@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from 'react-query';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
+import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 
@@ -18,7 +19,10 @@ import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 
 import UploadButton from './upload-button';
+import SelectIcon from './select-icon';
+import DeletePhotosModal from './delete-photos-modal';
 import { albumAPI } from '../api/album-api';
+import { getValidToken } from '../utils/auth';
 import type { AlbumResponse } from '../api/types';
 import type { Photo } from "react-photo-album";
 
@@ -28,11 +32,19 @@ type AlbumGalleryProps = {
   layout: "columns" | "rows" | "masonry";
 }
 
-function generatePhotos(albumPhotos: AlbumResponse['photos'], basePath: string, breakpoints: number[]): Photo[] {
-  return albumPhotos.map(({ url, width, height }) => ({
+type SelectablePhoto = Photo & {
+  id: number;
+  selected?: boolean;
+};
+
+const BREAKPOINTS = [1080, 640, 384, 256, 128, 96, 64, 48];
+
+function generatePhotos(albumPhotos: AlbumResponse['photos'], basePath: string, breakpoints: number[]): SelectablePhoto[] {
+  return albumPhotos.map(({ url, width, height, id }) => ({
     src: `${basePath}/${url}`,
     width: width,
     height: height,
+    id: id,
     srcSet: breakpoints.map((breakpoint) => ({
       src: `${basePath}/${url}`,
       width: breakpoint,
@@ -43,6 +55,7 @@ function generatePhotos(albumPhotos: AlbumResponse['photos'], basePath: string, 
 
 function AlbumGallery(props: AlbumGalleryProps) {
   const [index, setIndex] = useState(-1);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -66,9 +79,56 @@ function AlbumGallery(props: AlbumGalleryProps) {
   );
 
 
-  const breakpoints = [1080, 640, 384, 256, 128, 96, 64, 48];
-  const photos = album ? generatePhotos(album.photos, `${import.meta.env.VITE_BUCKET_BASE}small`, breakpoints) : [];
-  const fullPhotos = album ? generatePhotos(album.photos, `${import.meta.env.VITE_BUCKET_BASE}large`, breakpoints) : [];
+  const smallPhotos = useMemo(() => {
+    return album ? generatePhotos(album.photos, `${import.meta.env.VITE_BUCKET_BASE}small`, BREAKPOINTS) : [];
+  }, [album]);
+  
+  const fullPhotos = useMemo(() => {
+    return album ? generatePhotos(album.photos, `${import.meta.env.VITE_BUCKET_BASE}large`, BREAKPOINTS) : [];
+  }, [album]);
+  
+  const [photos, setPhotos] = useState<SelectablePhoto[]>([]);
+  const isInitialized = useRef(false);
+
+  const selectedCount = photos.filter(photo => photo.selected).length;
+  const isLoggedIn = getValidToken() !== null;
+
+  const handleDeleteSelected = () => {
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    const selectedPhotoIds = photos
+      .filter(photo => photo.selected)
+      .map(photo => photo.id);
+    
+    try {
+      await albumAPI.deletePhotos(selectedPhotoIds);
+      
+      // Refresh the album data to reflect the deletions
+      queryClient.invalidateQueries(['fetchAlbum', props.albumId]);
+      
+      setIsDeleteModalOpen(false);
+    } catch (error) {
+      console.error('Delete error:', error);
+      // TODO: Show error toast/notification to user
+      setIsDeleteModalOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    if (smallPhotos.length > 0 && !isInitialized.current) {
+      setPhotos(smallPhotos.map(photo => ({ ...photo, selected: false })));
+      isInitialized.current = true;
+    } else if (smallPhotos.length > 0 && isInitialized.current) {
+      setPhotos(prevPhotos => {
+        if (prevPhotos.length !== smallPhotos.length) {
+          return smallPhotos.map(photo => ({ ...photo, selected: false }));
+        }
+        return prevPhotos;
+      });
+    }
+  }, [smallPhotos]);
 
   if (isLoading) return <div className="flex justify-center">Loading...</div>;
   if (error) return <div className="flex justify-center">Error: {error.message}</div>;
@@ -100,7 +160,25 @@ function AlbumGallery(props: AlbumGalleryProps) {
               <span>{new Date(album.dateCreated).toLocaleDateString()}</span>
             </span>
           </div>
-          <div className="absolute top-0 right-0 mt-4 mr-4">
+          <div className="absolute top-0 right-0 mt-4 mr-4 flex items-center gap-3">
+            {isLoggedIn && (
+              <button
+                onClick={selectedCount > 0 ? handleDeleteSelected : undefined}
+                className={`transition-all duration-300 ${
+                  selectedCount > 0 
+                    ? 'text-black hover:text-gray-700 cursor-pointer' 
+                    : 'text-gray-300 cursor-not-allowed'
+                }`}
+                title={
+                  selectedCount > 0 
+                    ? `Delete ${selectedCount} selected photo${selectedCount > 1 ? 's' : ''}`
+                    : 'Select photos to delete'
+                }
+                disabled={selectedCount === 0}
+              >
+                <DeleteOutlineRoundedIcon style={{ fontSize: 28 }} />
+              </button>
+            )}
             <UploadButton onUpload={handleUpload} variant="secondary" size="medium" />
           </div>
         </div>
@@ -117,6 +195,25 @@ function AlbumGallery(props: AlbumGalleryProps) {
             },
           })}
         onClick={({ index }) => { setIndex(index); }}
+        render={{
+          // render image selection icon
+          extras: (_, { photo, index }) => (
+            <SelectIcon
+              selected={photo.selected}
+              onClick={(event) => {
+                setPhotos((prevPhotos) => {
+                  const newPhotos = [...prevPhotos];
+                  newPhotos[index] = { ...newPhotos[index], selected: !newPhotos[index].selected };
+                  return newPhotos;
+                });
+
+                // prevent the event from propagating to the parent link element
+                event.preventDefault();
+                event.stopPropagation();
+              }}
+            />
+          ),
+        }}
       />
 
       <Lightbox
@@ -128,6 +225,13 @@ function AlbumGallery(props: AlbumGalleryProps) {
         zoom={{ maxZoomPixelRatio: 2 }}
         controller={{ closeOnBackdropClick: true }}
         thumbnails={{ vignette: false }}
+      />
+
+      <DeletePhotosModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        selectedCount={selectedCount}
       />
     </div>
   );

@@ -15,6 +15,7 @@ interface AlbumPhotos {
     width: number;
     height: number;
     index: number;
+    id: number;
     dateTaken?: string;
 }
 

@@ -85,4 +85,17 @@ export const albumAPI = {
       throw new Error('Failed to upload photos');
     }
   },
+
+  deletePhotos: async (photoIds: number[]): Promise<void> => {
+    const response = await api.delete('/api/photo/delete', {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ photoIds }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to delete photos');
+    }
+  },
 };
