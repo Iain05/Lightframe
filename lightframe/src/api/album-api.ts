@@ -59,4 +59,30 @@ export const albumAPI = {
       throw new Error('Failed to delete album');
     }
   },
+
+  uploadPhotos: async (albumId: string, files: File[]): Promise<void> => {
+    const formData = new FormData();
+    
+    files.forEach((file) => {
+      formData.append('photos', file);
+    });
+
+    // For FormData, we need to create a custom request without the default Content-Type
+    const token = localStorage.getItem('authToken');
+    const headers: Record<string, string> = {};
+    
+    if (token) {
+      headers.Authorization = `Bearer ${token}`;
+    }
+
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/api/photo/upload?albumId=${encodeURIComponent(albumId)}`, {
+      method: 'POST',
+      body: formData,
+      headers,
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to upload photos');
+    }
+  },
 };

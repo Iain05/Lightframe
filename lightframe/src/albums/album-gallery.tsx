@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 
 import "yet-another-react-lightbox/plugins/thumbnails.css";
@@ -17,6 +17,8 @@ import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 
+import UploadButton from './upload-button';
+import { albumAPI } from '../api/album-api';
 import type { AlbumResponse } from '../api/types';
 import type { Photo } from "react-photo-album";
 
@@ -42,6 +44,17 @@ function generatePhotos(albumPhotos: AlbumResponse['photos'], basePath: string, 
 function AlbumGallery(props: AlbumGalleryProps) {
   const [index, setIndex] = useState(-1);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const handleUpload = async (files: File[]) => {
+    try {
+      await albumAPI.uploadPhotos(props.albumId, files);
+      queryClient.invalidateQueries(['fetchAlbum', props.albumId]);
+    } catch (error) {
+      console.error('Upload error:', error);
+      // TODO: Show error toast/notification to user
+    }
+  };
 
   const { data: album, isLoading, error } = useQuery<AlbumResponse, Error>(
     ['fetchAlbum', props.albumId],
@@ -87,7 +100,9 @@ function AlbumGallery(props: AlbumGalleryProps) {
               <span>{new Date(album.dateCreated).toLocaleDateString()}</span>
             </span>
           </div>
-
+          <div className="absolute top-0 right-0 mt-4 mr-4">
+            <UploadButton onUpload={handleUpload} variant="secondary" size="medium" />
+          </div>
         </div>
       )}
       <PhotoAlbum

@@ -1,4 +1,39 @@
 package com.example.backend.api.controller;
 
+import com.example.backend.exception.UploadPhotoException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.backend.service.PhotoService;
+import org.springframework.web.multipart.MultipartFile;
+
+@RestController
+@RequestMapping("/api/photo")
 public class PhotoController {
+    private final PhotoService photoService;
+
+    @Autowired
+    public PhotoController(PhotoService photoService) {
+        this.photoService = photoService;
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<?> uploadPhotos(@RequestParam("albumId") String albumId,
+                                          @RequestParam("photos") MultipartFile[] photos) {
+        try {
+            photoService.uploadPhotos(albumId, photos);
+        } catch (UploadPhotoException e) {
+            return ResponseEntity.badRequest().body("Error uploading photos: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Internal server error: " + e.getMessage());
+        }
+
+        return ResponseEntity.ok("Photos uploaded successfully");
+    }
+
+
 }
