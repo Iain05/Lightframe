@@ -34,7 +34,7 @@ public class PhotoService {
     }
 
     /**
-     * Upload a photo to the database and bucket.
+     * Upload a photo to the database and bucket while resizing.
      */
     public void uploadPhotos(String albumId, MultipartFile[] photos) throws UploadPhotoException {
         if (photos == null || photos.length == 0) {
@@ -59,6 +59,7 @@ public class PhotoService {
         }
         return Objects.requireNonNull(file.getContentType()).startsWith("image/");
     }
+
 
     private String handleImageMultipleUploads(String albumId, MultipartFile photo, String name)
             throws UploadPhotoException, IOException {

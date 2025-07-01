@@ -34,7 +34,8 @@ public class ImageUploader {
 
     /**
      * Resize the image and upload it to Oracle Cloud using a pre-authorized URL. If width or height is 0,
-     * the original image is uploaded without resizing.
+     * the original image is uploaded without resizing. Otherwise, the image is resized to the specified dimensions.
+     * The original aspect ratio is maintained during resizing.
      *
      * @param multipartFile The image file to resize and upload.
      * @param key           The key under which the image will be stored in the bucket.

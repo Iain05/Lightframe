@@ -21,6 +21,12 @@ public class PhotoController {
         this.photoService = photoService;
     }
 
+    /**
+     * Upload photos to an album. The photo will be resized to fit three different sizes and uploaded to a bucket.
+     * @param albumId The ID of the album to which the photos will be uploaded.
+     * @param photos The array of photos to upload.
+     * @return ResponseEntity indicating success or failure.
+     */
     @PostMapping("/upload")
     public ResponseEntity<?> uploadPhotos(@RequestParam("albumId") String albumId,
                                           @RequestParam("photos") MultipartFile[] photos) {
