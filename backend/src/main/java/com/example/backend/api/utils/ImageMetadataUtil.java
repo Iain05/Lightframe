@@ -12,6 +12,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.awt.*;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 public class ImageMetadataUtil {
@@ -19,9 +21,9 @@ public class ImageMetadataUtil {
     public static class ImageInfo {
         public final int width;
         public final int height;
-        public final Date captureDate;
+        public final LocalDateTime captureDate;
 
-        public ImageInfo(int width, int height, Date captureDate) {
+        public ImageInfo(int width, int height, LocalDateTime captureDate) {
             this.width = width;
             this.height = height;
             this.captureDate = captureDate;
@@ -40,8 +42,9 @@ public class ImageMetadataUtil {
             // Get capture date
             ExifSubIFDDirectory exifDirectory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
             Date captureDate = exifDirectory != null ? exifDirectory.getDateOriginal() : null;
+            LocalDateTime ldt = LocalDateTime.ofInstant(captureDate.toInstant(), ZoneId.systemDefault());
 
-            return new ImageInfo(width, height, captureDate);
+            return new ImageInfo(width, height, ldt);
         } catch (IOException | ImageProcessingException | MetadataException e) {
             throw new ImageDataException(e);
         }

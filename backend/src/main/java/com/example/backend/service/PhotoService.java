@@ -57,11 +57,9 @@ public class PhotoService {
 
         for (MultipartFile photo : photos) {
             if (!validateFileType(photo)) continue;
-
-
-
             try {
                 String location = handleImageMultipleUploads(albumId, photo, photo.getOriginalFilename());
+                addPhotoToDatabase(albumId, location, photo);
                 System.out.println("Photo uploaded successfully: " + location);
             } catch (UploadPhotoException e) {
                 throw new UploadPhotoException("Error uploading photo: " + e.getMessage());
@@ -70,12 +68,15 @@ public class PhotoService {
     }
 
     private void addPhotoToDatabase(String albumId, String location, MultipartFile photo) throws UploadPhotoException {
-        try {
-            ImageMetadataUtil.ImageInfo imageInfo = ImageMetadataUtil.extractImageInfo(photo);
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        ImageMetadataUtil.ImageInfo imageInfo = ImageMetadataUtil.extractImageInfo(photo);
+        Photo newPhoto = new Photo(
+                albumId,
+                location,
+                imageInfo.width,
+                imageInfo.height,
+                imageInfo.captureDate
+        );
+        photoRepository.save(newPhoto);
 //        Photo newPhoto = new Photo(albumId, location,
     }
 
@@ -92,7 +93,7 @@ public class PhotoService {
             throws UploadPhotoException {
         String fileLocation = albumId + "/" + name;
         try {
-            uploader.resizeAndUpload(photo, "small/" + fileLocation, 640, 360);
+            uploader.resizeAndUpload(photo, "small/" + fileLocation, 1280, 720);
             uploader.resizeAndUpload(photo, "medium/" + fileLocation, 1920,1080);
             uploader.resizeAndUpload(photo, "large/" + fileLocation, 0, 0);
             return fileLocation;

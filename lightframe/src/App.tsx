@@ -1,6 +1,7 @@
 import './css/App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { useAutoLogout } from './hooks/use-auto-logout';
 
 import Navbar from './navbar';
 import AlbumGallery from './albums/album-gallery';
@@ -11,6 +12,9 @@ import Login from './auth/login';
 const queryClient = new QueryClient();
 
 function App() {
+    // Check for token expiration every 5 minutes
+    useAutoLogout(5);
+    
     return (
         <QueryClientProvider client={queryClient}>
             <div className="App">

@@ -39,6 +39,10 @@ public class Photo {
         this.dateCreated = LocalDateTime.now();
     }
 
+    public Photo() {
+
+    }
+
     public int getId() {
         return id;
     }

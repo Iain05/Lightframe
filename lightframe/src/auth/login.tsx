@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { checkTokenAndLogout } from '../utils/auth';
 import './login.css';
 
 const Login = () => {
@@ -10,9 +11,9 @@ const Login = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    // Check if user is already logged in
-    const token = localStorage.getItem('authToken');
-    setIsLoggedIn(!!token);
+    // Check if user is already logged in and token is still valid
+    const isLoggedIn = checkTokenAndLogout();
+    setIsLoggedIn(isLoggedIn);
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

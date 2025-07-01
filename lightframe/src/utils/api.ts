@@ -1,4 +1,6 @@
 // API utility for making requests with automatic base URL
+import { getValidToken } from './auth';
+
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 interface ApiRequestOptions extends RequestInit {
@@ -9,8 +11,8 @@ export const apiRequest = async (endpoint: string, options: ApiRequestOptions = 
   // Ensure endpoint starts with /
   const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
   
-  // Get auth token if available
-  const token = localStorage.getItem('authToken');
+  // Get valid auth token (this will auto-logout if expired)
+  const token = getValidToken();
   
   // Prepare headers
   const headers: Record<string, string> = {
