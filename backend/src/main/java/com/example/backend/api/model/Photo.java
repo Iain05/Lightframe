@@ -30,6 +30,15 @@ public class Photo {
     @Column(name = "created_at")
     private LocalDateTime dateCreated;
 
+    public Photo(String albumId, String url, int width, int height, LocalDateTime dateTaken) {
+        this.albumId = albumId;
+        this.url = url;
+        this.width = width;
+        this.height = height;
+        this.dateTaken = dateTaken;
+        this.dateCreated = LocalDateTime.now();
+    }
+
     public int getId() {
         return id;
     }
