@@ -30,6 +30,12 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-jackson:0.12.6'
     implementation 'net.coobird:thumbnailator:0.4.20'
     implementation 'com.drewnoakes:metadata-extractor:2.19.0'
+    
+    // OCI SDK dependencies
+    implementation 'com.oracle.oci.sdk:oci-java-sdk-objectstorage:3.30.0'
+    implementation 'com.oracle.oci.sdk:oci-java-sdk-common-httpclient:3.30.0'
+
+    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 }
 
 jar {

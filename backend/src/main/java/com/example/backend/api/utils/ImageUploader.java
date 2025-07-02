@@ -14,7 +14,7 @@ public class ImageUploader {
     private final String preAuthorizedUrl;
 
     /**
-     * Constructor for ImageUploader that initializes with a pre-authorized URL.
+     * Constructor for ImageUploader that initializes with a pre-authorized URL and OCI configuration.
      *
      * @param preAuthorizedUrl The pre-authorized URL for uploading images to Oracle Cloud.
      */
@@ -22,7 +22,7 @@ public class ImageUploader {
         this.preAuthorizedUrl = preAuthorizedUrl;
         System.out.println("Initializing Oracle Cloud uploader with pre-authorized URL");
         System.out.println("Pre-auth URL: " + preAuthorizedUrl);
-        
+
         // Validate the URL format
         if (preAuthorizedUrl == null || !preAuthorizedUrl.startsWith("https://")) {
             System.err.println("WARNING: Pre-authorized URL might be invalid");

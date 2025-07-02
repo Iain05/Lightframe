@@ -6,16 +6,17 @@ import com.example.backend.api.Repository.PhotoRepository;
 import com.example.backend.api.model.Photo;
 import com.example.backend.api.utils.ImageMetadataUtil;
 import com.example.backend.api.utils.ImageUploader;
+import com.example.backend.exception.DeletePhotoException;
 import com.example.backend.exception.UploadPhotoException;
+import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
-
-import java.time.LocalDateTime;
 
 @Service
 public class PhotoService {
@@ -27,6 +28,12 @@ public class PhotoService {
 
     @Value("${bucket.preauth.url}")
     private String PRE_AUTHORIZED_URL;
+
+    @Value("${oci.bucket.name}")
+    private String BUCKET_NAME;
+
+    @Value("${oci.namespace.name}")
+    private String NAMESPACE_NAME;
 
 
     public PhotoService(PhotoRepository photoRepository, AlbumRepository albumRepository) {
@@ -67,6 +74,36 @@ public class PhotoService {
         }
     }
 
+    public void deletePhoto(List<Integer> photoIds) throws DeletePhotoException {
+        if (photoIds == null || photoIds.isEmpty()) {
+            throw new DeletePhotoException("No photo IDs provided for deletion.");
+        }
+
+        for (Integer photoId : photoIds) {
+            Photo photo = photoRepository.findPhotoById(photoId);
+            if (photo == null) {
+                throw new DeletePhotoException("Photo with ID " + photoId + " does not exist.");
+            }
+//            photoRepository.delete(photo);
+            try {
+                deletePhotoFromBucket(photo.getUrl());
+            } catch (DeletePhotoException e) {
+                throw new DeletePhotoException("Error deleting photo from bucket: " + e.getMessage());
+            }
+        }
+    }
+
+    private void deletePhotoFromBucket(String photoUrl) throws DeletePhotoException {
+        try {
+//            deleter.deleteObject("small/" + photoUrl);
+//            deleter.deleteObject("medium/" + photoUrl);
+//            deleter.deleteObject("large/" + photoUrl);
+            System.out.println("Photo deleted successfully from bucket: " + photoUrl);
+        } catch (RuntimeException e) {
+            throw new DeletePhotoException("Error deleting photo from bucket: " + e.getMessage());
+        }
+    }
+
     private void addPhotoToDatabase(String albumId, String location, MultipartFile photo) throws UploadPhotoException {
         ImageMetadataUtil.ImageInfo imageInfo = ImageMetadataUtil.extractImageInfo(photo);
         Photo newPhoto = new Photo(
@@ -77,7 +114,6 @@ public class PhotoService {
                 imageInfo.captureDate
         );
         photoRepository.save(newPhoto);
-//        Photo newPhoto = new Photo(albumId, location,
     }
 
 

@@ -42,7 +42,9 @@ public class ImageMetadataUtil {
             // Get capture date
             ExifSubIFDDirectory exifDirectory = metadata.getFirstDirectoryOfType(ExifSubIFDDirectory.class);
             Date captureDate = exifDirectory != null ? exifDirectory.getDateOriginal() : null;
-            LocalDateTime ldt = LocalDateTime.ofInstant(captureDate.toInstant(), ZoneId.systemDefault());
+            LocalDateTime ldt = captureDate != null ? 
+                LocalDateTime.ofInstant(captureDate.toInstant(), ZoneId.systemDefault()) : 
+                LocalDateTime.now();
 
             return new ImageInfo(width, height, ldt);
         } catch (IOException | ImageProcessingException | MetadataException e) {
