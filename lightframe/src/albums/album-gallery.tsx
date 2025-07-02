@@ -9,6 +9,7 @@ import PhotoAlbum from "react-photo-album";
 // import ServerPhotoAlbum from "react-photo-album";
 import "react-photo-album/styles.css";
 import "@src/css/lightbox-override.css";
+import "./download-overlay.css";
 
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
@@ -16,6 +17,7 @@ import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
 import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
+import Download from "yet-another-react-lightbox/plugins/download";
 
 import UploadButton from './upload-button';
 import SelectIcon from './select-icon';
@@ -25,6 +27,8 @@ import { albumAPI } from '../api/album-api';
 import { getValidToken } from '../utils/auth';
 import type { AlbumResponse } from '../api/types';
 import type { Photo } from "react-photo-album";
+import DownloadIcon from '@mui/icons-material/Download';
+import CircularProgress from '@mui/material/CircularProgress';
 
 type AlbumGalleryProps = {
   albumId: string;
@@ -34,6 +38,7 @@ type AlbumGalleryProps = {
 
 type SelectablePhoto = Photo & {
   id: number;
+  downloadUrl?: string;
   selected?: boolean;
 };
 
@@ -53,9 +58,30 @@ function generatePhotos(albumPhotos: AlbumResponse['photos'], basePath: string, 
   }));
 }
 
+function generateLightboxPhotos(
+  albumPhotos: AlbumResponse['photos'], 
+  basePath: string, 
+  fullResPath: string,
+  breakpoints: number[]): 
+SelectablePhoto[] {
+  return albumPhotos.map(({ url, width, height, id }) => ({
+    src: `${basePath}/${url}`,
+    width: width,
+    height: height,
+    id: id,
+    downloadUrl: `${fullResPath}/${url}`,
+    srcSet: breakpoints.map((breakpoint) => ({
+      src: `${basePath}/${url}`,
+      width: breakpoint,
+      height: Math.round((height / width) * breakpoint),
+    })),
+  }));
+}
+
 function AlbumGallery(props: AlbumGalleryProps) {
   const [index, setIndex] = useState(-1);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [downloadingPhotoId, setDownloadingPhotoId] = useState<number | null>(null);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -83,8 +109,12 @@ function AlbumGallery(props: AlbumGalleryProps) {
     return album ? generatePhotos(album.photos, `${import.meta.env.VITE_BUCKET_BASE}small`, BREAKPOINTS) : [];
   }, [album]);
   
-  const fullPhotos = useMemo(() => {
-    return album ? generatePhotos(album.photos, `${import.meta.env.VITE_BUCKET_BASE}medium`, BREAKPOINTS) : [];
+  const mediumPhotos = useMemo(() => {
+    return album ? generateLightboxPhotos(
+      album.photos, 
+      `${import.meta.env.VITE_BUCKET_BASE}medium`, 
+      `${import.meta.env.VITE_BUCKET_BASE}large`, 
+      BREAKPOINTS) : [];
   }, [album]);
   
   const [photos, setPhotos] = useState<SelectablePhoto[]>([]);
@@ -107,6 +137,32 @@ function AlbumGallery(props: AlbumGalleryProps) {
     setPhotos(prevPhotos => 
       prevPhotos.map(photo => ({ ...photo, selected: false }))
     );
+  };
+
+  const handleDownload = async (photo: SelectablePhoto, index: number) => {
+    if (photo.downloadUrl) {
+      setDownloadingPhotoId(photo.id);
+      try {
+        const response = await fetch(photo.downloadUrl);
+        const blob = await response.blob();
+        
+        const url = window.URL.createObjectURL(blob);
+        
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${album?.name}-${index}.jpg`;
+        document.body.appendChild(link);
+        link.click();
+        
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error('Download failed:', error);
+        window.open(photo.downloadUrl, '_blank');
+      } finally {
+        setDownloadingPhotoId(null);
+      }
+    }
   };
 
   const handleConfirmDelete = async () => {
@@ -202,23 +258,48 @@ function AlbumGallery(props: AlbumGalleryProps) {
           })}
         onClick={({ index }) => { setIndex(index); }}
         render={{
-          // render image selection icon
-          extras: (_, { photo, index }) => (
-            <SelectIcon
-              selected={photo.selected}
-              onClick={(event) => {
-                setPhotos((prevPhotos) => {
-                  const newPhotos = [...prevPhotos];
-                  newPhotos[index] = { ...newPhotos[index], selected: !newPhotos[index].selected };
-                  return newPhotos;
-                });
+          // render image selection icon and download button
+          extras: (_, { photo, index }) => {
+            const mediumPhoto = mediumPhotos[index];
+            return (
+              <>
+                <SelectIcon
+                  selected={photo.selected}
+                  onClick={(event) => {
+                    setPhotos((prevPhotos) => {
+                      const newPhotos = [...prevPhotos];
+                      newPhotos[index] = { ...newPhotos[index], selected: !newPhotos[index].selected };
+                      return newPhotos;
+                    });
 
-                // prevent the event from propagating to the parent link element
-                event.preventDefault();
-                event.stopPropagation();
-              }}
-            />
-          ),
+                    // prevent the event from propagating to the parent link element
+                    event.preventDefault();
+                    event.stopPropagation();
+                  }}
+                />
+                
+                {/* Download button with hover effect */}
+                <div className="download-overlay">
+                  <button
+                    className="download-button"
+                    onClick={(event) => {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      handleDownload(mediumPhoto, index);
+                    }}
+                    title="Download full resolution"
+                    disabled={downloadingPhotoId === mediumPhoto.id}
+                  >
+                    {downloadingPhotoId === mediumPhoto.id ? (
+                      <CircularProgress size={20} style={{ color: '#333' }} />
+                    ) : (
+                      <DownloadIcon style={{ fontSize: 20, color: '#333' }} />
+                    )}
+                  </button>
+                </div>
+              </>
+            );
+          },
         }}
       />
 
@@ -226,8 +307,8 @@ function AlbumGallery(props: AlbumGalleryProps) {
         open={index >= 0}
         index={index}
         close={() => setIndex(-1)}
-        slides={fullPhotos}
-        plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
+        slides={mediumPhotos}
+        plugins={[Fullscreen, Slideshow, Thumbnails, Zoom, Download]}
         zoom={{ maxZoomPixelRatio: 1 }}
         controller={{ closeOnBackdropClick: true }}
         thumbnails={{ vignette: false }}
