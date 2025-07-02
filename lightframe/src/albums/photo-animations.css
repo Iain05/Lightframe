@@ -1,0 +1,38 @@
+/* Photo fade-in animations */
+.react-photo-album--photo.photo-container {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.react-photo-album--photo.photo-container.fade-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Gallery container fade-in */
+.gallery-container {
+  animation: galleryFadeIn 0.5s ease-out;
+}
+
+@keyframes galleryFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* No staggered delays - all photos fade in naturally */
+
+/* Smooth scaling on hover */
+.react-photo-album--photo.photo-container img {
+  transition: transform 0.3s ease;
+}
+
+.react-photo-album--photo.photo-container:hover img {
+  transform: scale(1.02);
+}

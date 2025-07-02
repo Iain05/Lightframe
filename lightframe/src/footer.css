@@ -1,0 +1,27 @@
+/* Footer styles */
+.footer {
+  width: 100%;
+  background-color: white;
+  margin-top: 60px;
+  padding: 60px 0;
+  min-height: 100px;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .footer {
+    margin-top: 80px;
+    padding: 40px 0;
+    min-height: 150px;
+  }
+  
+  .footer-content {
+    padding: 0 16px;
+  }
+}

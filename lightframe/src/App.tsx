@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { useAutoLogout } from './hooks/use-auto-logout';
 
 import Navbar from './navbar';
+import Footer from './footer';
 import AlbumGallery from './albums/album-gallery';
 import AlbumGalleryWrapper from './albums/album-gallery-wrapper';
 import Collection from './collections/collection';
@@ -26,6 +27,7 @@ function App() {
                         <Route path="/album/:albumId" element={<AlbumGalleryWrapper />} />
                         <Route path="/login" element={<Login />} />
                     </Routes>
+                    <Footer />
                 </BrowserRouter>
             </div>
         </QueryClientProvider>

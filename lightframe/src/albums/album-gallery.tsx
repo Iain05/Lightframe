@@ -10,6 +10,7 @@ import PhotoAlbum from "react-photo-album";
 import "react-photo-album/styles.css";
 import "@src/css/lightbox-override.css";
 import "./download-overlay.css";
+import "./photo-animations.css";
 
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
@@ -119,6 +120,7 @@ function AlbumGallery(props: AlbumGalleryProps) {
   
   const [photos, setPhotos] = useState<SelectablePhoto[]>([]);
   const isInitialized = useRef(false);
+  const galleryRef = useRef<HTMLDivElement>(null);
 
   const selectedCount = photos.filter(photo => photo.selected).length;
   const isLoggedIn = getValidToken() !== null;
@@ -198,6 +200,38 @@ function AlbumGallery(props: AlbumGalleryProps) {
     }
   }, [smallPhotos]);
 
+  // Set up intersection observer for fade-in animations
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('fade-in');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '50px 0px',
+      }
+    );
+
+    // Set up all photos for fade-in animation
+    const timer = setTimeout(() => {
+      const photoElements = galleryRef.current?.querySelectorAll('.react-photo-album--photo');
+      photoElements?.forEach((element) => {
+        element.classList.add('photo-container');
+        observer.observe(element);
+      });
+    }, 100);
+
+    return () => {
+      observer.disconnect();
+      clearTimeout(timer);
+    };
+  }, [photos.length]);
+
   if (isLoading) return <div className="flex justify-center">Loading...</div>;
   if (error) return <div className="flex justify-center">Error: {error.message}</div>;
 
@@ -245,63 +279,65 @@ function AlbumGallery(props: AlbumGalleryProps) {
         albumId={props.albumId}
       />
 
-      <PhotoAlbum
-        photos={photos}
-        layout={props.layout}
-        {...(props.layout === "rows"
-          ? { targetRowHeight: 400 }
-          : {
-            columns: (containerWidth) => {
-              if (containerWidth < 640) return 1;
-              return 2;
-            },
-          })}
-        onClick={({ index }) => { setIndex(index); }}
-        render={{
-          // render image selection icon and download button
-          extras: (_, { photo, index }) => {
-            const mediumPhoto = mediumPhotos[index];
-            return (
-              <>
-                <SelectIcon
-                  selected={photo.selected}
-                  onClick={(event) => {
-                    setPhotos((prevPhotos) => {
-                      const newPhotos = [...prevPhotos];
-                      newPhotos[index] = { ...newPhotos[index], selected: !newPhotos[index].selected };
-                      return newPhotos;
-                    });
-
-                    // prevent the event from propagating to the parent link element
-                    event.preventDefault();
-                    event.stopPropagation();
-                  }}
-                />
-                
-                {/* Download button with hover effect */}
-                <div className="download-overlay">
-                  <button
-                    className="download-button"
+      <div ref={galleryRef} className="gallery-container">
+        <PhotoAlbum
+          photos={photos}
+          layout={props.layout}
+          {...(props.layout === "rows"
+            ? { targetRowHeight: 400 }
+            : {
+              columns: (containerWidth) => {
+                if (containerWidth < 640) return 1;
+                return 2;
+              },
+            })}
+          onClick={({ index }) => { setIndex(index); }}
+          render={{
+            // render image selection icon and download button
+            extras: (_, { photo, index }) => {
+              const mediumPhoto = mediumPhotos[index];
+              return (
+                <>
+                  <SelectIcon
+                    selected={photo.selected}
                     onClick={(event) => {
+                      setPhotos((prevPhotos) => {
+                        const newPhotos = [...prevPhotos];
+                        newPhotos[index] = { ...newPhotos[index], selected: !newPhotos[index].selected };
+                        return newPhotos;
+                      });
+
+                      // prevent the event from propagating to the parent link element
                       event.preventDefault();
                       event.stopPropagation();
-                      handleDownload(mediumPhoto, index);
                     }}
-                    title="Download full resolution"
-                    disabled={downloadingPhotoId === mediumPhoto.id}
-                  >
-                    {downloadingPhotoId === mediumPhoto.id ? (
-                      <CircularProgress size={20} style={{ color: '#333' }} />
-                    ) : (
-                      <DownloadIcon style={{ fontSize: 20, color: '#333' }} />
-                    )}
-                  </button>
-                </div>
-              </>
-            );
-          },
-        }}
-      />
+                  />
+                  
+                  {/* Download button with hover effect */}
+                  <div className="download-overlay">
+                    <button
+                      className="download-button"
+                      onClick={(event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        handleDownload(mediumPhoto, index);
+                      }}
+                      title="Download full resolution"
+                      disabled={downloadingPhotoId === mediumPhoto.id}
+                    >
+                      {downloadingPhotoId === mediumPhoto.id ? (
+                        <CircularProgress size={20} style={{ color: '#333' }} />
+                      ) : (
+                        <DownloadIcon style={{ fontSize: 20, color: '#333' }} />
+                      )}
+                    </button>
+                  </div>
+                </>
+              );
+            },
+          }}
+        />
+      </div>
 
       <Lightbox
         open={index >= 0}
