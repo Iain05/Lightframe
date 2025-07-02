@@ -60,12 +60,10 @@ export const albumAPI = {
     }
   },
 
-  uploadPhotos: async (albumId: string, files: File[]): Promise<void> => {
+  uploadPhoto: async (albumId: string, file: File): Promise<void> => {
     const formData = new FormData();
     
-    files.forEach((file) => {
-      formData.append('photos', file);
-    });
+    formData.append('photos', file);
 
     // For FormData, we need to create a custom request without the default Content-Type
     const token = localStorage.getItem('authToken');
@@ -82,7 +80,7 @@ export const albumAPI = {
     });
 
     if (!response.ok) {
-      throw new Error('Failed to upload photos');
+      throw new Error('Failed to upload photo');
     }
   },
 

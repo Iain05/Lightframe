@@ -6,7 +6,7 @@ import './upload-modal.css';
 interface UploadModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onUpload: (files: File[]) => void; // For future upload functionality
+  onUpload: (file: File) => void; // For future upload functionality
 }
 
 const UploadModal = ({ isOpen, onClose, onUpload }: UploadModalProps) => {
@@ -51,7 +51,7 @@ const UploadModal = ({ isOpen, onClose, onUpload }: UploadModalProps) => {
 
   const handleUpload = () => {
     if (selectedFiles.length > 0) {
-      onUpload(selectedFiles);
+      onUpload(selectedFiles[0]);
       handleClose();
     }
   };

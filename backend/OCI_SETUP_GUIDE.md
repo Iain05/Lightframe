@@ -127,3 +127,25 @@ Or more specific permissions:
 ```
 Allow user your-username to use object-family in compartment your-compartment
 ```
+
+## 8. Image Deletion Implementation
+
+The application now supports deleting images from OCI Object Storage using the OCI SDK directly. Since OCI doesn't support pre-authorized DELETE URLs like uploads, we use the SDK with proper authentication.
+
+### Key Components:
+- **ImageDeleter.java**: Handles OCI Object Storage deletion operations
+- **PhotoService.java**: Updated to use ImageDeleter for removing photos
+- Supports deleting multiple sizes (small/, medium/, large/) for each photo
+
+### Environment Variables Required:
+Add these to your `.env` file:
+```env
+# Existing variables
+OCI_BUCKET_NAME=your-bucket-name
+OCI_NAMESPACE_NAME=your-namespace-name
+
+# New variables for deletion
+OCI_REGION=us-phoenix-1
+OCI_CONFIG_PROFILE=DEFAULT
+OCI_AUTH_METHOD=config_file
+```

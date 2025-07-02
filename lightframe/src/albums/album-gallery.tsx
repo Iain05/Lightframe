@@ -59,9 +59,9 @@ function AlbumGallery(props: AlbumGalleryProps) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const handleUpload = async (files: File[]) => {
+  const handleUpload = async (file: File) => {
     try {
-      await albumAPI.uploadPhotos(props.albumId, files);
+      await albumAPI.uploadPhoto(props.albumId, file);
       queryClient.invalidateQueries(['fetchAlbum', props.albumId]);
     } catch (error) {
       console.error('Upload error:', error);

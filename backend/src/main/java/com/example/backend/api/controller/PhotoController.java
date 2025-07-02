@@ -23,16 +23,16 @@ public class PhotoController {
     }
 
     /**
-     * Upload photos to an album. The photo will be resized to fit three different sizes and uploaded to a bucket.
+     * Upload photo to an album. The photo will be resized to fit three different sizes and uploaded to a bucket.
      * @param albumId The ID of the album to which the photos will be uploaded.
-     * @param photos The array of photos to upload.
+     * @param photo The photo to be uploaded.
      * @return ResponseEntity indicating success or failure.
      */
     @PostMapping("/upload")
     public ResponseEntity<?> uploadPhotos(@RequestParam("albumId") String albumId,
-                                          @RequestParam("photos") MultipartFile[] photos) {
+                                          @RequestParam("photos") MultipartFile photo) {
         try {
-            photoService.uploadPhotos(albumId, photos);
+            photoService.uploadPhotos(albumId, photo);
         } catch (UploadPhotoException e) {
             return ResponseEntity.badRequest().body("Error uploading photos: " + e.getMessage());
         } catch (Exception e) {

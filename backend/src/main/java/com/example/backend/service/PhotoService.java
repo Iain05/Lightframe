@@ -6,9 +6,9 @@ import com.example.backend.api.Repository.PhotoRepository;
 import com.example.backend.api.model.Photo;
 import com.example.backend.api.utils.ImageMetadataUtil;
 import com.example.backend.api.utils.ImageUploader;
+import com.example.backend.api.utils.ImageDeleter;
 import com.example.backend.exception.DeletePhotoException;
 import com.example.backend.exception.UploadPhotoException;
-import com.oracle.bmc.objectstorage.ObjectStorageClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +23,7 @@ public class PhotoService {
 
     private final PhotoRepository photoRepository;
     private final AlbumRepository albumRepository;
+    private final ImageDeleter imageDeleter;
 
     private ImageUploader uploader;
 
@@ -36,9 +37,10 @@ public class PhotoService {
     private String NAMESPACE_NAME;
 
 
-    public PhotoService(PhotoRepository photoRepository, AlbumRepository albumRepository) {
+    public PhotoService(PhotoRepository photoRepository, AlbumRepository albumRepository, ImageDeleter imageDeleter) {
         this.photoRepository = photoRepository;
         this.albumRepository = albumRepository;
+        this.imageDeleter = imageDeleter;
     }
 
     @PostConstruct
@@ -49,8 +51,8 @@ public class PhotoService {
     /**
      * Upload photos to the database and bucket while resizing. Does not mutate photos.
      */
-    public void uploadPhotos(String albumId, MultipartFile[] photos) throws UploadPhotoException {
-        if (photos == null || photos.length == 0) {
+    public void uploadPhotos(String albumId, MultipartFile photo) throws UploadPhotoException {
+        if (photo == null) {
             throw new UploadPhotoException("No photos provided for upload.");
         }
 
@@ -62,15 +64,13 @@ public class PhotoService {
             throw new UploadPhotoException("Album with ID " + albumId + " does not exist.");
         }
 
-        for (MultipartFile photo : photos) {
-            if (!validateFileType(photo)) continue;
-            try {
-                String location = handleImageMultipleUploads(albumId, photo, photo.getOriginalFilename());
-                addPhotoToDatabase(albumId, location, photo);
-                System.out.println("Photo uploaded successfully: " + location);
-            } catch (UploadPhotoException e) {
-                throw new UploadPhotoException("Error uploading photo: " + e.getMessage());
-            }
+        if (!validateFileType(photo)) throw new UploadPhotoException("Invalid file type. Only image files are allowed.");
+        try {
+            String location = handleImageMultipleUploads(albumId, photo, photo.getOriginalFilename());
+            addPhotoToDatabase(albumId, location, photo);
+            System.out.println("Photo uploaded successfully: " + location);
+        } catch (UploadPhotoException e) {
+            throw new UploadPhotoException("Error uploading photo: " + e.getMessage());
         }
     }
 
@@ -84,10 +84,17 @@ public class PhotoService {
             if (photo == null) {
                 throw new DeletePhotoException("Photo with ID " + photoId + " does not exist.");
             }
-//            photoRepository.delete(photo);
+            
+            // Delete from database first
+            photoRepository.delete(photo);
+            
+            // Then delete from bucket
             try {
                 deletePhotoFromBucket(photo.getUrl());
             } catch (DeletePhotoException e) {
+                // If bucket deletion fails, we might want to rollback the database deletion
+                // For now, we'll just log the error and continue
+                System.err.println("Failed to delete photo from bucket, but removed from database: " + e.getMessage());
                 throw new DeletePhotoException("Error deleting photo from bucket: " + e.getMessage());
             }
         }
@@ -95,12 +102,13 @@ public class PhotoService {
 
     private void deletePhotoFromBucket(String photoUrl) throws DeletePhotoException {
         try {
-//            deleter.deleteObject("small/" + photoUrl);
-//            deleter.deleteObject("medium/" + photoUrl);
-//            deleter.deleteObject("large/" + photoUrl);
+            // Delete all sizes (small, medium, large) of the photo
+            imageDeleter.deletePhotoAllSizes(photoUrl);
             System.out.println("Photo deleted successfully from bucket: " + photoUrl);
-        } catch (RuntimeException e) {
+        } catch (DeletePhotoException e) {
             throw new DeletePhotoException("Error deleting photo from bucket: " + e.getMessage());
+        } catch (Exception e) {
+            throw new DeletePhotoException("Unexpected error deleting photo from bucket: " + e.getMessage());
         }
     }
 
