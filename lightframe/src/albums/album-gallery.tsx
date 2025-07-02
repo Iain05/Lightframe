@@ -2,7 +2,6 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from 'react-query';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
-import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 
@@ -21,6 +20,7 @@ import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import UploadButton from './upload-button';
 import SelectIcon from './select-icon';
 import DeletePhotosModal from './delete-photos-modal';
+import Actions from './actions/actions';
 import { albumAPI } from '../api/album-api';
 import { getValidToken } from '../utils/auth';
 import type { AlbumResponse } from '../api/types';
@@ -84,7 +84,7 @@ function AlbumGallery(props: AlbumGalleryProps) {
   }, [album]);
   
   const fullPhotos = useMemo(() => {
-    return album ? generatePhotos(album.photos, `${import.meta.env.VITE_BUCKET_BASE}large`, BREAKPOINTS) : [];
+    return album ? generatePhotos(album.photos, `${import.meta.env.VITE_BUCKET_BASE}medium`, BREAKPOINTS) : [];
   }, [album]);
   
   const [photos, setPhotos] = useState<SelectablePhoto[]>([]);
@@ -95,6 +95,18 @@ function AlbumGallery(props: AlbumGalleryProps) {
 
   const handleDeleteSelected = () => {
     setIsDeleteModalOpen(true);
+  };
+
+  const handleSelectAll = () => {
+    setPhotos(prevPhotos => 
+      prevPhotos.map(photo => ({ ...photo, selected: true }))
+    );
+  };
+
+  const handleUnselectAll = () => {
+    setPhotos(prevPhotos => 
+      prevPhotos.map(photo => ({ ...photo, selected: false }))
+    );
   };
 
   const handleConfirmDelete = async () => {
@@ -161,33 +173,27 @@ function AlbumGallery(props: AlbumGalleryProps) {
             </span>
           </div>
           <div className="absolute top-0 right-0 mt-4 mr-4 flex items-center gap-3">
-            {isLoggedIn && (
-              <button
-                onClick={selectedCount > 0 ? handleDeleteSelected : undefined}
-                className={`transition-all duration-300 ${
-                  selectedCount > 0 
-                    ? 'text-black hover:text-gray-700 cursor-pointer' 
-                    : 'text-gray-300 cursor-not-allowed'
-                }`}
-                title={
-                  selectedCount > 0 
-                    ? `Delete ${selectedCount} selected photo${selectedCount > 1 ? 's' : ''}`
-                    : 'Select photos to delete'
-                }
-                disabled={selectedCount === 0}
-              >
-                <DeleteOutlineRoundedIcon style={{ fontSize: 28 }} />
-              </button>
-            )}
-            <UploadButton onUpload={handleUpload} variant="secondary" size="medium" />
+            {isLoggedIn &&
+              <UploadButton onUpload={handleUpload} variant="secondary" size="medium" />
+            }
           </div>
         </div>
       )}
+
+      <Actions
+        selectedCount={selectedCount}
+        totalCount={photos.length}
+        onDeleteSelected={handleDeleteSelected}
+        onSelectAll={handleSelectAll}
+        onUnselectAll={handleUnselectAll}
+        albumId={props.albumId}
+      />
+
       <PhotoAlbum
         photos={photos}
         layout={props.layout}
         {...(props.layout === "rows"
-          ? { targetRowHeight: 200 }
+          ? { targetRowHeight: 400 }
           : {
             columns: (containerWidth) => {
               if (containerWidth < 640) return 1;
@@ -222,7 +228,7 @@ function AlbumGallery(props: AlbumGalleryProps) {
         close={() => setIndex(-1)}
         slides={fullPhotos}
         plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
-        zoom={{ maxZoomPixelRatio: 2 }}
+        zoom={{ maxZoomPixelRatio: 1 }}
         controller={{ closeOnBackdropClick: true }}
         thumbnails={{ vignette: false }}
       />

@@ -4,23 +4,26 @@ import UploadModal from './upload-modal';
 import './upload-button.css';
 
 interface UploadButtonProps {
-  onUpload?: (file: File) => void;
+  onUpload?: (file: File) => Promise<void> | void;
   variant?: 'primary' | 'secondary' | 'icon';
   size?: 'small' | 'medium' | 'large';
   className?: string;
 }
 
 const UploadButton = ({ 
-  onUpload = (file) => console.log('File to upload:', file), 
+  onUpload = (file) => { console.log('File to upload:', file); return Promise.resolve(); }, 
   variant = 'primary',
   size = 'medium',
   className = ''
 }: UploadButtonProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleUpload = (file: File) => {
-    onUpload(file);
-    setIsModalOpen(false);
+  const handleUpload = async (file: File) => {
+    try {
+      await onUpload(file);
+    } catch (error) {
+      console.error('Upload failed:', error);
+    }
   };
 
   const buttonClasses = `upload-btn upload-btn--${variant} upload-btn--${size} ${className}`.trim();

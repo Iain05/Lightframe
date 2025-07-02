@@ -29,6 +29,11 @@
     background-color: #f8fff8;
 }
 
+.drop-zone.uploading {
+    pointer-events: none;
+    opacity: 0.7;
+}
+
 .drop-zone-content {
     display: flex;
     flex-direction: column;
@@ -136,10 +141,30 @@
     color: #333;
 }
 
-.drop-zone-hint {
-    font-size: 0.85rem !important;
-    color: #888 !important;
-    margin-top: 0.5rem !important;
+.file-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.rotating {
+    animation: rotate 1s linear infinite;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Disabled state for upload button */
+.upload-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
 }
 
 .upload-button {

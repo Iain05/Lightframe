@@ -75,7 +75,7 @@ const DeletePhotosModal = ({ isOpen, onClose, onConfirm, selectedCount }: Delete
             className="delete-button"
             onClick={handleConfirm}
           >
-            Delete {selectedCount} Photo{selectedCount > 1 ? 's' : ''}
+            Delete
           </button>
         </div>
       </div>
