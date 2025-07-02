@@ -32,7 +32,7 @@ public class PhotoService {
     @Value("${oci.bucket.name}")
     private String BUCKET_NAME;
 
-    @Value("${oci.namespace.name}")
+    @Value("${oci.bucket.namespace}")
     private String NAMESPACE_NAME;
 
 
