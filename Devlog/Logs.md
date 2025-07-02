@@ -130,3 +130,20 @@ i am a god amongst man. Okay well the stupid google server sucks as well but lik
 will tunnel the database at 3306 to our localhost at 3307. 
 
 So then all i should need to do on my server is run that command to get the tunnel working, and then docker compose up and we should be balling. I also need to upload the jar because the server just crashes every time it tries to build the java project :skull:.
+
+# July 1st, 2025
+Okay lowkey highkey had a colossal crashout today over getting bucket stuff to work. Thank god for AI because the documentation on the oracle stuff is so incredibly doodoo. I still barely know how it functions but thats a problem for the me who has to get it working on a docker container again. The core features are working now though hooray! Today I got all the image uploading and deleting stuff finished (mostly). And I did a bunch of qol frontend stuff including 
+1. Fade transitions as images load in to the gallery view
+2. Selections to bulk delete images
+3. Indicators for image upload status
+4. Download buttons on images for full res download
+
+And i think thats the main things. There's still a bunch of stuff to work on before its fully ready but its getting really close. 
+
+Todo (in order of priority):
+1. Ability to select a cover image
+2. Delete an album should delete all images in the album
+3. Remove download and select from home page
+4. Change the medium size image upload resolution
+5. Order images by date taken (prefer to do it by backend I think? faster?)
+

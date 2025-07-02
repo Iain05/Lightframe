@@ -16,6 +16,7 @@ public class FilterConfig {
         "/api/album/delete",
         "/api/album/update",
         "/api/photo/upload",
+        "/api/photo/delete",
     };
     
     @Bean

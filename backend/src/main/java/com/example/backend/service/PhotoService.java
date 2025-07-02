@@ -9,6 +9,7 @@ import com.example.backend.api.utils.ImageUploader;
 import com.example.backend.api.utils.ImageDeleter;
 import com.example.backend.exception.DeletePhotoException;
 import com.example.backend.exception.UploadPhotoException;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,7 +51,11 @@ public class PhotoService {
 
     /**
      * Upload photos to the database and bucket while resizing. Does not mutate photos.
+     * @param albumId The ID of the album to which the photos will be uploaded.
+     * @param photo The photo to be uploaded.
+     * @throws UploadPhotoException If the photo is null, the album ID is null or empty, or if the album does not exist.
      */
+    @Transactional
     public void uploadPhotos(String albumId, MultipartFile photo) throws UploadPhotoException {
         if (photo == null) {
             throw new UploadPhotoException("No photos provided for upload.");
@@ -70,10 +75,18 @@ public class PhotoService {
             addPhotoToDatabase(albumId, location, photo);
             System.out.println("Photo uploaded successfully: " + location);
         } catch (UploadPhotoException e) {
-            throw new UploadPhotoException("Error uploading photo: " + e.getMessage());
+            throw new RuntimeException("Error uploading photo: " + e.getMessage());
         }
     }
 
+    /**
+     * Delete photos from the database and bucket. This method will throw an exception if any photo does not exist.
+     * If a photo is successfully deleted from the database but fails to delete from the bucket,
+     * it will log the error and continue deleting the next photo.
+     * @param photoIds List of photo IDs to delete.
+     * @throws DeletePhotoException If the list of photo IDs is null or empty.
+     */
+    @Transactional
     public void deletePhoto(List<Integer> photoIds) throws DeletePhotoException {
         if (photoIds == null || photoIds.isEmpty()) {
             throw new DeletePhotoException("No photo IDs provided for deletion.");
@@ -82,20 +95,17 @@ public class PhotoService {
         for (Integer photoId : photoIds) {
             Photo photo = photoRepository.findPhotoById(photoId);
             if (photo == null) {
-                throw new DeletePhotoException("Photo with ID " + photoId + " does not exist.");
+                System.out.println("Photo with ID " + photoId + " does not exist. Skipping deletion.");
+                continue; // Skip this photo if it does not exist
             }
             
-            // Delete from database first
             photoRepository.delete(photo);
             
-            // Then delete from bucket
             try {
                 deletePhotoFromBucket(photo.getUrl());
             } catch (DeletePhotoException e) {
-                // If bucket deletion fails, we might want to rollback the database deletion
-                // For now, we'll just log the error and continue
                 System.err.println("Failed to delete photo from bucket, but removed from database: " + e.getMessage());
-                throw new DeletePhotoException("Error deleting photo from bucket: " + e.getMessage());
+                throw new RuntimeException("Error deleting photo from bucket: " + e.getMessage());
             }
         }
     }

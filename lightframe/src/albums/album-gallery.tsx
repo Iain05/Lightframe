@@ -200,7 +200,6 @@ function AlbumGallery(props: AlbumGalleryProps) {
     }
   }, [smallPhotos]);
 
-  // Set up intersection observer for fade-in animations
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -217,7 +216,6 @@ function AlbumGallery(props: AlbumGalleryProps) {
       }
     );
 
-    // Set up all photos for fade-in animation
     const timer = setTimeout(() => {
       const photoElements = galleryRef.current?.querySelectorAll('.react-photo-album--photo');
       photoElements?.forEach((element) => {
@@ -270,14 +268,16 @@ function AlbumGallery(props: AlbumGalleryProps) {
         </div>
       )}
 
-      <Actions
-        selectedCount={selectedCount}
-        totalCount={photos.length}
-        onDeleteSelected={handleDeleteSelected}
-        onSelectAll={handleSelectAll}
-        onUnselectAll={handleUnselectAll}
-        albumId={props.albumId}
-      />
+      {props.albumHeader && 
+        <Actions
+          selectedCount={selectedCount}
+          totalCount={photos.length}
+          onDeleteSelected={handleDeleteSelected}
+          onSelectAll={handleSelectAll}
+          onUnselectAll={handleUnselectAll}
+          albumId={props.albumId}
+        />
+      }
 
       <div ref={galleryRef} className="gallery-container">
         <PhotoAlbum
