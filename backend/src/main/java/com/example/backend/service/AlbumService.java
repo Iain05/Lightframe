@@ -6,6 +6,7 @@ import com.example.backend.api.model.Album;
 import com.example.backend.api.model.AlbumImages;
 import com.example.backend.api.model.Photo;
 import com.example.backend.exception.AlbumNotFoundException;
+import com.example.backend.exception.PhotoNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -79,6 +80,24 @@ public class AlbumService {
 
         album.setPublic(isPublic);
 
+        albumRepository.save(album);
+    }
+
+    /**
+     * Set the cover image of an album.
+     * @param albumId the unique identifier of the album
+     * @param imageId the unique identifier of the photo to set as cover image
+     * @throws AlbumNotFoundException if the album doesn't exist
+     * @throws PhotoNotFoundException if the photo doesn't exist
+     */
+    public void setCoverImage(String albumId, int imageId) throws AlbumNotFoundException, PhotoNotFoundException {
+        Album album = albumRepository.findAlbumById(albumId);
+        if (album == null) throw new AlbumNotFoundException("Album with id " + albumId + " not found");
+
+        Photo photo = photoRepository.findPhotoById(imageId);
+        if (photo == null) throw new PhotoNotFoundException("Photo with id " + imageId + " not found");
+
+        album.setCoverImage(photo.getUrl());
         albumRepository.save(album);
     }
 }

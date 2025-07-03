@@ -102,6 +102,10 @@ public class Album {
         this.description = description;
     }
 
+    public void setCoverImage(String coverImage) {
+        this.coverImage = coverImage;
+    }
+
     public void setPublic(boolean isPublic) {
         this.isPublic = isPublic;
     }

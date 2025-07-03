@@ -113,4 +113,20 @@ public class AlbumController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
+
+    /**
+     * Set the cover image of an album.
+     * @param albumId the unique identifier of the album
+     * @param photoId the unique identifier of the photo to set as cover image
+     */
+    @PostMapping("cover")
+    public void setCoverImage(@RequestParam String albumId, @RequestParam int photoId) {
+        try {
+            albumService.setCoverImage(albumId, photoId);
+        } catch (AlbumNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
 }
