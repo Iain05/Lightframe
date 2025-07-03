@@ -96,4 +96,12 @@ export const albumAPI = {
       throw new Error('Failed to delete photos');
     }
   },
+
+  setAlbumCover: async (albumId: string, photoId: number): Promise<void> => {
+    const response = await api.post(`/api/album/set-cover?albumId=${encodeURIComponent(albumId)}&photoId=${photoId}`);
+
+    if (!response.ok) {
+      throw new Error('Failed to set album cover');
+    }
+  },
 };

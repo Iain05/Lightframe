@@ -4,7 +4,7 @@ import CloudUploadOutlined from '@mui/icons-material/CloudUploadOutlined';
 import CheckCircleRounded from '@mui/icons-material/CheckCircleRounded';
 import ErrorRounded from '@mui/icons-material/ErrorRounded';
 import HourglassEmptyRounded from '@mui/icons-material/HourglassEmptyRounded';
-import './upload-modal.css';
+import './css/upload-modal.css';
 
 interface UploadModalProps {
   isOpen: boolean;

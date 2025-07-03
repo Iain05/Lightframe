@@ -1,5 +1,5 @@
 /* Import base modal styles */
-@import '../collections/add-album.css';
+@import '../../collections/add-album.css';
 
 .delete-photos-modal {
     max-width: 450px;

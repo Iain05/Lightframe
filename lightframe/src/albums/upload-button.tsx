@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import CloudUploadOutlined from '@mui/icons-material/CloudUploadOutlined';
 import UploadModal from './upload-modal';
-import './upload-button.css';
+import './css/upload-button.css';
 
 interface UploadButtonProps {
   onUpload?: (file: File) => Promise<void> | void;

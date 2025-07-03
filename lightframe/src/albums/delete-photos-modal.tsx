@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import CloseRounded from '@mui/icons-material/CloseRounded';
 import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
-import './delete-photos-modal.css';
+import './css/delete-photos-modal.css';
 
 interface DeletePhotosModalProps {
   isOpen: boolean;

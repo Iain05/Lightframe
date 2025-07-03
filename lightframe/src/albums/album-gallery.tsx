@@ -9,8 +9,8 @@ import PhotoAlbum from "react-photo-album";
 // import ServerPhotoAlbum from "react-photo-album";
 import "react-photo-album/styles.css";
 import "@src/css/lightbox-override.css";
-import "./download-overlay.css";
-import "./photo-animations.css";
+import "./css/download-overlay.css";
+import "./css/photo-animations.css";
 
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
@@ -30,11 +30,16 @@ import type { AlbumResponse } from '../api/types';
 import type { Photo } from "react-photo-album";
 import DownloadIcon from '@mui/icons-material/Download';
 import CircularProgress from '@mui/material/CircularProgress';
+import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
+import CheckIcon from '@mui/icons-material/Check';
+import Tooltip from '@mui/material/Tooltip';
 
 type AlbumGalleryProps = {
   albumId: string;
-  albumHeader?: boolean;
   layout: "columns" | "rows" | "masonry";
+  allowSelect?: boolean;
+  allowDownload?: boolean;
+  albumHeader?: boolean;
 }
 
 type SelectablePhoto = Photo & {
@@ -83,6 +88,8 @@ function AlbumGallery(props: AlbumGalleryProps) {
   const [index, setIndex] = useState(-1);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [downloadingPhotoId, setDownloadingPhotoId] = useState<number | null>(null);
+  const [settingCoverPhotoId, setSettingCoverPhotoId] = useState<number | null>(null);
+  const [coverSuccessPhotoId, setCoverSuccessPhotoId] = useState<number | null>(null);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -140,6 +147,23 @@ function AlbumGallery(props: AlbumGalleryProps) {
       prevPhotos.map(photo => ({ ...photo, selected: false }))
     );
   };
+
+  const handleSetAlbumCover = async (photo: SelectablePhoto) => {
+    setSettingCoverPhotoId(photo.id);
+    try {
+      await albumAPI.setAlbumCover(props.albumId, photo.id);
+      setSettingCoverPhotoId(null);
+      setCoverSuccessPhotoId(photo.id);
+      
+      setTimeout(() => {
+        setCoverSuccessPhotoId(null);
+      }, 1500);
+      
+    } catch (error) {
+      console.error('Error setting album cover:', error);
+      setSettingCoverPhotoId(null);
+    }
+  }
 
   const handleDownload = async (photo: SelectablePhoto, index: number) => {
     if (photo.downloadUrl) {
@@ -298,40 +322,78 @@ function AlbumGallery(props: AlbumGalleryProps) {
               const mediumPhoto = mediumPhotos[index];
               return (
                 <>
-                  <SelectIcon
-                    selected={photo.selected}
-                    onClick={(event) => {
-                      setPhotos((prevPhotos) => {
-                        const newPhotos = [...prevPhotos];
-                        newPhotos[index] = { ...newPhotos[index], selected: !newPhotos[index].selected };
-                        return newPhotos;
-                      });
-
-                      // prevent the event from propagating to the parent link element
-                      event.preventDefault();
-                      event.stopPropagation();
-                    }}
-                  />
-                  
-                  {/* Download button with hover effect */}
-                  <div className="download-overlay">
-                    <button
-                      className="download-button"
+                  <Tooltip title="Set as Album Cover" placement="bottom">
+                    <div
+                      className="absolute top-2 right-12 cursor-pointer z-10"
                       onClick={(event) => {
+                        if (settingCoverPhotoId !== photo.id && coverSuccessPhotoId !== photo.id) {
+                          handleSetAlbumCover(photo);
+                        }
                         event.preventDefault();
                         event.stopPropagation();
-                        handleDownload(mediumPhoto, index);
                       }}
-                      title="Download full resolution"
-                      disabled={downloadingPhotoId === mediumPhoto.id}
-                    >
-                      {downloadingPhotoId === mediumPhoto.id ? (
-                        <CircularProgress size={20} style={{ color: '#333' }} />
+                      style={{
+                        filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))',
+                        cursor: settingCoverPhotoId === photo.id || coverSuccessPhotoId === photo.id ? 'default' : 'pointer',
+                      }}
+                      >
+                      {settingCoverPhotoId === photo.id ? (
+                        <CircularProgress size={28} style={{ color: 'white' }} />
+                      ) : coverSuccessPhotoId === photo.id ? (
+                        <CheckIcon
+                          style={{ 
+                            fontSize: 28,
+                            color: 'white',
+                          }}
+                        />
                       ) : (
-                        <DownloadIcon style={{ fontSize: 20, color: '#333' }} />
+                        <AddToPhotosIcon
+                          style={{ 
+                            fontSize: 28,
+                            color: 'white',
+                          }}
+                        />
                       )}
-                    </button>
-                  </div>
+                    </div>
+                  </Tooltip>
+                  {props.allowSelect !== false && (
+                    <SelectIcon
+                      selected={photo.selected}
+                      onClick={(event) => {
+                        setPhotos((prevPhotos) => {
+                          const newPhotos = [...prevPhotos];
+                          newPhotos[index] = { ...newPhotos[index], selected: !newPhotos[index].selected };
+                          return newPhotos;
+                        });
+
+                        // prevent the event from propagating to the parent link element
+                        event.preventDefault();
+                        event.stopPropagation();
+                      }}
+                    />
+                  )}
+                  
+                  {/* Download button with hover effect */}
+                  {props.allowDownload !== false && (
+                    <div className="download-overlay">
+                      <button
+                        className="download-button"
+                        onClick={(event) => {
+                          event.preventDefault();
+                          event.stopPropagation();
+                          handleDownload(mediumPhoto, index);
+                        }}
+                        title="Download full resolution"
+                        disabled={downloadingPhotoId === mediumPhoto.id}
+                      >
+                        {downloadingPhotoId === mediumPhoto.id ? (
+                          <CircularProgress size={20} style={{ color: '#333' }} />
+                        ) : (
+                          <DownloadIcon style={{ fontSize: 20, color: '#333' }} />
+                        )}
+                      </button>
+                    </div>
+                  )}
                 </>
               );
             },
@@ -360,4 +422,4 @@ function AlbumGallery(props: AlbumGalleryProps) {
   );
 };
 
-export default AlbumGallery;
+export default AlbumGallery

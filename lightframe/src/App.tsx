@@ -23,7 +23,12 @@ function App() {
                     <Navbar />
                     <Routes>
                         <Route path="/events" element={<Collection collection_id="main-collection"/>} />
-                        <Route path="/" element={<AlbumGallery albumId="portfolio" layout="columns" />} />
+                        <Route path="/" element={<AlbumGallery 
+                            albumId="portfolio" 
+                            layout="columns" 
+                            allowDownload={false} 
+                            allowSelect={false}
+                        />} />
                         <Route path="/album/:albumId" element={<AlbumGalleryWrapper />} />
                         <Route path="/login" element={<Login />} />
                     </Routes>

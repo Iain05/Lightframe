@@ -119,7 +119,7 @@ public class AlbumController {
      * @param albumId the unique identifier of the album
      * @param photoId the unique identifier of the photo to set as cover image
      */
-    @PostMapping("cover")
+    @PostMapping("set-cover")
     public void setCoverImage(@RequestParam String albumId, @RequestParam int photoId) {
         try {
             albumService.setCoverImage(albumId, photoId);
