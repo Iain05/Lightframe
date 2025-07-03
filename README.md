@@ -29,3 +29,16 @@ Lowkey this will probably bite me in the butt later, and when that happens I wil
 We are keeping things simple because I want this to actually be a usable website by the time I retire. 
 
  
+## Setup
+### Upload Environment Variables
+The backend and frontend both have .env files that they need to access. I will write down what they actually need here later lol.
+
+### Set up OCI
+```sh
+scp -r dir/to/.oci/* user@remote-ip:~/.oci/ 
+```
+
+### Copy Locally Built Jar
+```sh
+scp  .\backend\build\libs\backend-0.0.1-SNAPSHOT.jar user@remote-ip:~/Lightframe/
+```
