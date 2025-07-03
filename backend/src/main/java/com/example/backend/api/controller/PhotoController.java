@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import com.example.backend.service.PhotoService;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/api/photo")
 public class PhotoController {
@@ -45,7 +43,7 @@ public class PhotoController {
     @DeleteMapping("/delete")
     public ResponseEntity<?> deletePhoto(@RequestBody DeletePhotosRequest request) {
         try {
-            photoService.deletePhoto(request.getPhotoIds());
+            photoService.deletePhotos(request.getPhotoIds());
         } catch (DeletePhotoException e) {
             return ResponseEntity.badRequest().body("Error deleting photo: " + e.getMessage());
         } catch (Exception e) {

@@ -1,12 +1,9 @@
 import { useState, useEffect, useMemo, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useQuery, useQueryClient } from 'react-query';
-import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 
 import PhotoAlbum from "react-photo-album";
-// import ServerPhotoAlbum from "react-photo-album";
 import "react-photo-album/styles.css";
 import "@src/css/lightbox-override.css";
 import "./css/download-overlay.css";
@@ -20,33 +17,26 @@ import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import Download from "yet-another-react-lightbox/plugins/download";
 
-import UploadButton from './upload-button';
-import SelectIcon from './select-icon';
+import AlbumHeader from './album-header';
+import PhotoOverlay from './photo-overlay';
 import DeletePhotosModal from './delete-photos-modal';
 import Actions from './actions/actions';
 import { albumAPI } from '../api/album-api';
-import { getValidToken } from '../utils/auth';
 import type { AlbumResponse } from '../api/types';
 import type { Photo } from "react-photo-album";
-import DownloadIcon from '@mui/icons-material/Download';
-import CircularProgress from '@mui/material/CircularProgress';
-import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
-import CheckIcon from '@mui/icons-material/Check';
-import Tooltip from '@mui/material/Tooltip';
-
-type AlbumGalleryProps = {
-  albumId: string;
-  layout: "columns" | "rows" | "masonry";
-  allowSelect?: boolean;
-  allowDownload?: boolean;
-  albumHeader?: boolean;
-}
 
 type SelectablePhoto = Photo & {
   id: number;
   downloadUrl?: string;
   selected?: boolean;
 };
+
+interface AlbumGalleryProps {
+  albumId: string;
+  layout: "columns" | "rows" | "masonry";
+  enableOverlay?: boolean;
+  albumHeader?: boolean;
+}
 
 const BREAKPOINTS = [1080, 640, 384, 256, 128, 96, 64, 48];
 
@@ -90,7 +80,6 @@ function AlbumGallery(props: AlbumGalleryProps) {
   const [downloadingPhotoId, setDownloadingPhotoId] = useState<number | null>(null);
   const [settingCoverPhotoId, setSettingCoverPhotoId] = useState<number | null>(null);
   const [coverSuccessPhotoId, setCoverSuccessPhotoId] = useState<number | null>(null);
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   const handleUpload = async (file: File) => {
@@ -130,7 +119,14 @@ function AlbumGallery(props: AlbumGalleryProps) {
   const galleryRef = useRef<HTMLDivElement>(null);
 
   const selectedCount = photos.filter(photo => photo.selected).length;
-  const isLoggedIn = getValidToken() !== null;
+
+  const handleSelectPhoto = (index: number) => {
+    setPhotos((prevPhotos) => {
+      const newPhotos = [...prevPhotos];
+      newPhotos[index] = { ...newPhotos[index], selected: !newPhotos[index].selected };
+      return newPhotos;
+    });
+  };
 
   const handleDeleteSelected = () => {
     setIsDeleteModalOpen(true);
@@ -262,34 +258,7 @@ function AlbumGallery(props: AlbumGalleryProps) {
       className={`w-5/6 flex flex-col justify-center mx-auto mt-2}`}
     >
       {props.albumHeader && album?.name && (
-        <div className="mt-10 mb-14 relative">
-          <button
-            className="flex items-center text-xl font-medium"
-            style={{
-              padding: '4px',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              transition: 'background-color 0.3s ease',
-            }}
-            onClick={() => navigate(-1)}
-          >
-            <ArrowBackRoundedIcon style={{ fontSize: 30 }} />
-          </button>
-          <h1 className="text-6xl font-bold text-center mb-4">{album.name}</h1>
-          <div className="flex justify-center text-gray-600 text-xl">{album.description}</div>
-          <div className="flex flex-col items-center mt-4">
-            <span className="text-xl text-center text-gray-600 flex items-center justify-center gap-5">
-              <span>{album.numPhotos} photos</span>
-              <span>•</span>
-              <span>{new Date(album.dateCreated).toLocaleDateString()}</span>
-            </span>
-          </div>
-          <div className="absolute top-0 right-0 mt-4 mr-4 flex items-center gap-3">
-            {isLoggedIn &&
-              <UploadButton onUpload={handleUpload} variant="secondary" size="medium" />
-            }
-          </div>
-        </div>
+        <AlbumHeader album={album} onUpload={handleUpload} />
       )}
 
       {props.albumHeader && 
@@ -317,84 +286,21 @@ function AlbumGallery(props: AlbumGalleryProps) {
             })}
           onClick={({ index }) => { setIndex(index); }}
           render={{
-            // render image selection icon and download button
             extras: (_, { photo, index }) => {
               const mediumPhoto = mediumPhotos[index];
               return (
-                <>
-                  <Tooltip title="Set as Album Cover" placement="bottom">
-                    <div
-                      className="absolute top-2 right-12 cursor-pointer z-10"
-                      onClick={(event) => {
-                        if (settingCoverPhotoId !== photo.id && coverSuccessPhotoId !== photo.id) {
-                          handleSetAlbumCover(photo);
-                        }
-                        event.preventDefault();
-                        event.stopPropagation();
-                      }}
-                      style={{
-                        filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))',
-                        cursor: settingCoverPhotoId === photo.id || coverSuccessPhotoId === photo.id ? 'default' : 'pointer',
-                      }}
-                      >
-                      {settingCoverPhotoId === photo.id ? (
-                        <CircularProgress size={28} style={{ color: 'white' }} />
-                      ) : coverSuccessPhotoId === photo.id ? (
-                        <CheckIcon
-                          style={{ 
-                            fontSize: 28,
-                            color: 'white',
-                          }}
-                        />
-                      ) : (
-                        <AddToPhotosIcon
-                          style={{ 
-                            fontSize: 28,
-                            color: 'white',
-                          }}
-                        />
-                      )}
-                    </div>
-                  </Tooltip>
-                  {props.allowSelect !== false && (
-                    <SelectIcon
-                      selected={photo.selected}
-                      onClick={(event) => {
-                        setPhotos((prevPhotos) => {
-                          const newPhotos = [...prevPhotos];
-                          newPhotos[index] = { ...newPhotos[index], selected: !newPhotos[index].selected };
-                          return newPhotos;
-                        });
-
-                        // prevent the event from propagating to the parent link element
-                        event.preventDefault();
-                        event.stopPropagation();
-                      }}
-                    />
-                  )}
-                  
-                  {/* Download button with hover effect */}
-                  {props.allowDownload !== false && (
-                    <div className="download-overlay">
-                      <button
-                        className="download-button"
-                        onClick={(event) => {
-                          event.preventDefault();
-                          event.stopPropagation();
-                          handleDownload(mediumPhoto, index);
-                        }}
-                        title="Download full resolution"
-                        disabled={downloadingPhotoId === mediumPhoto.id}
-                      >
-                        {downloadingPhotoId === mediumPhoto.id ? (
-                          <CircularProgress size={20} style={{ color: '#333' }} />
-                        ) : (
-                          <DownloadIcon style={{ fontSize: 20, color: '#333' }} />
-                        )}
-                      </button>
-                    </div>
-                  )}
-                </>
+                <PhotoOverlay
+                  photo={photo}
+                  mediumPhoto={mediumPhoto}
+                  index={index}
+                  enableOverlay={props.enableOverlay}
+                  downloadingPhotoId={downloadingPhotoId}
+                  settingCoverPhotoId={settingCoverPhotoId}
+                  coverSuccessPhotoId={coverSuccessPhotoId}
+                  onSelectPhoto={handleSelectPhoto}
+                  onSetAlbumCover={handleSetAlbumCover}
+                  onDownload={handleDownload}
+                />
               );
             },
           }}

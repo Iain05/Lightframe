@@ -26,8 +26,7 @@ function App() {
                         <Route path="/" element={<AlbumGallery 
                             albumId="portfolio" 
                             layout="columns" 
-                            allowDownload={false} 
-                            allowSelect={false}
+                            enableOverlay={false} 
                         />} />
                         <Route path="/album/:albumId" element={<AlbumGalleryWrapper />} />
                         <Route path="/login" element={<Login />} />

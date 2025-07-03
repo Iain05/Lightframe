@@ -87,7 +87,7 @@ public class PhotoService {
      * @throws DeletePhotoException If the list of photo IDs is null or empty.
      */
     @Transactional
-    public void deletePhoto(List<Integer> photoIds) throws DeletePhotoException {
+    public void deletePhotos(List<Integer> photoIds) throws DeletePhotoException {
         if (photoIds == null || photoIds.isEmpty()) {
             throw new DeletePhotoException("No photo IDs provided for deletion.");
         }
@@ -147,8 +147,8 @@ public class PhotoService {
             throws UploadPhotoException {
         String fileLocation = albumId + "/" + name;
         try {
-            uploader.resizeAndUpload(photo, "small/" + fileLocation, 1280, 720);
-            uploader.resizeAndUpload(photo, "medium/" + fileLocation, 1920,1080);
+            uploader.resizeAndUpload(photo, "small/" + fileLocation, 1024, 1024);
+            uploader.resizeAndUpload(photo, "medium/" + fileLocation, 2048,2048);
             uploader.resizeAndUpload(photo, "large/" + fileLocation, 0, 0);
             return fileLocation;
         } catch (IOException e) {

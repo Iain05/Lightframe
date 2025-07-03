@@ -147,3 +147,5 @@ Todo (in order of priority):
 4. Change the medium size image upload resolution
 5. Order images by date taken (prefer to do it by backend I think? faster?)
 
+# July 2nd, 2025
+Okay so selecting a cover image was lowkey easy, and then deleting an album was mostly easy. Also made the down and select buttons on the image toggleable with props on the album gallery. So I did pretty much everything that was on my todo in like an hour. I haven't done image ordering yet though, and i still need to fix up a dockerfile a bit, since I need to do that ip tunnel for the database. Also need to figure out how the hell I'm gonna do the oracle set up on the server without it being a nightmare. I guess one time setup at least shouldn't be to bad.

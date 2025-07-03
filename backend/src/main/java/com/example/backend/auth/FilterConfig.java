@@ -15,6 +15,7 @@ public class FilterConfig {
         "/api/album/create",
         "/api/album/delete",
         "/api/album/update",
+        "/api/album/set-cover",
         "/api/photo/upload",
         "/api/photo/delete",
     };

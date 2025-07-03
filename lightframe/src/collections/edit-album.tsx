@@ -156,7 +156,7 @@ const EditAlbumModal = ({ isOpen, onClose, onSubmit, onDelete, initialData }: Ed
               Cancel
             </button>
             <button type="submit" className="create-button" disabled={!albumName.trim()}>
-              Save Changes
+              Save
             </button>
           </div>
         </form>
