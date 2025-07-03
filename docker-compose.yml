@@ -18,3 +18,5 @@ services:
       - ./backend/.env
     volumes:
       - ~/.oci:/root/.oci
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
