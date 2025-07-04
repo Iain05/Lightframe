@@ -22,6 +22,7 @@ import PhotoOverlay from './photo-overlay';
 import DeletePhotosModal from './delete-photos-modal';
 import Actions from './actions/actions';
 import { albumAPI } from '../api/album-api';
+import { downloadPhoto } from '../utils/download-utils';
 import type { AlbumResponse } from '../api/types';
 import type { Photo } from "react-photo-album";
 
@@ -165,21 +166,14 @@ function AlbumGallery(props: AlbumGalleryProps) {
     if (photo.downloadUrl) {
       setDownloadingPhotoId(photo.id);
       try {
-        const response = await fetch(photo.downloadUrl);
-        const blob = await response.blob();
-        
-        const url = window.URL.createObjectURL(blob);
-        
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = `${album?.name}-${index}.jpg`;
-        document.body.appendChild(link);
-        link.click();
-        
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(url);
+        await downloadPhoto({
+          albumName: album?.name,
+          photoIndex: index,
+          downloadUrl: photo.downloadUrl,
+        });
       } catch (error) {
         console.error('Download failed:', error);
+        // Fallback to opening the original URL
         window.open(photo.downloadUrl, '_blank');
       } finally {
         setDownloadingPhotoId(null);
