@@ -32,6 +32,7 @@ We are keeping things simple because I want this to actually be a usable website
 ## Setup
 ### Upload Environment Variables
 The backend and frontend both have .env files that they need to access. I will write down what they actually need here later lol.
+Also set VITE_BASE_URL to '' for production.
 
 ### Set up OCI
 ```sh

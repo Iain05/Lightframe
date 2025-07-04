@@ -6,6 +6,8 @@ services:
       - "80:80"
     depends_on:
       - backend
+    networks:
+      - app-network
     # env_file:
     #   - ./lightframe/.env
 
@@ -20,3 +22,9 @@ services:
       - ~/.oci:/root/.oci
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
