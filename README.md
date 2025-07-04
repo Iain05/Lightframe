@@ -36,7 +36,7 @@ Also set VITE_BASE_URL to '' for production.
 
 ### Set up OCI
 ```sh
-scp -r dir/to/.oci/* user@remote-ip:~/.oci/ 
+scp -r dir/to/.oci/* user@remote-ip:~/Lightframe/backend/.oci/ 
 ```
 
 ### Copy Locally Built Jar
