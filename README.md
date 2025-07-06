@@ -2,6 +2,11 @@
 
 Hello, welcome to another project that will likely soon be added to the Great GitHub Graveyard. 
 
+Lightframe is a modern, minimalistic, and lightweight* photography portfolio website that is born out of my resentment of smugmug and distain of squarespace. 
+
+![Album View](./Images/album-view.png)
+
+
 ## Purpose
 There seems to be a distinct lack of templated DIY websites for setting up a fully featured photography portfolio. Of course there are the classics like squarespace, smugmug, and pixieset, but these are expensive and lock you into a company. On the fully DIY route, there are some GitHub projects that exist, but are usually incredible lacking in features and are often basically plain html and CSS with a bit of JavaScript. I'm sure there are projects out there that do actually exist, but I can't be bothered to find them, so instead I will spend months of my life recreating something that hundreds have made before. Because I'm a programmer, and that's what we do.
 
