@@ -28,6 +28,7 @@ import type { Photo } from "react-photo-album";
 
 type SelectablePhoto = Photo & {
   id: number;
+  dateTaken?: string;
   downloadUrl?: string;
   selected?: boolean;
 };
@@ -42,17 +43,26 @@ interface AlbumGalleryProps {
 const BREAKPOINTS = [1080, 640, 384, 256, 128, 96, 64, 48];
 
 function generatePhotos(albumPhotos: AlbumResponse['photos'], basePath: string, breakpoints: number[]): SelectablePhoto[] {
-  return albumPhotos.map(({ url, width, height, id }) => ({
-    src: `${basePath}/${url}`,
-    width: width,
-    height: height,
-    id: id,
-    srcSet: breakpoints.map((breakpoint) => ({
+  return albumPhotos
+    .map(({ url, width, height, id, dateTaken }) => ({
       src: `${basePath}/${url}`,
-      width: breakpoint,
-      height: Math.round((height / width) * breakpoint),
-    })),
-  }));
+      width: width,
+      height: height,
+      id: id,
+      dateTaken: dateTaken,
+      srcSet: breakpoints.map((breakpoint) => ({
+        src: `${basePath}/${url}`,
+        width: breakpoint,
+        height: Math.round((height / width) * breakpoint),
+      })),
+    }))
+    .sort((a, b) => {
+      // Sort by date taken descending (newest first)
+      if (!a.dateTaken && !b.dateTaken) return 0;
+      if (!a.dateTaken) return 1;
+      if (!b.dateTaken) return -1;
+      return new Date(b.dateTaken).getTime() - new Date(a.dateTaken).getTime();
+    });
 }
 
 function generateLightboxPhotos(
@@ -61,18 +71,27 @@ function generateLightboxPhotos(
   fullResPath: string,
   breakpoints: number[]): 
 SelectablePhoto[] {
-  return albumPhotos.map(({ url, width, height, id }) => ({
-    src: `${basePath}/${url}`,
-    width: width,
-    height: height,
-    id: id,
-    downloadUrl: `${fullResPath}/${url}`,
-    srcSet: breakpoints.map((breakpoint) => ({
+  return albumPhotos
+    .map(({ url, width, height, id, dateTaken }) => ({
       src: `${basePath}/${url}`,
-      width: breakpoint,
-      height: Math.round((height / width) * breakpoint),
-    })),
-  }));
+      width: width,
+      height: height,
+      id: id,
+      dateTaken: dateTaken,
+      downloadUrl: `${fullResPath}/${url}`,
+      srcSet: breakpoints.map((breakpoint) => ({
+        src: `${basePath}/${url}`,
+        width: breakpoint,
+        height: Math.round((height / width) * breakpoint),
+      })),
+    }))
+    .sort((a, b) => {
+      // Sort by date taken descending (newest first)
+      if (!a.dateTaken && !b.dateTaken) return 0;
+      if (!a.dateTaken) return 1;
+      if (!b.dateTaken) return -1;
+      return new Date(b.dateTaken).getTime() - new Date(a.dateTaken).getTime();
+    });
 }
 
 function AlbumGallery(props: AlbumGalleryProps) {
@@ -249,7 +268,7 @@ function AlbumGallery(props: AlbumGalleryProps) {
 
   return (
     <div
-      className={`w-5/6 flex flex-col justify-center mx-auto mt-2}`}
+      className={`w-full md:w-5/6 flex flex-col justify-center mx-auto mt-2 p-4`}
     >
       {props.albumHeader && album?.name && (
         <AlbumHeader album={album} onUpload={handleUpload} />

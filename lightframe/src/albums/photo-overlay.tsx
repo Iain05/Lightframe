@@ -77,7 +77,7 @@ const PhotoOverlay = ({
       </Tooltip>}
 
       {/* Select Icon */}
-      {enableOverlay && (
+      {getValidToken() && enableOverlay && (
         <SelectIcon
           selected={photo.selected}
           onClick={(event) => {
