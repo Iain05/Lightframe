@@ -85,7 +85,6 @@ public class AlbumController {
      */
     @DeleteMapping("delete")
     public void deleteAlbum(@RequestParam String id) {
-        // TODO: also delete all photos in the album
         try {
             albumService.deleteAlbum(id);
         } catch (AlbumNotFoundException e) {
@@ -96,19 +95,21 @@ public class AlbumController {
     }
 
     /**
-     * Update an album's public status, name, or description.
+     * Update an album's public status, name, description, and event date.
+     * @param albumParameters the parameters for the album update
      * @param id the unique identifier of the album to update
-     * @param name the new name of the album, can be null to keep the same
-     * @param description the new description of the album, can be null to keep the same
-     * @param isPublic the new public status of the album
+     * @throws ResponseStatusException if the album doesn't exist or if there is an internal server error
      */
     @PutMapping("update")
-    public void updateAlbum(@RequestParam String id,
-                            @RequestParam(required = false) String name,
-                            @RequestParam(required = false) String description,
-                            @RequestParam boolean isPublic) {
+    public void updateAlbum(@RequestBody AlbumParameters albumParameters, @RequestParam String id) {
         try {
-            albumService.updateAlbum(id, name, description, isPublic);
+            albumService.updateAlbum(
+                id,
+                albumParameters.name(),
+                albumParameters.description(),
+                albumParameters.isPublic(),
+                albumParameters.eventDate()
+            );
         } catch (AlbumNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {

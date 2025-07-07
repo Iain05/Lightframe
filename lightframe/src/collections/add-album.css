@@ -110,7 +110,7 @@
 }
 
 .form-group input[type="date"]:valid {
-    color: #333;
+    color: #666;
 }
 
 .checkbox-group {

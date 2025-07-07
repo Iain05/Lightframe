@@ -5,19 +5,21 @@ import './add-album.css'; // Reusing the same styles
 interface EditAlbumModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (albumData: { name: string; description?: string; isPublic: boolean }) => void;
+  onSubmit: (albumData: { name: string; description?: string; isPublic: boolean, eventDate?: string }) => void;
   onDelete?: (albumId: string) => void;
   initialData: {
     id: string;
     name: string;
     description?: string;
     isPublic: boolean;
+    eventDate?: string;
   };
 }
 
 const EditAlbumModal = ({ isOpen, onClose, onSubmit, onDelete, initialData }: EditAlbumModalProps) => {
   const [albumName, setAlbumName] = useState('');
   const [description, setDescription] = useState('');
+  const [eventDate, setEventDate] = useState('');
   const [isPublic, setIsPublic] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -27,6 +29,7 @@ const EditAlbumModal = ({ isOpen, onClose, onSubmit, onDelete, initialData }: Ed
     if (isOpen) {
       setAlbumName(initialData.name);
       setDescription(initialData.description || '');
+      setEventDate(initialData.eventDate || '');
       setIsPublic(initialData.isPublic);
     }
   }, [isOpen, initialData]);
@@ -43,11 +46,13 @@ const EditAlbumModal = ({ isOpen, onClose, onSubmit, onDelete, initialData }: Ed
       onSubmit({
         name: albumName.trim(),
         description: description.trim(),
-        isPublic: isPublic
+        isPublic: isPublic,
+        eventDate: eventDate || undefined,
       });
       // Reset form
       setAlbumName('');
       setDescription('');
+      setEventDate('');
       setIsPublic(false);
     }
   };
@@ -59,6 +64,7 @@ const EditAlbumModal = ({ isOpen, onClose, onSubmit, onDelete, initialData }: Ed
       // Reset form when closing
       setAlbumName('');
       setDescription('');
+      setEventDate('');
       setIsPublic(false);
       setShowDeleteConfirm(false);
       onClose();
@@ -125,6 +131,16 @@ const EditAlbumModal = ({ isOpen, onClose, onSubmit, onDelete, initialData }: Ed
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Enter album description..."
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="eventDate">Date (Optional)</label>
+            <input
+              type="date"
+              id="eventDate"
+              value={eventDate}
+              onChange={(e) => setEventDate(e.target.value)}
             />
           </div>
 

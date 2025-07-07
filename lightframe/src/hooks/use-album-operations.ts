@@ -11,7 +11,7 @@ export const useAlbumOperations = (collectionId: string) => {
     {
       onSuccess: (albumId) => {
         queryClient.invalidateQueries('fetchCollection');
-        // window.location.href = `/album/${albumId}`;
+        window.location.href = `/album/${albumId}`;
       },
       onError: (error) => {
         console.error('Error creating album:', error);

@@ -60,16 +60,17 @@ const Collection = (props: CollectionProps) => {
       id: album.id,
       name: album.name,
       description: album.description || '',
-      isPublic: album.public
+      isPublic: album.public,
+      eventDate: album.eventDate,
     });
   };
 
-  const handleSubmitAdd = (albumData: { name: string; description?: string; isPublic: boolean, date?: string }) => {
+  const handleSubmitAdd = (albumData: { name: string; description?: string; isPublic: boolean, eventDate?: string }) => {
     albumOperations.createAlbum.mutate(albumData);
     modalState.closeAddModal();
   };
 
-  const handleSubmitEdit = (albumData: { name: string; description?: string; isPublic: boolean }) => {
+  const handleSubmitEdit = (albumData: { name: string; description?: string; isPublic: boolean, eventDate?: string }) => {
     if (!modalState.editingAlbum) return;
     
     albumOperations.updateAlbum.mutate({

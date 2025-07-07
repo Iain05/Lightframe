@@ -82,14 +82,18 @@ public class AlbumService {
      * @param name the new name of the album, can be null to keep the same
      * @param description the new description of the album, can be null to keep the same
      * @param isPublic the new public status of the album
+     * @param eventDate the new event date of the album, if null the date will be removed
      */
-    public void updateAlbum(String id, String name, String description, boolean isPublic) throws AlbumNotFoundException {
+    public void updateAlbum(String id, String name, String description, boolean isPublic, LocalDate eventDate)
+            throws AlbumNotFoundException {
         Album album = albumRepository.findAlbumById(id);
         if (album == null) throw new AlbumNotFoundException("Album with id " + id + " not found");
 
         if (name != null) album.setName(name);
 
         if (description != null) album.setDescription(description);
+
+        album.setEventDate(eventDate);
 
         album.setPublic(isPublic);
 

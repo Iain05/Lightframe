@@ -12,6 +12,7 @@ export interface AlbumUpdateData {
   name: string;
   description?: string;
   isPublic: boolean;
+  eventDate?: string;
 }
 
 export const albumAPI = {
@@ -30,15 +31,9 @@ export const albumAPI = {
   },
 
   update: async (id: string, data: AlbumUpdateData): Promise<void> => {
-    const formData = new URLSearchParams();
-    formData.append('id', id);
-    formData.append('name', data.name);
-    formData.append('description', data.description || '');
-    formData.append('isPublic', data.isPublic.toString());
-
-    const response = await api.put('/api/album/update', formData.toString(), {
+    const response = await api.put(`/api/album/update?id=${encodeURIComponent(id)}`, JSON.stringify(data), {
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
       },
     });
 

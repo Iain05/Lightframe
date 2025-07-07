@@ -8,8 +8,8 @@ interface AlbumModalsProps {
   editingAlbum: EditingAlbum | null;
   onCloseAdd: () => void;
   onCloseEdit: () => void;
-  onSubmitAdd: (albumData: { name: string; description?: string; isPublic: boolean }) => void;
-  onSubmitEdit: (albumData: { name: string; description?: string; isPublic: boolean }) => void;
+  onSubmitAdd: (albumData: { name: string; description?: string; isPublic: boolean, eventDate?: string }) => void;
+  onSubmitEdit: (albumData: { name: string; description?: string; isPublic: boolean, eventDate?: string }) => void;
   onDelete: (albumId: string) => void;
 }
 
@@ -41,7 +41,8 @@ const AlbumModals = ({
             id: editingAlbum.id,
             name: editingAlbum.name,
             description: editingAlbum.description,
-            isPublic: editingAlbum.isPublic
+            isPublic: editingAlbum.isPublic,
+            eventDate: editingAlbum.eventDate,
           }}
         />
       )}

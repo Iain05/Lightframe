@@ -5,6 +5,7 @@ export interface EditingAlbum {
   name: string;
   description?: string;
   isPublic: boolean;
+  eventDate?: string;
 }
 
 export const useModalState = () => {
