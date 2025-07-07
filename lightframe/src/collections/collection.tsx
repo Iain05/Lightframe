@@ -12,6 +12,14 @@ type CollectionProps = {
   collection_id: string;
 };
 
+export type AlbumFormData = {
+  name: string;
+  description?: string;
+  isPublic: boolean;
+  eventDate?: string; 
+};
+
+
 const Collection = (props: CollectionProps) => {
   const [fadeIn, setFadeIn] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -65,12 +73,12 @@ const Collection = (props: CollectionProps) => {
     });
   };
 
-  const handleSubmitAdd = (albumData: { name: string; description?: string; isPublic: boolean, eventDate?: string }) => {
+  const handleSubmitAdd = (albumData: AlbumFormData) => {
     albumOperations.createAlbum.mutate(albumData);
     modalState.closeAddModal();
   };
 
-  const handleSubmitEdit = (albumData: { name: string; description?: string; isPublic: boolean, eventDate?: string }) => {
+  const handleSubmitEdit = (albumData: AlbumFormData) => {
     if (!modalState.editingAlbum) return;
     
     albumOperations.updateAlbum.mutate({

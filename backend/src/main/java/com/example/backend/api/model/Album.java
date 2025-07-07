@@ -50,7 +50,14 @@ public class Album {
         this.eventDate = eventDate;
     }
 
-    public Album(String name, String id, String description, boolean isPublic, String coverImage, LocalDateTime createdAt, Integer numPhotos) {
+    public Album(String name,
+                 String id,
+                 String description,
+                 boolean isPublic,
+                 String coverImage,
+                 LocalDateTime createdAt,
+                 Integer numPhotos,
+                 LocalDate eventDate) {
         this.name = name;
         this.id = id;
         this.description = description;
@@ -58,6 +65,7 @@ public class Album {
         this.coverImage = coverImage;
         this.createdAt = createdAt;
         this.numPhotos = numPhotos;
+        this.eventDate = eventDate;
     }
 
     public Album() {

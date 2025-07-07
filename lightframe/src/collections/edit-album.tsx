@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import CloseRounded from '@mui/icons-material/CloseRounded';
 import './add-album.css'; // Reusing the same styles
+import type { AlbumFormData } from './collection';
 
 interface EditAlbumModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (albumData: { name: string; description?: string; isPublic: boolean, eventDate?: string }) => void;
+  onSubmit: (albumData: AlbumFormData) => void;
   onDelete?: (albumId: string) => void;
   initialData: {
     id: string;

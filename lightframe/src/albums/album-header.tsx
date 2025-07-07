@@ -32,8 +32,12 @@ const AlbumHeader = ({ album, onUpload }: AlbumHeaderProps) => {
       <div className="flex flex-col items-center mt-4">
         <span className="text-xl text-center text-gray-600 flex items-center justify-center gap-5">
           <span>{album.numPhotos} photos</span>
-          <span>•</span>
-          <span>{new Date(album.dateCreated).toLocaleDateString()}</span>
+          {album.eventDate && (
+            <>
+              <span>•</span>
+              <span>{new Date(album.eventDate).toLocaleDateString()}</span>
+            </>
+          )}
         </span>
       </div>
       <div className="absolute top-0 right-0 mt-4 mr-4 flex items-center gap-3">

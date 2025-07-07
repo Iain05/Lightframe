@@ -1,6 +1,8 @@
 import AddAlbumModal from './add-album';
 import EditAlbumModal from './edit-album';
 import type { EditingAlbum } from '../hooks/use-modal-state';
+import type { AlbumFormData } from './collection';
+
 
 interface AlbumModalsProps {
   isAddModalOpen: boolean;
@@ -8,8 +10,8 @@ interface AlbumModalsProps {
   editingAlbum: EditingAlbum | null;
   onCloseAdd: () => void;
   onCloseEdit: () => void;
-  onSubmitAdd: (albumData: { name: string; description?: string; isPublic: boolean, eventDate?: string }) => void;
-  onSubmitEdit: (albumData: { name: string; description?: string; isPublic: boolean, eventDate?: string }) => void;
+  onSubmitAdd: (albumData: AlbumFormData) => void;
+  onSubmitEdit: (albumData: AlbumFormData) => void;
   onDelete: (albumId: string) => void;
 }
 

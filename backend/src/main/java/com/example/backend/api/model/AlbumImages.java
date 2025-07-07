@@ -14,7 +14,8 @@ public class AlbumImages extends Album {
                 album.isPublic(),
                 album.getCoverImage(),
                 album.getDateCreated(),
-                photos.size()
+                photos.size(),
+                album.getEventDate()
         );
         this.photos = new ArrayList<>(photos);
     }
