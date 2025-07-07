@@ -1,5 +1,5 @@
 // API utility for making requests with automatic base URL
-import { getValidToken } from './auth';
+import { getValidToken } from '../utils/auth';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 

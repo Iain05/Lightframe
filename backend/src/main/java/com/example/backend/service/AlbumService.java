@@ -13,6 +13,7 @@ import org.hibernate.sql.Delete;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -50,8 +51,8 @@ public class AlbumService {
      * @param isPublic whether the album is public or private
      * @return the unique identifier of the created album
      */
-    public String createAlbum(String name, String description, String collection, boolean isPublic) {
-        Album album = new Album(name, description, collection, isPublic);
+    public String createAlbum(String name, String description, String collection, boolean isPublic, LocalDate eventDate) {
+        Album album = new Album(name, description, collection, isPublic, eventDate);
         albumRepository.save(album);
         return album.getId();
     }

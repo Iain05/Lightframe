@@ -73,7 +73,8 @@ CREATE TABLE albums (
   cover_image VARCHAR(255),
   num_photos INT,
   collection VARCHAR(100),
-  date_created DATETIME DEFAULT (CURRENT_DATE)
+  date_created DATETIME DEFAULT (CURRENT_DATE),
+  event_date DATE,
 );
 
 CREATE TABLE photos (
@@ -149,3 +150,9 @@ Todo (in order of priority):
 
 # July 2nd, 2025
 Okay so selecting a cover image was lowkey easy, and then deleting an album was mostly easy. Also made the down and select buttons on the image toggleable with props on the album gallery. So I did pretty much everything that was on my todo in like an hour. I haven't done image ordering yet though, and i still need to fix up a dockerfile a bit, since I need to do that ip tunnel for the database. Also need to figure out how the hell I'm gonna do the oracle set up on the server without it being a nightmare. I guess one time setup at least shouldn't be to bad.
+
+# July 6th, 2025
+Today I got the website deployed and working. Working being the key part because the server kept crashing when trying to upload images. Turns out the solution was money. This thing still kinda works for free, but to upload images you would have to spin up a local instance and upload that way. Still kinda valid tbh, but I'm just gonna pay for now and see how things go. Its like a 5 dollar server- E2 Small. 
+
+The main features left that I can think of are all just quality of life things. Things like allowing batch downloading and making it so that the admin can re organize images. Re organizing images should actually be quite easy, since the react photo album already has a demo of that functionality on the doc site: https://react-photo-album.com/examples/sortable-gallery. I would also like to do reorganiziation of albums in collections but thats much less priority, since I can very easy just do it manually by changing the album date. Speaking of which, I kinda wanna make it so that albums can have "event dates". But I'm not sure the best way to do it. Actually no I do know. We should not change the createdAt flag, that should be album creation date. But we should add an optional item to the schema which is event date. That will just be a LocalDate object. yeah Imma do that right now actually. I'm so smart omg. 
+

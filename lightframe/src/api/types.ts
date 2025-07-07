@@ -7,6 +7,7 @@ export interface AlbumResponse {
     index: number;
     coverImage: string;
     numPhotos: number;
+    eventDate?: string;
     photos: AlbumPhotos[];
 }
 
@@ -33,4 +34,5 @@ interface CollectionAlbum {
     coverImage: string;
     dateCreated: string;
     numPhotos: number;
+    eventDate?: string;
 }

@@ -57,6 +57,9 @@ public class AlbumController {
     }
 
     /**
+     * Create a new album with the given parameters.
+     * @param albumParameters the parameters for the album, including name, description, collection,
+     *                        public status, and event date
      * @return the unique identifier of the created album
      */
     @PostMapping("create")
@@ -67,7 +70,8 @@ public class AlbumController {
                 albumParameters.name(),
                 albumParameters.description(),
                 albumParameters.collection(),
-                albumParameters.isPublic()
+                albumParameters.isPublic(),
+                albumParameters.eventDate()
             );
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());

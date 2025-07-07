@@ -10,6 +10,7 @@ export interface Album {
   dateCreated: string;
   numPhotos: number;
   public: boolean;
+  eventDate?: string; 
   description?: string;
 }
 
@@ -27,7 +28,7 @@ const AlbumCard = ({ album, index, fadeIn, isLoggedIn, onEdit }: AlbumCardProps)
   return (
     <div
       key={album.id}
-      className={`relative cursor-pointer group overflow-hidden transform transition-opacity duration-500 ease-in-out rounded-md ${
+      className={`relative cursor-pointer group overflow-hidden transform transition-opacity duration-500 ease-in-out rounded-md aspect-[5/3] ${
         fadeIn ? 'opacity-100' : 'opacity-0'
       }`}
       style={{ transitionDelay: `${(index + (isLoggedIn ? 1 : 0)) * 150}ms` }}
@@ -35,7 +36,7 @@ const AlbumCard = ({ album, index, fadeIn, isLoggedIn, onEdit }: AlbumCardProps)
     >
       <img
         src={`${import.meta.env.VITE_BUCKET_BASE}small/${album.coverImage}`}
-        className="w-full h-70 object-cover rounded-md transform transition-transform duration-500 group-hover:scale-110"
+        className="w-full h-full object-cover rounded-md transform transition-transform duration-500 group-hover:scale-110"
       />
       <div className="absolute top-4 right-4 text-white z-10">
         {isLoggedIn && (
@@ -53,9 +54,10 @@ const AlbumCard = ({ album, index, fadeIn, isLoggedIn, onEdit }: AlbumCardProps)
         )}
         {album.name}
       </div>
-      <span className="absolute bottom-2 right-6 text-white text-md">
-        {new Date(album.dateCreated).toLocaleDateString()}
-      </span>
+      { album.eventDate && <span className="absolute bottom-2 right-6 text-white text-md">
+          {album.eventDate}
+        </span>
+      }
       <span className="absolute bottom-2 left-6 text-white text-md">
         {album.numPhotos} photos
       </span>

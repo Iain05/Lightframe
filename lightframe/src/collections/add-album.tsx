@@ -5,12 +5,13 @@ import './add-album.css';
 interface AddAlbumModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (albumData: { name: string; description?: string; isPublic: boolean }) => void;
+  onSubmit: (albumData: { name: string; description?: string; isPublic: boolean; eventDate?: string }) => void;
 }
 
 const AddAlbumModal = ({ isOpen, onClose, onSubmit }: AddAlbumModalProps) => {
   const [albumName, setAlbumName] = useState('');
   const [albumDescription, setAlbumDescription] = useState('');
+  const [eventDate, setEventDate] = useState('');
   const [isPublic, setIsPublic] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
 
@@ -27,9 +28,12 @@ const AddAlbumModal = ({ isOpen, onClose, onSubmit }: AddAlbumModalProps) => {
         name: albumName.trim(),
         isPublic: isPublic,
         description: albumDescription.trim() || '',
+        eventDate: eventDate || undefined,
       });
       // Reset form
       setAlbumName('');
+      setAlbumDescription('');
+      setEventDate('');
       setIsPublic(false);
     }
   };
@@ -40,6 +44,8 @@ const AddAlbumModal = ({ isOpen, onClose, onSubmit }: AddAlbumModalProps) => {
     setTimeout(() => {
       // Reset form when closing
       setAlbumName('');
+      setAlbumDescription('');
+      setEventDate('');
       setIsPublic(false);
       onClose();
     }, 150); // Fast exit animation - 150ms
@@ -78,6 +84,16 @@ const AddAlbumModal = ({ isOpen, onClose, onSubmit }: AddAlbumModalProps) => {
               value={albumDescription}
               onChange={(e) => setAlbumDescription(e.target.value)}
               placeholder="Description (optional)..."
+            />
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="albumDate">Date (Optional)</label>
+            <input
+              type="date"
+              id="albumDate"
+              value={eventDate}
+              onChange={(e) => setEventDate(e.target.value)}
             />
           </div>
 

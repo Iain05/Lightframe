@@ -1,10 +1,11 @@
-import { api } from '../utils/api';
+import { api } from './api';
 
 export interface AlbumCreateData {
   name: string;
   description?: string;
   isPublic: boolean;
   collection: string;
+  eventDate?: string;
 }
 
 export interface AlbumUpdateData {

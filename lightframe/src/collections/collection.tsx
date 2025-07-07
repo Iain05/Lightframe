@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import type { CollectionResponse } from '../api/types';
-import { api } from '../utils/api';
+import { api } from '../api/api';
 import { useAlbumOperations } from '../hooks/use-album-operations';
 import { useModalState } from '../hooks/use-modal-state';
 import AlbumGrid from './album-grid';
@@ -64,7 +64,7 @@ const Collection = (props: CollectionProps) => {
     });
   };
 
-  const handleSubmitAdd = (albumData: { name: string; description?: string; isPublic: boolean }) => {
+  const handleSubmitAdd = (albumData: { name: string; description?: string; isPublic: boolean, date?: string }) => {
     albumOperations.createAlbum.mutate(albumData);
     modalState.closeAddModal();
   };
@@ -96,6 +96,7 @@ const Collection = (props: CollectionProps) => {
       dateCreated: album.dateCreated,
       numPhotos: album.numPhotos,
       public: album.public,
+      eventDate: album.eventDate,
       description: '', // Collection response doesn't include description
     })) || [];
 

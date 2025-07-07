@@ -109,6 +109,10 @@
     border-color: #666;
 }
 
+.form-group input[type="date"]:valid {
+    color: #333;
+}
+
 .checkbox-group {
     display: flex;
     flex-direction: column;
