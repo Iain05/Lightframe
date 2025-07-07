@@ -9,6 +9,7 @@ import AlbumGallery from './albums/album-gallery';
 import AlbumGalleryWrapper from './albums/album-gallery-wrapper';
 import Collection from './collections/collection';
 import Login from './auth/login';
+import About from './pages/about';
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ function App() {
                                 enableOverlay={false} 
                             />} />
                             <Route path="/album/:albumId" element={<AlbumGalleryWrapper />} />
+                            <Route path="/about" element={<About />} />
                             <Route path="/login" element={<Login />} />
                         </Routes>
                     </div>
