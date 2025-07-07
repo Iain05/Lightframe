@@ -317,6 +317,7 @@ function AlbumGallery(props: AlbumGalleryProps) {
               },
             })}
           onClick={({ index }) => { setIndex(index); }}
+          spacing={30}
           render={{
             extras: (_, { photo, index }) => {
               const mediumPhoto = mediumPhotos[index];

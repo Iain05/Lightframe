@@ -21,16 +21,18 @@ function App() {
             <div className="App">
                 <BrowserRouter>
                     <Navbar />
-                    <Routes>
-                        <Route path="/events" element={<Collection collection_id="main-collection"/>} />
-                        <Route path="/" element={<AlbumGallery 
-                            albumId="portfolio" 
-                            layout="columns" 
-                            enableOverlay={false} 
-                        />} />
-                        <Route path="/album/:albumId" element={<AlbumGalleryWrapper />} />
-                        <Route path="/login" element={<Login />} />
-                    </Routes>
+                    <div className="main-content">
+                        <Routes>
+                            <Route path="/events" element={<Collection collection_id="main-collection"/>} />
+                            <Route path="/" element={<AlbumGallery 
+                                albumId="portfolio" 
+                                layout="columns" 
+                                enableOverlay={false} 
+                            />} />
+                            <Route path="/album/:albumId" element={<AlbumGalleryWrapper />} />
+                            <Route path="/login" element={<Login />} />
+                        </Routes>
+                    </div>
                     <Footer />
                 </BrowserRouter>
             </div>
