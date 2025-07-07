@@ -15,15 +15,9 @@ export interface AlbumUpdateData {
 
 export const albumAPI = {
   create: async (data: AlbumCreateData): Promise<string> => {
-    const formData = new URLSearchParams();
-    formData.append('name', data.name);
-    formData.append('description', data.description || '');
-    formData.append('isPublic', data.isPublic.toString());
-    formData.append('collection', data.collection);
-
-    const response = await api.post('/api/album/create', formData.toString(), {
+    const response = await api.post('/api/album/create', JSON.stringify(data), {
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
       },
     });
 

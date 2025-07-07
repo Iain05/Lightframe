@@ -66,7 +66,6 @@ public class AlbumService {
 
         if (album == null) throw new AlbumNotFoundException("Album with id " + id + " not found");
 
-        if (photoIds.isEmpty()) return;
         try {
             photoService.deletePhotos(photoIds);
         } catch (Exception e) {

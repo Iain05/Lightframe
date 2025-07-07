@@ -1,7 +1,7 @@
 package com.example.backend.api.controller;
 
 
-import com.example.backend.api.model.Album;
+import com.example.backend.api.model.AlbumParameters;
 import com.example.backend.api.model.AlbumImages;
 import com.example.backend.exception.AlbumNotFoundException;
 import com.example.backend.service.AlbumService;
@@ -57,20 +57,18 @@ public class AlbumController {
     }
 
     /**
-     * Create a new album with the given parameters.
-     * @param name the name of the album
-     * @param description the description of the album
-     * @param collection the collection the album belongs to
-     * @param isPublic whether the album is public or private
      * @return the unique identifier of the created album
      */
     @PostMapping("create")
-    public String createAlbum(@RequestParam String name,
-                              @RequestParam String description,
-                              @RequestParam String collection,
-                              @RequestParam boolean isPublic) {
+    public String createAlbum(@RequestBody AlbumParameters albumParameters) {
         try {
-            return albumService.createAlbum(name, description, collection, isPublic);
+            System.out.println("Creating album with parameters: " + albumParameters);
+            return albumService.createAlbum(
+                albumParameters.name(),
+                albumParameters.description(),
+                albumParameters.collection(),
+                albumParameters.isPublic()
+            );
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }

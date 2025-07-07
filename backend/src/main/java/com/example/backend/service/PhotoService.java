@@ -89,7 +89,7 @@ public class PhotoService {
     @Transactional
     public void deletePhotos(List<Integer> photoIds) throws DeletePhotoException {
         if (photoIds == null || photoIds.isEmpty()) {
-            throw new DeletePhotoException("No photo IDs provided for deletion.");
+            return;
         }
 
         for (Integer photoId : photoIds) {

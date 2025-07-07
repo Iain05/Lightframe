@@ -100,6 +100,7 @@ function AlbumGallery(props: AlbumGalleryProps) {
   const [downloadingPhotoId, setDownloadingPhotoId] = useState<number | null>(null);
   const [settingCoverPhotoId, setSettingCoverPhotoId] = useState<number | null>(null);
   const [coverSuccessPhotoId, setCoverSuccessPhotoId] = useState<number | null>(null);
+  const [showLoading, setShowLoading] = useState(false);
   const queryClient = useQueryClient();
 
   const handleUpload = async (file: File) => {
@@ -263,12 +264,30 @@ function AlbumGallery(props: AlbumGalleryProps) {
     };
   }, [photos.length]);
 
-  if (isLoading) return <div className="flex justify-center">Loading...</div>;
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    
+    if (isLoading) {
+      timeoutId = setTimeout(() => {
+        setShowLoading(true);
+      }, 2000); // Show loading text after 2 seconds
+    } else {
+      setShowLoading(false);
+    }
+
+    return () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [isLoading]);
+
+  if (isLoading && showLoading) return <div className="flex justify-center">Loading...</div>;
   if (error) return <div className="flex justify-center">Error: {error.message}</div>;
 
   return (
     <div
-      className={`w-full md:w-5/6 flex flex-col justify-center mx-auto mt-2 p-4`}
+      className={`w-full md:w-5/6 flex flex-col justify-center mx-auto mt-2 pr-4 pl-4`}
     >
       {props.albumHeader && album?.name && (
         <AlbumHeader album={album} onUpload={handleUpload} />
