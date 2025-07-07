@@ -1,6 +1,5 @@
 import React from 'react';
 import './about.css';
-import profileImage from '../images/IMG_3232.JPEG';
 
 const About: React.FC = () => {
   return (
@@ -13,7 +12,7 @@ const About: React.FC = () => {
         <div className="about-bio">
           <div className="bio-image">
             <div className="placeholder-image">
-                <img src={profileImage} alt="Iain Griesdale" />
+                <img src="/IMG_3232.JPEG" alt="Iain Griesdale" />
             </div>
           </div>
           
