@@ -5,7 +5,6 @@ import { useAutoLogout } from './hooks/use-auto-logout';
 
 import Navbar from './navbar';
 import Footer from './footer';
-import AlbumGallery from './albums/album-gallery';
 import AlbumGalleryWrapper from './albums/album-gallery-wrapper';
 import Collection from './collections/collection';
 import Login from './auth/login';
