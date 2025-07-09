@@ -9,7 +9,8 @@ import AlbumGallery from './albums/album-gallery';
 import AlbumGalleryWrapper from './albums/album-gallery-wrapper';
 import Collection from './collections/collection';
 import Login from './auth/login';
-import About from './pages/about';
+import About from '@src/pages/about';
+import Home from './pages/home';
 
 const queryClient = new QueryClient();
 
@@ -25,11 +26,7 @@ function App() {
                     <div className="main-content">
                         <Routes>
                             <Route path="/events" element={<Collection collection_id="main-collection"/>} />
-                            <Route path="/" element={<AlbumGallery 
-                                albumId="portfolio" 
-                                layout="columns" 
-                                enableOverlay={false} 
-                            />} />
+                            <Route path="/" element={<Home />} />
                             <Route path="/album/:albumId" element={<AlbumGalleryWrapper />} />
                             <Route path="/about" element={<About />} />
                             <Route path="/login" element={<Login />} />

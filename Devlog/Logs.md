@@ -156,3 +156,11 @@ Today I got the website deployed and working. Working being the key part because
 
 The main features left that I can think of are all just quality of life things. Things like allowing batch downloading and making it so that the admin can re organize images. Re organizing images should actually be quite easy, since the react photo album already has a demo of that functionality on the doc site: https://react-photo-album.com/examples/sortable-gallery. I would also like to do reorganiziation of albums in collections but thats much less priority, since I can very easy just do it manually by changing the album date. Speaking of which, I kinda wanna make it so that albums can have "event dates". But I'm not sure the best way to do it. Actually no I do know. We should not change the createdAt flag, that should be album creation date. But we should add an optional item to the schema which is event date. That will just be a LocalDate object. yeah Imma do that right now actually. I'm so smart omg. 
 
+# July 8th, 2025
+So I ran into a small issue which was how the frontend knows which album is the main 'portfolio' that appears as the splash page. I'm going to take a very rudimentary approach that is at least not shit so its extendable in the future. I'm going to create a new table called metadata, and basically just have a key called HOME_ALBUM that maps to an album id. that way we dont have to rebuild the frontend to change the main album.
+```mysql
+CREATE TABLE metadata (
+	`key` varchar(255) PRIMARY KEY,
+    `value` TEXT
+);
+```

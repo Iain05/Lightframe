@@ -14,14 +14,14 @@
 }
 
 .navbar {
-  height: 80px;
+  height: 100px;
   background-color: white;
   position: relative;
   font-family: 'Lovelyn', serif !important;
 }
 
 .logo {
-  font-size: 1.4rem;
+  font-size: 1.6rem;
 }
 
 .menu-icon {
@@ -43,7 +43,7 @@
 }
 
 .nav-elements ul a {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 400;
   color: #2f234f;
   text-decoration: none;

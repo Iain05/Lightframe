@@ -13,8 +13,13 @@ const Navbar = () => {
     return (
         <nav className="navbar">
             <div className="container">
-                <div className="logo">
-                    Iain Griesdale
+                <div className="logo" style={{ display: 'flex', alignItems: 'center' }}>
+                    <img
+                        src="/icon128.png"
+                        alt="Logo"
+                        style={{ height: '48px', width: '48px', marginRight: '10px', verticalAlign: 'middle' }}
+                    />
+                    <span>Iain Griesdale</span>
                 </div>
                 <div className='menu-icon' onClick={handleShowNavbar}>
                     <MenuRoundedIcon />

@@ -1,22 +1,52 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import './about.css';
 
 const About: React.FC = () => {
+  const aboutRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '50px 0px',
+      }
+    );
+
+    // Add staggered animation delays
+    const animateElements = () => {
+      const elements = aboutRef.current?.querySelectorAll('.fade-in-element');
+      elements?.forEach((element, index) => {
+        (element as HTMLElement).style.transitionDelay = `${index * 0.2}s`;
+        observer.observe(element);
+      });
+    };
+
+    // Small delay to ensure DOM is ready
+    const timer = setTimeout(animateElements, 100);
+
+    return () => {
+      observer.disconnect();
+      clearTimeout(timer);
+    };
+  }, []);
+
   return (
-    <div className="about-container">
+    <div className="about-container" ref={aboutRef}>
       <div className="about-content">
-        <div className="about-header">
+        <div className="about-header fade-in-element">
           <h1>About Me</h1>
         </div>
         
         <div className="about-bio">
-          <div className="bio-image">
-            <div className="placeholder-image">
-                <img src="/IMG_3232.JPEG" alt="Iain Griesdale" />
-            </div>
-          </div>
-          
-          <div className="bio-text">
+          <div className="bio-text fade-in-element">
             <p>
               My name is Iain Griesdale, I am a Computer Engineering student at the University of British Columbia, 
               and member of the VEXU Robotics Team <a href='https://tntnvex.com'>TNTN</a>.
@@ -32,9 +62,15 @@ const About: React.FC = () => {
               is available on GitHub to see.
             </p>
           </div>
+          
+          <div className="bio-image fade-in-element">
+            <div className="placeholder-image">
+                <img src="/IMG_3232.JPEG" alt="Iain Griesdale" />
+            </div>
+          </div>
         </div>
         
-        <div className="contact-section">
+        <div className="contact-section fade-in-element">
           <h2>Get In Touch</h2>
           <div className="contact-info">
             <div className="contact-item">

@@ -246,7 +246,7 @@ function AlbumGallery(props: AlbumGalleryProps) {
       },
       {
         threshold: 0.1,
-        rootMargin: '50px 0px',
+        rootMargin: '0px 0px',
       }
     );
 
