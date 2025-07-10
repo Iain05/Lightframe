@@ -65,7 +65,7 @@ const About: React.FC = () => {
           
           <div className="bio-image fade-in-element">
             <div className="placeholder-image">
-                <img src="/IMG_3232.JPEG" alt="Iain Griesdale" />
+                <img src="/profile.JPEG" alt="Iain Griesdale" />
             </div>
           </div>
         </div>
