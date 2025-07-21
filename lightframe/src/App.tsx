@@ -24,7 +24,7 @@ function App() {
                     <Navbar />
                     <div className="main-content">
                         <Routes>
-                            <Route path="/events" element={<Collection collection_id="main-collection"/>} />
+                            <Route path="/albums" element={<Collection collection_id="main-collection"/>} />
                             <Route path="/" element={<Home />} />
                             <Route path="/album/:albumId" element={<AlbumGalleryWrapper />} />
                             <Route path="/about" element={<About />} />
