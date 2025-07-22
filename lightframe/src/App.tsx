@@ -22,23 +22,14 @@ declare global {
 const queryClient = new QueryClient();
 
 function App() {
-    const location = useLocation();
-
     // Check for token expiration every 5 minutes
     useAutoLogout(5);
-
-    useEffect(() => {
-        if (window.gtag) {
-            window.gtag('config', `${import.meta.env.VITE_GA_ID}`, {
-                page_path: location.pathname,
-            });
-        }
-    }, [location]);
 
     return (
         <QueryClientProvider client={queryClient}>
             <div className="App">
                 <BrowserRouter>
+                    <LocationTracker />
                     <Navbar />
                     <div className="main-content">
                         <Routes>
@@ -54,6 +45,20 @@ function App() {
             </div>
         </QueryClientProvider>
     );
+}
+
+function LocationTracker() {
+    const location = useLocation();
+
+    useEffect(() => {
+        if (window.gtag) {
+            window.gtag('config', `${import.meta.env.VITE_GA_ID}`, {
+                page_path: location.pathname,
+            });
+        }
+    }, [location]);
+
+    return null;
 }
 
 export default App;

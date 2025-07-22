@@ -4,7 +4,6 @@ import { useMemo } from 'react';
 
 function AlbumGalleryWrapper() {
     const { albumId } = useParams<{ albumId: string }>();
-    console.log('AlbumGalleryWrapper rendered');
 
     // Memoize the albumId to prevent unnecessary re-renders
     const memoizedAlbumId = useMemo(() => albumId, [albumId]);

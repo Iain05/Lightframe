@@ -91,7 +91,7 @@ const PhotoOverlay = ({
       {/* Download Button */}
       {enableOverlay && (
         <div className="download-overlay">
-          <button
+          <div
             className="download-button"
             onClick={(event) => {
               event.preventDefault();
@@ -99,14 +99,24 @@ const PhotoOverlay = ({
               onDownload(mediumPhoto, index);
             }}
             title="Download full resolution"
-            disabled={downloadingPhotoId === mediumPhoto.id}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 40,
+              height: 40,
+              borderRadius: '50%',
+              backgroundColor: 'white',
+              boxShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+              cursor: downloadingPhotoId === mediumPhoto.id ? 'default' : 'pointer',
+            }}
           >
             {downloadingPhotoId === mediumPhoto.id ? (
               <CircularProgress size={20} style={{ color: '#333' }} />
             ) : (
               <DownloadIcon style={{ fontSize: 20, color: '#333' }} />
             )}
-          </button>
+          </div>
         </div>
       )}
     </>
