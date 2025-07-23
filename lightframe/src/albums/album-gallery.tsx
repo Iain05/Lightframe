@@ -1,3 +1,4 @@
+import React from 'react';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 
@@ -66,11 +67,11 @@ function generatePhotos(albumPhotos: AlbumResponse['photos'], basePath: string, 
 }
 
 function generateLightboxPhotos(
-  albumPhotos: AlbumResponse['photos'], 
-  basePath: string, 
+  albumPhotos: AlbumResponse['photos'],
+  basePath: string,
   fullResPath: string,
-  breakpoints: number[]): 
-SelectablePhoto[] {
+  breakpoints: number[]):
+  SelectablePhoto[] {
   return albumPhotos
     .map(({ url, width, height, id, dateTaken }) => ({
       src: `${basePath}/${url}`,
@@ -103,6 +104,14 @@ function AlbumGallery(props: AlbumGalleryProps) {
   const [showLoading, setShowLoading] = useState(false);
   const queryClient = useQueryClient();
 
+  type ThumbnailsRef = {
+    visible: boolean;
+    show: () => void;
+    hide: () => void;
+  } | null;
+
+  const thumbnailsRef = React.useRef<ThumbnailsRef>(null);
+
   const handleUpload = async (file: File) => {
     try {
       await albumAPI.uploadPhoto(props.albumId, file);
@@ -126,15 +135,15 @@ function AlbumGallery(props: AlbumGalleryProps) {
   const smallPhotos = useMemo(() => {
     return album ? generatePhotos(album.photos, `${import.meta.env.VITE_BUCKET_BASE}small`, BREAKPOINTS) : [];
   }, [album]);
-  
+
   const mediumPhotos = useMemo(() => {
     return album ? generateLightboxPhotos(
-      album.photos, 
-      `${import.meta.env.VITE_BUCKET_BASE}medium`, 
-      `${import.meta.env.VITE_BUCKET_BASE}large`, 
+      album.photos,
+      `${import.meta.env.VITE_BUCKET_BASE}medium`,
+      `${import.meta.env.VITE_BUCKET_BASE}large`,
       BREAKPOINTS) : [];
   }, [album]);
-  
+
   const [photos, setPhotos] = useState<SelectablePhoto[]>([]);
   const isInitialized = useRef(false);
   const galleryRef = useRef<HTMLDivElement>(null);
@@ -154,13 +163,13 @@ function AlbumGallery(props: AlbumGalleryProps) {
   };
 
   const handleSelectAll = () => {
-    setPhotos(prevPhotos => 
+    setPhotos(prevPhotos =>
       prevPhotos.map(photo => ({ ...photo, selected: true }))
     );
   };
 
   const handleUnselectAll = () => {
-    setPhotos(prevPhotos => 
+    setPhotos(prevPhotos =>
       prevPhotos.map(photo => ({ ...photo, selected: false }))
     );
   };
@@ -171,11 +180,11 @@ function AlbumGallery(props: AlbumGalleryProps) {
       await albumAPI.setAlbumCover(props.albumId, photo.id);
       setSettingCoverPhotoId(null);
       setCoverSuccessPhotoId(photo.id);
-      
+
       setTimeout(() => {
         setCoverSuccessPhotoId(null);
       }, 1500);
-      
+
     } catch (error) {
       console.error('Error setting album cover:', error);
       setSettingCoverPhotoId(null);
@@ -205,13 +214,13 @@ function AlbumGallery(props: AlbumGalleryProps) {
     const selectedPhotoIds = photos
       .filter(photo => photo.selected)
       .map(photo => photo.id);
-    
+
     try {
       await albumAPI.deletePhotos(selectedPhotoIds);
-      
+
       // Refresh the album data to reflect the deletions
       queryClient.invalidateQueries(['fetchAlbum', props.albumId]);
-      
+
       setIsDeleteModalOpen(false);
     } catch (error) {
       console.error('Delete error:', error);
@@ -266,7 +275,7 @@ function AlbumGallery(props: AlbumGalleryProps) {
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
-    
+
     if (isLoading) {
       timeoutId = setTimeout(() => {
         setShowLoading(true);
@@ -293,7 +302,7 @@ function AlbumGallery(props: AlbumGalleryProps) {
         <AlbumHeader album={album} onUpload={handleUpload} />
       )}
 
-      {props.albumHeader && 
+      {props.albumHeader &&
         <Actions
           selectedCount={selectedCount}
           totalCount={photos.length}
@@ -348,7 +357,19 @@ function AlbumGallery(props: AlbumGalleryProps) {
         plugins={[Fullscreen, Slideshow, Thumbnails, Zoom, Download]}
         zoom={{ maxZoomPixelRatio: 1 }}
         controller={{ closeOnBackdropClick: true }}
-        thumbnails={{ vignette: false }}
+        thumbnails={{ ref: thumbnailsRef, vignette: false }}
+        slideshow={{ delay: 10000 }}
+        on={{
+          enterFullscreen: () => {
+            thumbnailsRef.current?.hide?.();
+          },
+          exitFullscreen: () => {
+            thumbnailsRef.current?.show?.();
+          },
+        }}
+        render={{
+          buttonZoom: () => null,
+        }}
       />
 
       <DeletePhotosModal
