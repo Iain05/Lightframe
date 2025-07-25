@@ -53,7 +53,7 @@ const About: React.FC = () => {
             </p>
 
             <p>
-              Most of my work is a mix of nature and urban photography, focusing on capturing people in places, but I really 
+              Most of my work is a mix of nature and urban photography, but I really 
               enjoy all types of photography from landscapes to portraits. 
             </p>
             

@@ -16,7 +16,8 @@ import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
 import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
-import Download from "yet-another-react-lightbox/plugins/download";
+
+import LightboxButton from "@src/components/lightbox-button";
 
 import AlbumHeader from './album-header';
 import PhotoOverlay from './photo-overlay';
@@ -25,21 +26,10 @@ import Actions from './actions/actions';
 import { albumAPI } from '../api/album-api';
 import { downloadPhoto } from '../utils/download-utils';
 import type { AlbumResponse } from '../api/types';
-import type { Photo } from "react-photo-album";
+import type { SelectablePhoto, AlbumGalleryProps } from '@src/types/types';
 
-type SelectablePhoto = Photo & {
-  id: number;
-  dateTaken?: string;
-  downloadUrl?: string;
-  selected?: boolean;
-};
+import DownloadIcon from '@mui/icons-material/Download';
 
-interface AlbumGalleryProps {
-  albumId: string;
-  layout: "columns" | "rows" | "masonry";
-  enableOverlay?: boolean;
-  albumHeader?: boolean;
-}
 
 const BREAKPOINTS = [1080, 640, 384, 256, 128, 96, 64, 48];
 
@@ -354,7 +344,7 @@ function AlbumGallery(props: AlbumGalleryProps) {
         index={index}
         close={() => setIndex(-1)}
         slides={mediumPhotos}
-        plugins={[Fullscreen, Slideshow, Thumbnails, Zoom, Download]}
+        plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
         zoom={{ maxZoomPixelRatio: 1 }}
         controller={{ closeOnBackdropClick: true }}
         thumbnails={{ ref: thumbnailsRef, vignette: false }}
@@ -369,9 +359,35 @@ function AlbumGallery(props: AlbumGalleryProps) {
         }}
         render={{
           buttonZoom: () => null,
+          slide: ({ slide }) => {
+            return (
+              <img
+                src={slide.src}
+                style={{
+                  maxWidth: '100vw',
+                  maxHeight: '100%',
+                }}
+                loading='lazy'
+              />
+            );
+          },
+        }}
+        toolbar={{
+          buttons: [
+            <LightboxButton
+              key="download"
+              onClick={() => {
+                const currentPhoto = mediumPhotos[index];
+                handleDownload(currentPhoto, index);
+              }}
+              icon={<DownloadIcon sx={{ fontSize: 28 }} />}
+            />,
+            "slideshow",
+            "fullscreen",
+            "close",
+          ]
         }}
       />
-
       <DeletePhotosModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}

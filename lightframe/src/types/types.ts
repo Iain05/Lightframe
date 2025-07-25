@@ -9,6 +9,7 @@ export type SelectablePhoto = Photo & {
 export interface AlbumGalleryProps {
   albumId: string;
   layout: "columns" | "rows" | "masonry";
+  enableOverlay?: boolean;
   allowSelect?: boolean;
   allowDownload?: boolean;
   albumHeader?: boolean;
