@@ -47,15 +47,25 @@ function App() {
     );
 }
 
+const titleMap: Record<string, string> = {
+    "/albums": "Albums | Iain Griesdale",
+    "/about": "About | Iain Griesdale",
+    "/login": "Login | Iain Griesdale",
+    "/": "Iain Griesdale",
+};
+
 function LocationTracker() {
     const location = useLocation();
 
     useEffect(() => {
+        // Google Analytics page tracking
         if (window.gtag) {
             window.gtag('config', `${import.meta.env.VITE_GA_ID}`, {
                 page_path: location.pathname,
             });
         }
+        // Set document title using lookup table
+        document.title = titleMap[location.pathname] || "Iain Griesdale";
     }, [location]);
 
     return null;

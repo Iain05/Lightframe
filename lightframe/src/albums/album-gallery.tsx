@@ -218,6 +218,11 @@ function AlbumGallery(props: AlbumGalleryProps) {
       setIsDeleteModalOpen(false);
     }
   };
+  
+  useEffect(() => {
+  if (album?.name && location.pathname.startsWith('/album/')) document.title = album.name + " | Iain Griesdale";
+  
+}, [album?.name]);
 
   useEffect(() => {
     if (smallPhotos.length > 0 && !isInitialized.current) {
