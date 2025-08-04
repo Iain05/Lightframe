@@ -169,3 +169,8 @@ I asked Elia to make me a logo today and its actually so sick god bless his soul
 Actually looks so fire.
 ![[Pasted image 20250708235636.png]]
 Also I got the about me done the other day dont know if i wrote that down here. Idk this is mostly just brain dump for fun at this point. 
+
+# August 1st
+Improvements to make:
+- Loading/processing popup when deleting images - currently just stalls for a bit and then goes to blank page
+- 
