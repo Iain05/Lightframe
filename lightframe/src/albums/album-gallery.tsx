@@ -88,6 +88,7 @@ function generateLightboxPhotos(
 function AlbumGallery(props: AlbumGalleryProps) {
   const [index, setIndex] = useState(-1);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const [downloadingPhotoId, setDownloadingPhotoId] = useState<number | null>(null);
   const [settingCoverPhotoId, setSettingCoverPhotoId] = useState<number | null>(null);
   const [coverSuccessPhotoId, setCoverSuccessPhotoId] = useState<number | null>(null);
@@ -351,15 +352,17 @@ function AlbumGallery(props: AlbumGalleryProps) {
         slides={mediumPhotos}
         plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
         zoom={{ maxZoomPixelRatio: 1 }}
-        controller={{ closeOnBackdropClick: true }}
-        thumbnails={{ ref: thumbnailsRef, vignette: false }}
+        controller={{ closeOnBackdropClick: !isFullscreen }}
+        thumbnails={{ ref: thumbnailsRef, vignette: false, hidden: window.innerHeight < 500 }}
         slideshow={{ delay: 10000 }}
         on={{
           enterFullscreen: () => {
             thumbnailsRef.current?.hide?.();
+            setIsFullscreen(true);
           },
           exitFullscreen: () => {
             thumbnailsRef.current?.show?.();
+            setIsFullscreen(false);
           },
         }}
         render={{
@@ -379,17 +382,17 @@ function AlbumGallery(props: AlbumGalleryProps) {
         }}
         toolbar={{
           buttons: [
-            <LightboxButton
+            ( !isFullscreen && <LightboxButton
               key="download"
               onClick={() => {
                 const currentPhoto = mediumPhotos[index];
                 handleDownload(currentPhoto, index);
               }}
               icon={<DownloadIcon sx={{ fontSize: 28 }} />}
-            />,
+            />),
             "slideshow",
             "fullscreen",
-            "close",
+            !isFullscreen ? "close" : null,
           ]
         }}
       />
