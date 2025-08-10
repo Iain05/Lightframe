@@ -34,5 +34,6 @@ interface CollectionAlbum {
     coverImage: string;
     dateCreated: string;
     numPhotos: number;
+    description?: string;
     eventDate?: string;
 }

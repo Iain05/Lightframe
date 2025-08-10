@@ -106,7 +106,7 @@ const Collection = (props: CollectionProps) => {
       numPhotos: album.numPhotos,
       public: album.public,
       eventDate: album.eventDate,
-      description: '', // Collection response doesn't include description
+      description: album.description || '', 
     })) || [];
 
   // if (isLoading) return <div className="flex justify-center">Loading...</div>;

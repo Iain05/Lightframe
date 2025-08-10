@@ -1,0 +1,133 @@
+.styled-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    justify-content: center;
+    margin-left: 10px;
+}
+
+.styled-btn:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(51, 51, 51, 0.2);
+}
+
+/* Variants */
+.styled-btn--primary {
+    background-color: #333;
+    color: white;
+    border: 1px solid #333;
+}
+
+.styled-btn--primary:hover {
+    background-color: #555;
+    border-color: #555;
+}
+
+.styled-btn--secondary {
+    background-color: transparent;
+    color: #333;
+    border: 1px solid #333;
+}
+
+.styled-btn--secondary:hover {
+    background-color: #333;
+    color: white;
+}
+
+.styled-btn--icon {
+    background-color: transparent;
+    color: #666;
+    border: 1px solid #ddd;
+    border-radius: 50%;
+    padding: 0.75rem;
+    min-width: auto;
+}
+
+.styled-btn--icon:hover {
+    background-color: #f5f5f5;
+    border-color: #bbb;
+    color: #333;
+}
+
+/* Sizes */
+.styled-btn--small {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+}
+
+.styled-btn--small .styled-btn__icon {
+    font-size: 1rem !important;
+}
+
+.styled-btn--medium {
+    padding: 0.5rem 1.2rem;
+    font-size: 0.9rem;
+}
+
+.styled-btn--medium .styled-btn__icon {
+    font-size: 1.2rem !important;
+}
+
+.styled-btn--large {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+}
+
+.styled-btn--large .styled-btn__icon {
+    font-size: 1.4rem !important;
+}
+
+/* Icon adjustments for icon-only variant */
+.styled-btn--icon.styled-btn--small {
+    padding: 0.5rem;
+}
+
+.styled-btn--icon.styled-btn--medium {
+    padding: 0.75rem;
+}
+
+.styled-btn--icon.styled-btn--large {
+    padding: 1rem;
+}
+
+.styled-btn__icon {
+    margin-top: -5px;
+    transition: transform 0.2s ease;
+}
+
+.styled-btn:hover .styled-btn__icon {
+    transform: translateY(-1px);
+}
+
+.styled-btn__text {
+    white-space: nowrap;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .styled-btn--medium,
+    .styled-btn--large {
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
+    }
+    
+    .styled-btn__text {
+        display: none;
+    }
+    
+    .styled-btn--primary,
+    .styled-btn--secondary {
+        border-radius: 50%;
+        min-width: auto;
+        padding: 0.75rem;
+    }
+}

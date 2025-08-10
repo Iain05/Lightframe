@@ -29,7 +29,7 @@ const Actions = ({ selectedCount, totalCount, onDeleteSelected, onSelectAll, onU
   }
 
   return (
-    <div className="flex justify-between items-center py-4 mb-2">
+    <div className="flex justify-between items-center py-2 mb-2">
       <div className="flex items-center gap-4">
       </div>
       

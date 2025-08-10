@@ -1,20 +1,25 @@
+
 import { useState } from 'react';
 import CloudUploadOutlined from '@mui/icons-material/CloudUploadOutlined';
 import UploadModal from './upload-modal';
+import StyledButton from '../components/styled-button/styled-button';
 import './css/upload-button.css';
 
-interface UploadButtonProps {
+
+import type { ComponentPropsWithoutRef } from 'react';
+
+interface UploadButtonProps extends ComponentPropsWithoutRef<'button'> {
   onUpload?: (file: File) => Promise<void> | void;
   variant?: 'primary' | 'secondary' | 'icon';
   size?: 'small' | 'medium' | 'large';
-  className?: string;
 }
+
 
 const UploadButton = ({ 
   onUpload = (file) => { console.log('File to upload:', file); return Promise.resolve(); }, 
   variant = 'primary',
   size = 'medium',
-  className = ''
+  ...rest
 }: UploadButtonProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -26,18 +31,18 @@ const UploadButton = ({
     }
   };
 
-  const buttonClasses = `upload-btn upload-btn--${variant} upload-btn--${size} ${className}`.trim();
-
   return (
     <>
-      <button 
-        className={buttonClasses}
+      <StyledButton
+        variant={variant}
+        size={size}
         onClick={() => setIsModalOpen(true)}
         title="Upload Images"
+        text="Upload Images"
+        icon={<CloudUploadOutlined className="upload-btn__icon" />}
+        {...rest}
       >
-        <CloudUploadOutlined className="upload-btn__icon" />
-        {variant !== 'icon' && <span className="upload-btn__text">Upload Images</span>}
-      </button>
+      </StyledButton>
 
       <UploadModal
         isOpen={isModalOpen}
