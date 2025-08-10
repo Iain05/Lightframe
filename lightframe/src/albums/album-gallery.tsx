@@ -20,6 +20,9 @@ import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import LightboxButton from "@src/components/lightbox-button";
 
 import AlbumHeader from './album-header';
+import { useModalState, type EditingAlbum } from '../hooks/use-modal-state';
+import AlbumModals from '../collections/album-modals';
+import { useAlbumOperations } from '../hooks/use-album-operations';
 import PhotoOverlay from './photo-overlay';
 import DeletePhotosModal from './delete-photos-modal';
 import Actions from './actions/actions';
@@ -86,7 +89,11 @@ function generateLightboxPhotos(
 }
 
 function AlbumGallery(props: AlbumGalleryProps) {
+  const albumOperations = useAlbumOperations(""); 
   const [index, setIndex] = useState(-1);
+
+  const modalState = useModalState();
+
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [downloadingPhotoId, setDownloadingPhotoId] = useState<number | null>(null);
@@ -102,6 +109,30 @@ function AlbumGallery(props: AlbumGalleryProps) {
   } | null;
 
   const thumbnailsRef = React.useRef<ThumbnailsRef>(null);
+
+  const handleEditAlbum = () => {
+    if (!album) return;
+    modalState.openEditModal({
+      id: album.id,
+      name: album.name,
+      description: album.description || '',
+      isPublic: album.public,
+      eventDate: album.eventDate,
+    });
+  };
+
+  const handleSubmitEdit = (albumData: Omit<EditingAlbum, 'id'>) => {
+    if (!modalState.editingAlbum) return;
+    albumOperations.updateAlbum.mutate({
+      id: modalState.editingAlbum.id,
+      data: albumData,
+    }, {
+      onSuccess: () => {
+        modalState.closeEditModal();
+        window.location.reload();
+      }
+    });
+  };
 
   const handleUpload = async (file: File) => {
     try {
@@ -294,9 +325,21 @@ function AlbumGallery(props: AlbumGalleryProps) {
     <div
       className={`w-full md:w-5/6 flex flex-col justify-center mx-auto mt-2 pr-4 pl-4`}
     >
+
       {props.albumHeader && album?.name && (
-        <AlbumHeader album={album} onUpload={handleUpload} />
+        <AlbumHeader album={album} onUpload={handleUpload} onEditAlbum={handleEditAlbum} />
       )}
+      {/* AlbumModals for editing album */}
+      <AlbumModals
+        isAddModalOpen={false}
+        isEditModalOpen={modalState.isEditModalOpen}
+        editingAlbum={modalState.editingAlbum}
+        onCloseAdd={modalState.closeAddModal}
+        onCloseEdit={modalState.closeEditModal}
+        onSubmitAdd={() => {}}
+        onSubmitEdit={handleSubmitEdit}
+        onDelete={() => {}}
+      />
 
       {props.albumHeader &&
         <Actions

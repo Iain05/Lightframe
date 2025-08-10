@@ -1,18 +1,19 @@
-import { BrowserRouter, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
-import BorderColorRoundedIcon from '@mui/icons-material/BorderColorRounded';
 import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
 import UploadButton from './upload-button';
 import StyledButton from '@src/components/styled-button';
-import { getValidToken } from '../utils/auth';
-import type { AlbumResponse } from '../api/types';
+
+import { getValidToken } from '@src/utils/auth';
+import type { AlbumResponse } from '@src/api/types';
 
 interface AlbumHeaderProps {
   album: AlbumResponse;
   onUpload: (file: File) => void;
+  onEditAlbum?: () => void;
 }
 
-const AlbumHeader = ({ album, onUpload }: AlbumHeaderProps) => {
+const AlbumHeader = ({ album, onUpload, onEditAlbum }: AlbumHeaderProps) => {
   const navigate = useNavigate();
   const isLoggedIn = getValidToken() !== null;
 
@@ -39,7 +40,7 @@ const AlbumHeader = ({ album, onUpload }: AlbumHeaderProps) => {
               size="medium"
               icon={<EditNoteOutlinedIcon className="upload-btn__icon" />}
               text="Edit Album"
-              onClick={() => console.log('Edit album clicked')}
+              onClick={onEditAlbum}
             />
             <UploadButton onUpload={onUpload} variant="secondary" size="medium" />
             </>
