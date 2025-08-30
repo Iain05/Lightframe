@@ -34,6 +34,7 @@ function App() {
                     <div className="main-content">
                         <Routes>
                             <Route path="/albums" element={<Collection collection_id="main-collection"/>} />
+                            <Route path="/robotics" element={<Collection collection_id="robotics"/>} />
                             <Route path="/" element={<Home />} />
                             <Route path="/album/:albumId" element={<AlbumGalleryWrapper />} />
                             <Route path="/about" element={<About />} />
