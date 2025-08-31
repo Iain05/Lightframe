@@ -30,7 +30,7 @@ const Collection = (props: CollectionProps) => {
 
   // Data fetching
   const { data: collection, isLoading, error } = useQuery<CollectionResponse, Error>(
-    'fetchCollection',
+    ['fetchCollection', props.collection_id],
     async () => {
       const response = await api.get(`/api/collection?id=${props.collection_id}`);
       if (!response.ok) throw new Error('Failed to fetch collection');

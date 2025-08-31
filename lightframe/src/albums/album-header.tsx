@@ -60,7 +60,7 @@ const AlbumHeader = ({ album, onUpload, onEditAlbum }: AlbumHeaderProps) => {
           {album.eventDate && (
             <>
               <span>•</span>
-              <span>{new Date(album.eventDate).toLocaleDateString()}</span>
+              <span>{album.eventDate}</span>
             </>
           )}
         </span>
