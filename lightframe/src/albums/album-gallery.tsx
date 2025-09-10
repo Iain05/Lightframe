@@ -329,7 +329,7 @@ function AlbumGallery(props: AlbumGalleryProps) {
       {props.albumHeader && album?.name && (
         <AlbumHeader album={album} onUpload={handleUpload} onEditAlbum={handleEditAlbum} />
       )}
-      {/* AlbumModals for editing album */}
+
       <AlbumModals
         isAddModalOpen={false}
         isEditModalOpen={modalState.isEditModalOpen}

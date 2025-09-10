@@ -18,9 +18,9 @@ With this project I want to create a deployable website that has all the *main* 
 - Password protected albums?
 
 ## Tech Stack
-I made this map 5 minutes before work don't make fun of me. You may be laughing because you think I forgot a database. But no I'm just cool like that. Databases are for losers, we will be storing everything we need in the S3 bucket. Album? Based on folder structure. Image size? In the file name. Index order? wait shit idk just do it by date. Checkmake SQLers.
+I made this map 5 minutes before work don't make fun of me. You may be laughing because you think I forgot a database. But no I'm just cool like that. Databases are for losers, we will be storing everything we need in the S3 bucket. Album? Based on folder structure. Image size? In the file name. Index order? wait idk just do it by date. Checkmake SQLers.
 ![Architecture layout](./Images/architecture.png)
-Lowkey this will probably bite me in the butt later, and when that happens I will say holy fucking airball and double down.
+Lowkey this will probably bite me in the butt later, and when that happens I will say holy airball and double down.
 > [!NOTE]
 > Okay literally the next day I went back on my decision, not having a database is kinda stupid because you can't really get photo specific statistics or details. I am has dum.
 ### Frontend
@@ -28,7 +28,7 @@ Lowkey this will probably bite me in the butt later, and when that happens I wil
 - Important libraries: [yet another react lightbox](https://github.com/igordanchenko/yet-another-react-lightbox), [react photo album](https://github.com/igordanchenko/react-photo-album)
 
 ### Backend
-- Java with Spring API
+- Java REST API using SpringBoot
 - Yeah, java, because I write real code (cope)
 
 We are keeping things simple because I want this to actually be a usable website by the time I retire. 
@@ -36,15 +36,9 @@ We are keeping things simple because I want this to actually be a usable website
  
 ## Setup
 ### Upload Environment Variables
-The backend and frontend both have .env files that they need to access. I will write down what they actually need here later lol.
-Also set VITE_API_URL to '' for production.
+The backend and frontend both have .env files that they need to access. I promise I will write this section out eventually...
 
 ### Set up OCI
 ```sh
 scp -r dir/to/.oci/* user@remote-ip:~/Lightframe/backend/.oci/ 
-```
-
-### Copy Locally Built Jar
-```sh
-scp  .\backend\build\libs\backend-0.0.1-SNAPSHOT.jar user@remote-ip:~/Lightframe/
 ```

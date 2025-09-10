@@ -19,6 +19,7 @@ const UploadModal = ({ isOpen, onClose, onUpload }: UploadModalProps) => {
   const [uploading, setUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<{ [key: number]: 'pending' | 'uploading' | 'success' | 'error' }>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const fileListRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!isOpen) {
@@ -29,6 +30,12 @@ const UploadModal = ({ isOpen, onClose, onUpload }: UploadModalProps) => {
       setUploadStatus({});
     }
   }, [isOpen]);
+
+  // Derived upload progress values
+  const processedCount = selectedFiles.length > 0
+    ? selectedFiles.filter((_, i) => uploadStatus[i] && uploadStatus[i] !== 'pending').length - 1
+    : 0;
+  const progressPercent = selectedFiles.length > 0 ? Math.round((processedCount / selectedFiles.length) * 100) : 0;
 
   const handleDrag = (e: React.DragEvent) => {
     e.preventDefault();
@@ -73,6 +80,8 @@ const UploadModal = ({ isOpen, onClose, onUpload }: UploadModalProps) => {
       for (let i = 0; i < selectedFiles.length; i++) {
         try {
           setUploadStatus(prev => ({ ...prev, [i]: 'uploading' }));
+          // allow UI to show uploading index before awaiting
+          await new Promise<void>(res => setTimeout(() => res(), 10));
           await onUpload(selectedFiles[i]);
           setUploadStatus(prev => ({ ...prev, [i]: 'success' }));
         } catch (error) {
@@ -162,95 +171,111 @@ const UploadModal = ({ isOpen, onClose, onUpload }: UploadModalProps) => {
               </div>
             ) : (
               <div className="selected-files">
-                <h4>{selectedFiles.length} file{selectedFiles.length > 1 ? 's' : ''} selected</h4>
-                <div className="file-list">
-                  {selectedFiles.map((file, index) => {
-                    const status = uploadStatus[index];
-                    const getStatusIcon = () => {
-                      switch (status) {
-                        case 'success':
-                          return <CheckCircleRounded style={{ color: '#4caf50', fontSize: 20 }} />;
-                        case 'error':
-                          return <ErrorRounded style={{ color: '#f44336', fontSize: 20 }} />;
-                        case 'uploading':
-                          return <HourglassEmptyRounded style={{ color: '#2196f3', fontSize: 20 }} className="rotating" />;
-                        default:
-                          return null;
-                      }
-                    };
-
-                    return (
-                      <div key={index} className="file-item">
-                        <span className="file-name">{file.name}</span>
-                        <span className="file-size">({(file.size / 1024 / 1024).toFixed(2)} MB)</span>
-                        <div className="file-actions">
-                          {getStatusIcon()}
-                          {!uploading && (
-                            <button 
-                              className="remove-file-button"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                removeFile(index);
-                              }}
-                            >
-                              ×
-                            </button>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-                <p className="drop-zone-hint">
-                  {(() => {
-                    if (allUploaded) {
-                      return 'All files uploaded successfully!';
-                    }
-                    return uploading ? 'Uploading files...' : 'Click to add more files or drag & drop';
-                  })()}
-                </p>
-              </div>
-            )}
-          </div>
-
-          <div className="modal-actions">
-            {!allUploaded && !uploading && (
-              <button type="button" className="cancel-button" onClick={handleClose}>
-                Close
-              </button>
-            )}
-            {(() => {
-              if (allUploaded) {
-                return (
-                  <button 
-                    type="button" 
-                    className="upload-button" 
-                    onClick={handleClose}
-                  >
-                    Done
-                  </button>
-                );
-              }
-              
-              return (
-                <button 
-                  type="button" 
-                  className="upload-button" 
-                  disabled={selectedFiles.length === 0 || uploading}
-                  onClick={handleUpload}
+                {uploading && selectedFiles.length > 0 && (
+                  <div className="upload-progress" style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
+                    <div style={{ flex: 1, height: 6, background: '#eee', borderRadius: 3, overflow: 'hidden' }}>
+                      <div style={{ width: `${progressPercent}%`, height: '100%', background: '#4caf50', transition: 'width 250ms ease' }} />
+                    </div>
+                    <div style={{ fontSize: 13, color: '#555', minWidth: 60, textAlign: 'right' }}>
+                      {processedCount}/{selectedFiles.length}
+                    </div>
+                  </div>
+                )}
+                 <h4>{selectedFiles.length} file{selectedFiles.length > 1 ? 's' : ''} selected</h4>
+                <div
+                  ref={fileListRef}
+                  className="file-list"
+                  style={{ maxHeight: 300, overflowY: 'auto', WebkitOverflowScrolling: 'touch' }}
+                  onWheel={(e) => e.stopPropagation()}
+                  onTouchMove={(e) => e.stopPropagation()}
                 >
-                  {uploading 
-                    ? 'Uploading...' 
-                    : `Upload ${selectedFiles.length > 0 ? `${selectedFiles.length} ` : ''}Image${selectedFiles.length > 1 ? 's' : ''}`
-                  }
-                </button>
-              );
-            })()}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+                   {selectedFiles.map((file, index) => {
+                     const status = uploadStatus[index];
+                     const getStatusIcon = () => {
+                       switch (status) {
+                         case 'success':
+                           return <CheckCircleRounded style={{ color: '#4caf50', fontSize: 20 }} />;
+                         case 'error':
+                           return <ErrorRounded style={{ color: '#f44336', fontSize: 20 }} />;
+                         case 'uploading':
+                           return <HourglassEmptyRounded style={{ color: '#2196f3', fontSize: 20 }} className="rotating" />;
+                         default:
+                           return null;
+                       }
+                     };
 
-export default UploadModal;
+                     return (
+                       <div key={index} className="file-item">
+                         <span className="file-name">{file.name}</span>
+                         <span className="file-size">({(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+                         <div className="file-actions">
+                           {getStatusIcon()}
+                           {!uploading && (
+                             <button 
+                               className="remove-file-button"
+                               onClick={(e) => {
+                                 e.stopPropagation();
+                                 removeFile(index);
+                               }}
+                             >
+                               ×
+                             </button>
+                           )}
+                         </div>
+                       </div>
+                     );
+                   })}
+                 </div>
+                 <p className="drop-zone-hint">
+                   {(() => {
+                     if (allUploaded) {
+                       return 'All files uploaded successfully!';
+                     }
+                     return uploading ? 'Uploading files...' : 'Click to add more files or drag & drop';
+                   })()}
+                 </p>
+               </div>
+             )}
+           </div>
+
+           <div className="modal-actions">
+             {!allUploaded && !uploading && (
+               <button type="button" className="cancel-button" onClick={handleClose}>
+                 Close
+               </button>
+             )}
+             {(() => {
+               if (allUploaded) {
+                 return (
+                   <button 
+                     type="button" 
+                     className="upload-button" 
+                     onClick={handleClose}
+                   >
+                     Done
+                   </button>
+                 );
+               }
+               
+               return (
+                 <button 
+                   type="button" 
+                   className="upload-button" 
+                   disabled={selectedFiles.length === 0 || uploading}
+                   onClick={handleUpload}
+                 >
+                   {uploading 
+                     ? 'Uploading...' 
+                     : `Upload ${selectedFiles.length > 0 ? `${selectedFiles.length} ` : ''}Image${selectedFiles.length > 1 ? 's' : ''}`
+                   }
+                 </button>
+               );
+             })()}
+           </div>
+         </div>
+       </div>
+     </div>
+   );
+ };
+
+ export default UploadModal;

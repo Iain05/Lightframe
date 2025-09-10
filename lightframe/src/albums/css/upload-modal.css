@@ -30,7 +30,6 @@
 }
 
 .drop-zone.uploading {
-    pointer-events: none;
     opacity: 0.7;
 }
 
