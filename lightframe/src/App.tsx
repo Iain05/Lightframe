@@ -51,6 +51,7 @@ function App() {
 const titleMap: Record<string, string> = {
     "/albums": "Albums | Iain Griesdale",
     "/about": "About | Iain Griesdale",
+    "/robotics": "Robotics | Iain Griesdale",
     "/login": "Login | Iain Griesdale",
     "/": "Iain Griesdale",
 };
