@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useLayoutEffect } from 'react';
 import { useQuery } from 'react-query';
 import type { CollectionResponse } from '../api/types';
 import { api } from '../api/api';
@@ -19,21 +19,21 @@ export type AlbumFormData = {
   eventDate?: string; 
 };
 
-
 const Collection = (props: CollectionProps) => {
   const [fadeIn, setFadeIn] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Custom hooks
   const albumOperations = useAlbumOperations(props.collection_id);
   const modalState = useModalState();
 
-  // Data fetching
   const { data: collection, isLoading, error } = useQuery<CollectionResponse, Error>(
     ['fetchCollection', props.collection_id],
     async () => {
       const response = await api.get(`/api/collection?id=${props.collection_id}`);
-      if (!response.ok) throw new Error('Failed to fetch collection');
+      if (!response.ok) {
+        setFadeIn(true);
+        throw new Error('Failed to fetch collection');
+      }
       return response.json();
     }
   );
@@ -44,7 +44,7 @@ const Collection = (props: CollectionProps) => {
     setIsLoggedIn(!!token);
   }, []);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setFadeIn(false);
   }, [props.collection_id]);
 
@@ -108,9 +108,6 @@ const Collection = (props: CollectionProps) => {
       eventDate: album.eventDate,
       description: album.description || '', 
     })) || [];
-
-  // if (isLoading) return <div className="flex justify-center">Loading...</div>;
-  if (error) return <div className="flex justify-center">Error: {error.message}</div>;
 
   return (
     <>

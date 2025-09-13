@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
 import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
 import UploadButton from './upload-button';
 import StyledButton from '@src/components/styled-button';
+import BackButton from '@src/components/back-button';
 
 import { getValidToken } from '@src/utils/auth';
 import type { AlbumResponse } from '@src/api/types';
@@ -20,18 +20,7 @@ const AlbumHeader = ({ album, onUpload, onEditAlbum }: AlbumHeaderProps) => {
   return (
     <div className="mt-0 md:mt-10 mb-6 relative">
       <div className="mb-4">
-        <button
-          className="flex items-center text-xl font-medium"
-          style={{
-            padding: '4px',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            transition: 'background-color 0.3s ease',
-          }}
-          onClick={() => navigate(-1)}
-          >
-          <ArrowBackRoundedIcon style={{ fontSize: 30 }} />
-        </button>
+        <BackButton navigate={navigate} />
         <div className="absolute top-0 right-0 mt-0 mr-4 flex items-center gap-0">
           {isLoggedIn && (
             <>
