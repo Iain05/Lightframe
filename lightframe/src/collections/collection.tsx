@@ -26,7 +26,7 @@ const Collection = (props: CollectionProps) => {
   const albumOperations = useAlbumOperations(props.collection_id);
   const modalState = useModalState();
 
-  const { data: collection, isLoading, error } = useQuery<CollectionResponse, Error>(
+  const { data: collection, isLoading } = useQuery<CollectionResponse, Error>(
     ['fetchCollection', props.collection_id],
     async () => {
       const response = await api.get(`/api/collection?id=${props.collection_id}`);
