@@ -13,13 +13,13 @@ export const downloadPhoto = async ({ albumName, photoIndex, downloadUrl }: Down
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   
   if (isMobile) {
-    const imageUrl = URL.createObjectURL(blob);
-    window.open(imageUrl, '_blank');
+    // const imageUrl = URL.createObjectURL(blob);
+    window.open(downloadUrl, '_blank');
     
     // Clean up the blob URL after a delay
-    setTimeout(() => {
-      URL.revokeObjectURL(imageUrl);
-    }, 60000); 
+    // setTimeout(() => {
+    //   URL.revokeObjectURL(imageUrl);
+    // }, 60000); 
   } else {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');

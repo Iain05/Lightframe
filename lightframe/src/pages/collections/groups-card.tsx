@@ -28,7 +28,7 @@ const GroupsCard = ({ name, coverImage, collectionId, index, fadeIn }: Group) =>
       className={`relative cursor-pointer group overflow-hidden transform transition-opacity duration-500 ease-in-out rounded-md aspect-[3/2] md:aspect-[3/1] ${
         visible ? 'opacity-100' : 'opacity-0'
       }`}
-      style={{ transitionDelay: `${(index + 1) * 150}ms` }}
+      style={{ transitionDelay: `${(index + 1) * 100}ms` }}
       onClick={() => navigate(`${collectionId}`)}
     >
       <img

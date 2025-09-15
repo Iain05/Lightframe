@@ -66,7 +66,7 @@ const DeletePhotosModal = ({ isOpen, onClose, onConfirm, selectedCount }: Delete
           </div>
         </div>
 
-        <div className="modal-actions">
+        <div className="modal-actions mx-8">
           <button type="button" className="cancel-button" onClick={handleClose}>
             Cancel
           </button>
