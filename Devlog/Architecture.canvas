@@ -1,13 +1,13 @@
 {
 	"nodes":[
 		{"id":"e208804fda7a5adc","type":"group","x":-560,"y":-320,"width":400,"height":485,"color":"2","label":"Oracle Cloud Compute"},
-		{"id":"830a8f24790a6db6","x":-100,"y":-60,"width":400,"height":225,"color":"3","type":"group","label":"Database"},
+		{"id":"830a8f24790a6db6","type":"group","x":-100,"y":-60,"width":400,"height":225,"color":"3","label":"Database"},
 		{"id":"23f76537a698a0ca","type":"group","x":-100,"y":-320,"width":400,"height":220,"color":"6","label":"Bucket"},
 		{"id":"0eac0e65ffcfc476","type":"text","text":"React Frontend\n- React Photo Album\n- Yet Another React lightbox","x":-500,"y":-282,"width":250,"height":145,"color":"5"},
 		{"id":"9bf3095b77dde497","type":"text","text":"Java SPRING Backend\n- Upload files\n- Get album\n- Delete files","x":-500,"y":-20,"width":250,"height":160,"color":"4"},
-		{"id":"dcc3d05e8efeee81","type":"text","text":"low resolution storage\nbase_url/preview/album_id/image.jpg","x":-80,"y":-300,"width":360,"height":90},
-		{"id":"a31fcd32e3ef5f9f","type":"text","text":"full resolution storage\nbase_url/full/album_id/image.jpg","x":-80,"y":-200,"width":360,"height":85},
-		{"id":"7b00c307d1918520","type":"text","text":"albums\nalbum_id, num_photos, date_created, etc","x":-80,"y":-40,"width":360,"height":85},
+		{"id":"dcc3d05e8efeee81","type":"text","text":"low resolution storage\nbase_url/small/album_id/image.jpg","x":-80,"y":-300,"width":360,"height":90},
+		{"id":"a31fcd32e3ef5f9f","type":"text","text":"full resolution storage\nbase_url/large/album_id/image.jpg","x":-80,"y":-200,"width":360,"height":85},
+		{"id":"7b00c307d1918520","type":"text","text":"albums\ncollection_id, album_id, num_photos, date_created, etc","x":-80,"y":-40,"width":360,"height":85},
 		{"id":"d191aacf967da91f","type":"text","text":"photos\nalbum_id, url, width, height, etc","x":-80,"y":60,"width":360,"height":80}
 	],
 	"edges":[

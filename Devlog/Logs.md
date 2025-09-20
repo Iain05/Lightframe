@@ -170,7 +170,28 @@ Actually looks so fire.
 ![[Pasted image 20250708235636.png]]
 Also I got the about me done the other day dont know if i wrote that down here. Idk this is mostly just brain dump for fun at this point. 
 
-# August 1st
-Improvements to make:
-- Loading/processing popup when deleting images - currently just stalls for a bit and then goes to blank page
-- 
+# September 20th 
+So its been a while since I added to this lol. I haven't done any major features, except for some frontend stuff where I added a page to see collections of albums but thats entirely unrelated to the backend stuff. Really it should be but... eh.
+![[Pasted image 20250920163620.png]]
+These are just not dynamically loaded because I couldn't be bothered. At some point It would actually be quite easy with a new sql table but oh well. There are still a couple annoyances I have with the site that I cannot yet be bothered to fix. 
+- When deleting an image the screen just goes blank
+- downloading sucks on mobile, but I don't know if there's a way around it
+- large albums are not great... I should really add pagination. 
+## Things I want to add (eventually tm)
+### Pagination
+Since the initial fetch requests are actually kinda big, I feel like it would be best to do pagination managed by the backend. That is to say, we request a specific page of the album in the api request and it gives us that range of photos. Not particularly hard to do, but a lot of though needs to go into it to ensure I don't back myself into a corner. We need to be very thoughtful, mindful, very demure.  
+
+I guess also you would just session store the page you were on? or do you do it in the url? idrk. Session store seems easier. Problem for me later when I actually implement this. 
+
+Even another thing is the order of images, right now the frontend just sorts by date taken, we just need to move that into the backend (which tbh would be faster anyway right like why didnt I do that already huh?) and then eventually implement other sorting methods (see below).
+### Sorting
+This kinda goes hand in hand with pagination, but basically at least chronological and reverse chronological. To be honest I don't know how else you would do it im realizing. I don't name photos so that doesn't make sense, I guess I could have a manual ordering but I ain't doing the ui for that. Maybe a random one would be kinda cool? You could seed the randomization on session load so that only on new sessions does the random order change. 
+
+### Good Collection Management
+Right now collections are literally just based on the url you make an album from. Kinda stupid, since to make a new collection I need to just add it to the frontend. On one hand I did it in a way thats easy because I care about myself occasionally, but on the other hand it really should be dynamic. Would really just need a new sql table for collections.  This is pretty low priority though because doing it in the frontend is honestly not too bad. 
+
+### Statistics
+Having some statistics would be nice to be honest. Then I could even have a little dashboard in an admin page. I don't really want to do anything fancy because then you really have to think about how to track views and stuff. I guess you could do it per session, but even then like eh. I think I wouldn't bother with image views, at least not right away. The main thing would probably be image downloads. Also album views should be doable? That would be really easy on a per session thing. In fact I might even be able to do it on the backend side when a user makes a request to the album api? wait no that seems stupid, what if something else requests the album api. Yeah that would be bad practice.
+- Album views
+- Image downloads
+Im not really sure if theres any way I can get like proper new viewers, I suspect probably not. 
