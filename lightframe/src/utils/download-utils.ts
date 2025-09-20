@@ -1,3 +1,5 @@
+import { Navigate } from "react-router-dom";
+
 interface DownloadOptions {
   albumName?: string;
   photoIndex: number;
@@ -13,8 +15,8 @@ export const downloadPhoto = async ({ albumName, photoIndex, downloadUrl }: Down
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   
   if (isMobile) {
-    // const imageUrl = URL.createObjectURL(blob);
-    window.open(downloadUrl, '_blank');
+    sessionStorage.setItem('scrollPosition', String(window.scrollY));
+    window.location.href = downloadUrl;
     
     // Clean up the blob URL after a delay
     // setTimeout(() => {
