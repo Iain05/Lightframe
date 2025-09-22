@@ -24,6 +24,8 @@ public class Photo {
     @Column(name = "photo_index")
     private Integer index;
 
+    private int downloads;
+
     @Column(name = "date_taken")
     private LocalDateTime dateTaken;
 
@@ -65,6 +67,14 @@ public class Photo {
 
     public Integer getIndex() {
         return index;
+    }
+
+    public int getDownloads() {
+        return downloads;
+    }
+
+    public int incrementDownloads() {
+        return ++downloads;
     }
 
     public void setIndex(int index) {

@@ -3,6 +3,7 @@ package com.example.backend.api.controller;
 import com.example.backend.api.model.DeletePhotosRequest;
 import com.example.backend.exception.DeletePhotoException;
 import com.example.backend.exception.UploadPhotoException;
+import com.example.backend.service.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +15,12 @@ import org.springframework.web.multipart.MultipartFile;
 @RequestMapping("/api/photo")
 public class PhotoController {
     private final PhotoService photoService;
+    private final StatisticsService statisticsService;
 
     @Autowired
-    public PhotoController(PhotoService photoService) {
+    public PhotoController(PhotoService photoService, StatisticsService StatisticsService) {
         this.photoService = photoService;
+        this.statisticsService = StatisticsService;
     }
 
     /**
@@ -51,6 +54,16 @@ public class PhotoController {
         }
 
         return ResponseEntity.ok("Photo deleted successfully");
+    }
+
+    @PostMapping("/{id}/download")
+    public ResponseEntity<?> downloadPhoto(@PathVariable int id) {
+        try {
+            statisticsService.downloadPhoto(id);
+            return ResponseEntity.ok("Photo download recorded successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Internal server error: " + e.getMessage());
+        }
     }
 
 }

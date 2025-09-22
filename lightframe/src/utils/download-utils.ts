@@ -1,19 +1,24 @@
-import { Navigate } from "react-router-dom";
+import { statisticsAPI } from "@src/api/statistics-api";
 
 interface DownloadOptions {
   albumName?: string;
+  photoId?: number;
   photoIndex: number;
   downloadUrl: string;
 }
 
-export const downloadPhoto = async ({ albumName, photoIndex, downloadUrl }: DownloadOptions): Promise<void> => {
+export const downloadPhoto = async ({ albumName, photoId, photoIndex, downloadUrl }: DownloadOptions): Promise<void> => {
   const response = await fetch(downloadUrl);
   const blob = await response.blob();
   
   const fileName = `${albumName || 'photo'}-${photoIndex + 1}.jpg`;
   
   const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  
+
+  if (photoId != null) {
+    statisticsAPI.addDownload(photoId);
+  }
+
   if (isMobile) {
     sessionStorage.setItem('scrollPosition', String(window.scrollY));
     window.location.href = downloadUrl;

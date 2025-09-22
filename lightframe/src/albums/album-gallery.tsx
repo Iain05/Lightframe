@@ -220,6 +220,7 @@ function AlbumGallery(props: AlbumGalleryProps) {
         await downloadPhoto({
           albumName: album?.name,
           photoIndex: index,
+          photoId: photo.id,
           downloadUrl: photo.downloadUrl,
         });
       } catch (error) {
