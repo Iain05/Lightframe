@@ -2,9 +2,8 @@ import React from 'react';
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
 
-import "yet-another-react-lightbox/plugins/thumbnails.css";
-
 import PhotoAlbum from "react-photo-album";
+import "yet-another-react-lightbox/plugins/thumbnails.css";
 import "react-photo-album/styles.css";
 import "@src/css/lightbox-override.css";
 import "./css/download-overlay.css";
@@ -66,11 +65,12 @@ function generateLightboxPhotos(
   breakpoints: number[]):
   SelectablePhoto[] {
   return albumPhotos
-    .map(({ url, width, height, id, dateTaken }) => ({
+    .map(({ url, width, height, id, downloads, dateTaken }) => ({
       src: `${basePath}/${url}`,
       width: width,
       height: height,
       id: id,
+      downloads: downloads,
       dateTaken: dateTaken,
       downloadUrl: `${fullResPath}/${url}`,
       srcSet: breakpoints.map((breakpoint) => ({
@@ -374,6 +374,7 @@ function AlbumGallery(props: AlbumGalleryProps) {
                   photo={photo}
                   mediumPhoto={mediumPhoto}
                   index={index}
+                  downloads={mediumPhoto.downloads}
                   enableOverlay={props.enableOverlay}
                   downloadingPhotoId={downloadingPhotoId}
                   settingCoverPhotoId={settingCoverPhotoId}

@@ -2,6 +2,7 @@ import type { Photo } from "react-photo-album";
 
 export type SelectablePhoto = Photo & {
   id: number;
+  downloads?: number;
   downloadUrl?: string;
   selected?: boolean;
 };
