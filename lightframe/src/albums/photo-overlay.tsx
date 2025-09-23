@@ -1,5 +1,5 @@
 import CircularProgress from '@mui/material/CircularProgress';
-import AddToPhotosIcon from '@mui/icons-material/AddToPhotos';
+import WallpaperIcon from '@mui/icons-material/Wallpaper';
 import CheckIcon from '@mui/icons-material/Check';
 import Tooltip from '@mui/material/Tooltip';
 import DownloadIcon from '@mui/icons-material/Download';
@@ -46,7 +46,7 @@ const PhotoOverlay = ({
       {/* Set Album Cover Button */}
       {isLoggedIn && enableOverlay && <Tooltip title="Set as Album Cover" placement="bottom">
         <div
-          className="absolute top-2 right-12 cursor-pointer z-10"
+          className="absolute top-2 right-10 cursor-pointer z-10"
           onClick={(event) => {
             if (settingCoverPhotoId !== photo.id && coverSuccessPhotoId !== photo.id) {
               onSetAlbumCover(photo);
@@ -69,9 +69,10 @@ const PhotoOverlay = ({
               }}
             />
           ) : (
-            <AddToPhotosIcon
+            <WallpaperIcon
               style={{
-                fontSize: 28,
+                marginTop: "1px",
+                fontSize: 24,
                 color: 'white',
               }}
             />
@@ -92,7 +93,7 @@ const PhotoOverlay = ({
       )}
 
       {/* Download Count Indicator */}
-      {isLoggedIn && typeof downloads === 'number' && (
+      {isLoggedIn && enableOverlay && typeof downloads === 'number' && (
         <div
           className="absolute top-2 left-2 z-10 flex items-center"
           style={{
