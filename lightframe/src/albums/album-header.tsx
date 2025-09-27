@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom';
 import EditNoteOutlinedIcon from '@mui/icons-material/EditNoteOutlined';
 import UploadButton from './upload-button';
 import StyledButton from '@src/components/styled-button';
@@ -14,13 +13,12 @@ interface AlbumHeaderProps {
 }
 
 const AlbumHeader = ({ album, onUpload, onEditAlbum }: AlbumHeaderProps) => {
-  const navigate = useNavigate();
   const isLoggedIn = getValidToken() !== null;
 
   return (
     <div className="mt-0 md:mt-10 mb-6 relative">
       <div className="mb-4">
-        <BackButton navigate={navigate} />
+        <BackButton collection={album.collection} />
         <div className="absolute top-0 right-0 mt-0 mr-4 flex items-center gap-0">
           {isLoggedIn && (
             <>

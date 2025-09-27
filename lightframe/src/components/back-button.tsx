@@ -1,11 +1,15 @@
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded';
+import { useNavigate, useNavigationType } from 'react-router-dom';
 
-const BackButton = ({ onClick, navigate }: { onClick?: () => void, navigate: (value: number) => void }) => {
+const BackButton = ({ onClick, collection }: { onClick?: () => void, collection?: string }) => {
+  const navigate = useNavigate();
+  const navigationType = useNavigationType();
 
   const handleClick = () => {
     if (onClick) onClick();
-    else navigate(-1);
-  };
+    else if (window.history.length > 1 && navigationType !== 'POP') navigate(-1);
+    else navigate(`/collections/${collection || ''}`);
+  }
 
   return (
     <button

@@ -54,6 +54,7 @@ public class Album {
                  String id,
                  String description,
                  boolean isPublic,
+                 String collection,
                  String coverImage,
                  LocalDateTime createdAt,
                  Integer numPhotos,
@@ -62,6 +63,7 @@ public class Album {
         this.id = id;
         this.description = description;
         this.isPublic = isPublic;
+        this.collection = collection;
         this.coverImage = coverImage;
         this.createdAt = createdAt;
         this.numPhotos = numPhotos;

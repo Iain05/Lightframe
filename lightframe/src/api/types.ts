@@ -5,6 +5,7 @@ export interface AlbumResponse {
     public: boolean;
     id: string;
     index: number;
+    collection: string;
     coverImage: string;
     numPhotos: number;
     eventDate?: string;

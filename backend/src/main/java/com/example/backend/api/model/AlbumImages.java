@@ -12,6 +12,7 @@ public class AlbumImages extends Album {
                 album.getId(),
                 album.getDescription(),
                 album.isPublic(),
+                album.getCollection(),
                 album.getCoverImage(),
                 album.getDateCreated(),
                 photos.size(),
