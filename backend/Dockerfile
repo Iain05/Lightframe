@@ -5,7 +5,7 @@ COPY . .
 
 RUN gradle build --no-daemon --stacktrace
 
-FROM openjdk:17-jdk-alpine
+FROM openjdk:17-jdk
 
 WORKDIR /app
 
