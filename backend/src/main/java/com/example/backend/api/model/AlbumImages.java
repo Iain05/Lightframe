@@ -16,7 +16,8 @@ public class AlbumImages extends Album {
                 album.getCoverImage(),
                 album.getDateCreated(),
                 photos.size(),
-                album.getEventDate()
+                album.getEventDate(),
+                album.getViews()
         );
         this.photos = new ArrayList<>(photos);
     }

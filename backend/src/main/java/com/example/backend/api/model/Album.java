@@ -39,6 +39,9 @@ public class Album {
     @Column(name = "event_date")
     private LocalDate eventDate;
 
+    @Column(name = "views")
+    private Integer views;
+
     public Album(String name, String description, String collection, boolean isPublic, LocalDate eventDate) {
         this.name = name;
         this.description = description;
@@ -58,7 +61,8 @@ public class Album {
                  String coverImage,
                  LocalDateTime createdAt,
                  Integer numPhotos,
-                 LocalDate eventDate) {
+                 LocalDate eventDate,
+                 Integer views) {
         this.name = name;
         this.id = id;
         this.description = description;
@@ -68,11 +72,13 @@ public class Album {
         this.createdAt = createdAt;
         this.numPhotos = numPhotos;
         this.eventDate = eventDate;
+        this.views = views;
     }
 
     public Album() {
         this.createdAt = LocalDateTime.now();
         this.numPhotos = 0;
+        this.views = 0;
         this.description = "description";
     }
 
@@ -111,6 +117,12 @@ public class Album {
     public LocalDate getEventDate() {
         return eventDate;
 }
+
+    public int getViews() { return views; }
+
+    public int incrementViews() {
+        return ++views;
+    }
 
     public void setName(String name) {
         this.name = name;

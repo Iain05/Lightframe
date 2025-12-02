@@ -5,8 +5,10 @@ import com.example.backend.api.model.AlbumParameters;
 import com.example.backend.api.model.AlbumImages;
 import com.example.backend.exception.AlbumNotFoundException;
 import com.example.backend.service.AlbumService;
+import com.example.backend.service.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -16,10 +18,12 @@ import org.springframework.web.server.ResponseStatusException;
 public class AlbumController {
 
     private final AlbumService albumService;
+    private final StatisticsService statisticsService;
 
     @Autowired
-    public AlbumController(AlbumService albumService) {
+    public AlbumController(AlbumService albumService, StatisticsService statisticsService) {
         this.albumService = albumService;
+        this.statisticsService = statisticsService;
     }
 
     /**
@@ -130,6 +134,16 @@ public class AlbumController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+        }
+    }
+
+    @PostMapping("/{albumId}/view")
+    public ResponseEntity<?> viewAlbum(@PathVariable String albumId) {
+        try {
+            statisticsService.viewAlbum(albumId);
+            return ResponseEntity.ok("Album view recorded successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Internal server error: " + e.getMessage());
         }
     }
 }

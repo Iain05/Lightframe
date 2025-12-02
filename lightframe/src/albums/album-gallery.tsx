@@ -26,6 +26,7 @@ import PhotoOverlay from './photo-overlay';
 import DeletePhotosModal from './delete-photos-modal';
 import Actions from './actions/actions';
 import { albumAPI } from '../api/album-api';
+import { statisticsAPI } from "@src/api/statistics-api";
 import { downloadPhoto } from '../utils/download-utils';
 import type { AlbumResponse } from '../api/types';
 import type { SelectablePhoto, AlbumGalleryProps } from '@src/types/types';
@@ -153,7 +154,6 @@ function AlbumGallery(props: AlbumGalleryProps) {
     },
   );
 
-
   const smallPhotos = useMemo(() => {
     return album ? generatePhotos(album.photos, `${import.meta.env.VITE_BUCKET_BASE}small`, BREAKPOINTS) : [];
   }, [album]);
@@ -251,6 +251,10 @@ function AlbumGallery(props: AlbumGalleryProps) {
       setIsDeleteModalOpen(false);
     }
   };
+
+  useEffect(() => {
+    statisticsAPI.sendAlbumView(props.albumId);
+  }, []);
   
   useEffect(() => {
     if (album?.name && location.pathname.startsWith('/album/')) document.title = album.name + " | Iain Griesdale";

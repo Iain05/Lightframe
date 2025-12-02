@@ -22,14 +22,14 @@ const AlbumHeader = ({ album, onUpload, onEditAlbum }: AlbumHeaderProps) => {
         <div className="absolute top-0 right-0 mt-0 mr-4 flex items-center gap-0">
           {isLoggedIn && (
             <>
-            <StyledButton
-              variant="secondary"
-              size="medium"
-              icon={<EditNoteOutlinedIcon className="upload-btn__icon" />}
-              text="Edit Album"
-              onClick={onEditAlbum}
-            />
-            <UploadButton onUpload={onUpload} variant="secondary" size="medium" />
+              <StyledButton
+                variant="secondary"
+                size="medium"
+                icon={<EditNoteOutlinedIcon className="upload-btn__icon" />}
+                text="Edit Album"
+                onClick={onEditAlbum}
+              />
+              <UploadButton onUpload={onUpload} variant="secondary" size="medium" />
             </>
           )}
         </div>
@@ -48,6 +48,10 @@ const AlbumHeader = ({ album, onUpload, onEditAlbum }: AlbumHeaderProps) => {
             <>
               <span>•</span>
               <span>{album.eventDate}</span>
+              {isLoggedIn && <>
+                <span>•</span>
+                <span>{album.views} views</span>
+              </>}
             </>
           )}
         </span>
