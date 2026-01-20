@@ -1,0 +1,172 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: system
+      comment: Create albums table
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: albums
+      changes:
+        - createTable:
+            tableName: albums
+            columns:
+              - column:
+                  name: id
+                  type: VARCHAR(100)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: public
+                  type: BOOLEAN
+                  defaultValueBoolean: false
+              - column:
+                  name: description
+                  type: TEXT
+              - column:
+                  name: cover_image
+                  type: VARCHAR(255)
+              - column:
+                  name: num_photos
+                  type: INT
+              - column:
+                  name: collection
+                  type: VARCHAR(100)
+              - column:
+                  name: created_at
+                  type: DATETIME
+                  defaultValueComputed: CURRENT_TIMESTAMP
+              - column:
+                  name: event_date
+                  type: DATE
+
+  - changeSet:
+      id: 2
+      author: system
+      comment: Create photos table
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: photos
+      changes:
+        - createTable:
+            tableName: photos
+            columns:
+              - column:
+                  name: id
+                  type: INT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: album_id
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: url
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: width
+                  type: INT
+              - column:
+                  name: height
+                  type: INT
+              - column:
+                  name: photo_index
+                  type: INT
+              - column:
+                  name: downloads
+                  type: INT
+                  defaultValueNumeric: 0
+              - column:
+                  name: date_taken
+                  type: DATETIME
+              - column:
+                  name: created_at
+                  type: DATETIME
+                  defaultValueComputed: CURRENT_TIMESTAMP
+        - addForeignKeyConstraint:
+            baseTableName: photos
+            baseColumnNames: album_id
+            constraintName: fk_photos_album
+            referencedTableName: albums
+            referencedColumnNames: id
+
+  - changeSet:
+      id: 3
+      author: system
+      comment: Create metadata table
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - tableExists:
+                tableName: metadata
+      changes:
+        - createTable:
+            tableName: metadata
+            columns:
+              - column:
+                  name: key
+                  type: VARCHAR(255)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: value
+                  type: TEXT
+
+  - changeSet:
+      id: 4
+      author: system
+      comment: Create trigger to increment num_photos after photo insert
+      preConditions:
+        - onFail: MARK_RAN
+        - sqlCheck:
+            expectedResult: 0
+            sql: SELECT COUNT(*) FROM information_schema.triggers WHERE trigger_name = 'after_photo_insert'
+      changes:
+        - sql:
+            dbms: mysql
+            sql: |
+              CREATE TRIGGER after_photo_insert
+              AFTER INSERT ON photos
+              FOR EACH ROW
+              UPDATE albums
+              SET num_photos = num_photos + 1
+              WHERE id = NEW.album_id
+        - rollback:
+            sql: DROP TRIGGER IF EXISTS after_photo_insert
+
+  - changeSet:
+      id: 5
+      author: system
+      comment: Create trigger to decrement num_photos after photo delete
+      preConditions:
+        - onFail: MARK_RAN
+        - sqlCheck:
+            expectedResult: 0
+            sql: SELECT COUNT(*) FROM information_schema.triggers WHERE trigger_name = 'after_photo_delete'
+      changes:
+        - sql:
+            dbms: mysql
+            sql: |
+              CREATE TRIGGER after_photo_delete
+              AFTER DELETE ON photos
+              FOR EACH ROW
+              UPDATE albums
+              SET num_photos = num_photos - 1
+              WHERE id = OLD.album_id
+        - rollback:
+            sql: DROP TRIGGER IF EXISTS after_photo_delete
