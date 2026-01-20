@@ -8,6 +8,7 @@ export interface AlbumResponse {
     collection: string;
     coverImage: string;
     numPhotos: number;
+    views: number;
     eventDate?: string;
     photos: AlbumPhotos[];
 }

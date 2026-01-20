@@ -3,12 +3,12 @@ package com.example.backend.api.controller;
 import com.example.backend.api.model.DeletePhotosRequest;
 import com.example.backend.exception.DeletePhotoException;
 import com.example.backend.exception.UploadPhotoException;
-import com.example.backend.service.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.backend.service.PhotoService;
+import com.example.backend.service.StatisticsService;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -65,5 +65,4 @@ public class PhotoController {
             return ResponseEntity.status(500).body("Internal server error: " + e.getMessage());
         }
     }
-
 }

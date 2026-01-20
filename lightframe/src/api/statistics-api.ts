@@ -8,5 +8,17 @@ export const statisticsAPI = {
       // ignore error, dont really care
       console.error('Failed to log download event', error);
     }
+  },
+
+  sendAlbumView: async (albumId: string): Promise<void> => {
+    const key = `albumViewed_${albumId}`;
+    if (!localStorage.getItem(key)) {
+      try {
+        await api.post(`/api/album/${albumId}/view`);
+        localStorage.setItem(key, "true");
+      } catch (error) {
+        console.error('Failed to log album view event', error);
+      }
+    }
   }
 }

@@ -8,6 +8,7 @@ CREATE TABLE albums (
   collection VARCHAR(100),
   date_created DATETIME DEFAULT (CURRENT_DATE),
   event_date DATE,
+  views INT
 );
 
 CREATE TABLE photos (
