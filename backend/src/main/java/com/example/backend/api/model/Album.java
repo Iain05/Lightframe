@@ -51,6 +51,7 @@ public class Album {
         this.numPhotos = 0;
         this.id = RandomGenerators.generateRandomString();
         this.eventDate = eventDate;
+        this.views = 0;
     }
 
     public Album(String name,

@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - changeSet:
+      id: set-views-default-20260124
+      author: copilot
+      changes:
+        - addDefaultValue:
+            tableName: albums
+            columnName: views
+            defaultValueNumeric: 0
