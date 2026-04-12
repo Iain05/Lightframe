@@ -10,11 +10,9 @@ import com.example.backend.api.utils.ImageDeleter;
 import com.example.backend.exception.DeletePhotoException;
 import com.example.backend.exception.UploadPhotoException;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
@@ -25,28 +23,14 @@ public class PhotoService {
     private final PhotoRepository photoRepository;
     private final AlbumRepository albumRepository;
     private final ImageDeleter imageDeleter;
+    private final ImageUploader imageUploader;
 
-    private ImageUploader uploader;
-
-    @Value("${bucket.preauth.url}")
-    private String PRE_AUTHORIZED_URL;
-
-    @Value("${oci.bucket.name}")
-    private String BUCKET_NAME;
-
-    @Value("${oci.bucket.namespace}")
-    private String NAMESPACE_NAME;
-
-
-    public PhotoService(PhotoRepository photoRepository, AlbumRepository albumRepository, ImageDeleter imageDeleter) {
+    public PhotoService(PhotoRepository photoRepository, AlbumRepository albumRepository,
+                        ImageDeleter imageDeleter, ImageUploader imageUploader) {
         this.photoRepository = photoRepository;
         this.albumRepository = albumRepository;
         this.imageDeleter = imageDeleter;
-    }
-
-    @PostConstruct
-    private void initializeUploader() {
-        uploader = new ImageUploader(PRE_AUTHORIZED_URL);
+        this.imageUploader = imageUploader;
     }
 
     /**
@@ -147,9 +131,9 @@ public class PhotoService {
             throws UploadPhotoException {
         String fileLocation = albumId + "/" + name;
         try {
-            uploader.resizeAndUpload(photo, "small/" + fileLocation, 1024, 1024);
-            uploader.resizeAndUpload(photo, "medium/" + fileLocation, 2048,2048);
-            uploader.resizeAndUpload(photo, "large/" + fileLocation, 0, 0);
+            imageUploader.resizeAndUpload(photo, "small/" + fileLocation, 1024, 1024);
+            imageUploader.resizeAndUpload(photo, "medium/" + fileLocation, 2048, 2048);
+            imageUploader.resizeAndUpload(photo, "large/" + fileLocation, 0, 0);
             return fileLocation;
         } catch (IOException e) {
             throw new UploadPhotoException("Error uploading photo: " + e.getMessage());

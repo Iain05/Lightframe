@@ -43,8 +43,6 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-    volumes:
-      - ./backend/.oci:/root/.oci
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
