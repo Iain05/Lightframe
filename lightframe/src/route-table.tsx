@@ -23,10 +23,10 @@ export function AppRoutes() {
         <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/album/:albumId" element={<AlbumGalleryWrapper />} />
-            <Route path="/albums" element={<Collection collection_id="main-collection"/>} />
+            <Route path="/albums" element={<Collection collection_id="main-collection" />} />
             <Route path="/collections" element={<Groups />} />
-            <Route path="/collections/robotics" element={<Collection collection_id="robotics"/>} />
-            <Route path="/collections/tmb" element={<Collection collection_id="tmb"/>} />
+            <Route path="/collections/robotics" element={<Collection collection_id="robotics" />} />
+            <Route path="/collections/tmb" element={<Collection collection_id="tmb" />} />
             <Route path="/about" element={<About />} />
             <Route path="/login" element={<Login />} />
         </Routes>

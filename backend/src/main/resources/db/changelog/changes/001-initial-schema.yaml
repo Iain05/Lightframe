@@ -128,6 +128,25 @@ databaseChangeLog:
                   type: TEXT
 
   - changeSet:
+      id: 6
+      author: system
+      comment: Add views column to albums
+      preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - columnExists:
+                tableName: albums
+                columnName: views
+      changes:
+        - addColumn:
+            tableName: albums
+            columns:
+              - column:
+                  name: views
+                  type: INT
+                  defaultValueNumeric: 0
+
+  - changeSet:
       id: 4
       author: system
       comment: Create trigger to increment num_photos after photo insert
