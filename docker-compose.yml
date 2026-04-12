@@ -21,14 +21,12 @@ services:
   frontend:
     build:
       context: ./lightframe
-    expose:
-      - "80"
+    ports:
+      - "81:80"
     depends_on:
       - backend
     networks:
       - app-network
-    # env_file:
-    #   - ./lightframe/.env
 
 
   backend:
@@ -45,20 +43,6 @@ services:
         condition: service_healthy
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    networks:
-      - app-network
-
-  nginx-proxy-manager:
-    image: jc21/nginx-proxy-manager:latest
-    container_name: nginx-proxy-manager
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-      - "81:81" # Web UI
-    volumes:
-      - ./npm/data:/data
-      - ./npm/letsencrypt:/etc/letsencrypt
     networks:
       - app-network
 
