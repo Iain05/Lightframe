@@ -23,6 +23,7 @@ import { useModalState, type EditingAlbum } from '../hooks/use-modal-state';
 import AlbumModals from '../collections/album-modals';
 import { useAlbumOperations } from '../hooks/use-album-operations';
 import PhotoOverlay from './photo-overlay';
+import DownloadSelectedButton from './download-selected-button';
 import DeletePhotosModal from './delete-photos-modal';
 import Actions from './actions/actions';
 import { albumAPI } from '../api/album-api';
@@ -90,7 +91,7 @@ function generateLightboxPhotos(
 }
 
 function AlbumGallery(props: AlbumGalleryProps) {
-  const albumOperations = useAlbumOperations(""); 
+  const albumOperations = useAlbumOperations("");
   const [index, setIndex] = useState(-1);
 
   const modalState = useModalState();
@@ -233,6 +234,10 @@ function AlbumGallery(props: AlbumGalleryProps) {
     }
   };
 
+  const handleDownloadSelected = async () => {
+    //TODO: implement this
+  };
+
   const handleConfirmDelete = async () => {
     const selectedPhotoIds = photos
       .filter(photo => photo.selected)
@@ -255,7 +260,7 @@ function AlbumGallery(props: AlbumGalleryProps) {
   useEffect(() => {
     statisticsAPI.sendAlbumView(props.albumId);
   }, []);
-  
+
   useEffect(() => {
     if (album?.name && location.pathname.startsWith('/album/')) document.title = album.name + " | Iain Griesdale";
   }, [album?.name]);
@@ -340,9 +345,9 @@ function AlbumGallery(props: AlbumGalleryProps) {
         editingAlbum={modalState.editingAlbum}
         onCloseAdd={modalState.closeAddModal}
         onCloseEdit={modalState.closeEditModal}
-        onSubmitAdd={() => {}}
+        onSubmitAdd={() => { }}
         onSubmitEdit={handleSubmitEdit}
-        onDelete={() => {}}
+        onDelete={() => { }}
       />
 
       {props.albumHeader &&
@@ -430,7 +435,7 @@ function AlbumGallery(props: AlbumGalleryProps) {
         }}
         toolbar={{
           buttons: [
-            ( !isFullscreen && <LightboxButton
+            (!isFullscreen && <LightboxButton
               key="download"
               onClick={() => {
                 const currentPhoto = mediumPhotos[index];
@@ -449,6 +454,11 @@ function AlbumGallery(props: AlbumGalleryProps) {
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleConfirmDelete}
         selectedCount={selectedCount}
+      />
+
+      <DownloadSelectedButton
+        selectedCount={selectedCount}
+        onDownload={handleDownloadSelected}
       />
     </div>
   );

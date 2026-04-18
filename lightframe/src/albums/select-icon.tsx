@@ -4,13 +4,14 @@ import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 
 interface SelectIconProps {
   selected?: boolean;
+  className?: string;
   onClick: (event: MouseEvent) => void;
 }
 
-const SelectIcon = ({ selected, onClick }: SelectIconProps) => {
+const SelectIcon = ({ selected, className, onClick }: SelectIconProps) => {
   return (
     <div
-      className="absolute top-2 right-2 cursor-pointer z-10"
+      className={`absolute top-2 right-2 cursor-pointer z-10${className ? ` ${className}` : ''}`}
       onClick={onClick}
       style={{
         filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3))',
