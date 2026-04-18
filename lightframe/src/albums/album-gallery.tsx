@@ -33,6 +33,8 @@ import type { AlbumResponse } from '../api/types';
 import type { SelectablePhoto, AlbumGalleryProps } from '@src/types/types';
 
 import DownloadIcon from '@mui/icons-material/Download';
+import JSZip from 'jszip';
+import type { DownloadStatus } from './download-selected-button';
 
 
 const BREAKPOINTS = [1080, 640, 384, 256, 128, 96, 64, 48];
@@ -102,6 +104,8 @@ function AlbumGallery(props: AlbumGalleryProps) {
   const [settingCoverPhotoId, setSettingCoverPhotoId] = useState<number | null>(null);
   const [coverSuccessPhotoId, setCoverSuccessPhotoId] = useState<number | null>(null);
   const [showLoading, setShowLoading] = useState(false);
+  const [downloadStatus, setDownloadStatus] = useState<DownloadStatus>('idle');
+  const [fetchProgress, setFetchProgress] = useState({ current: 0, total: 0 });
   const queryClient = useQueryClient();
 
   type ThumbnailsRef = {
@@ -235,7 +239,46 @@ function AlbumGallery(props: AlbumGalleryProps) {
   };
 
   const handleDownloadSelected = async () => {
-    //TODO: implement this
+    const selectedMediumPhotos = mediumPhotos.filter((_, i) => photos[i]?.selected && mediumPhotos[i]?.downloadUrl);
+    const total = selectedMediumPhotos.length;
+    if (total === 0) return;
+
+    setDownloadStatus('fetching');
+    setFetchProgress({ current: 0, total });
+
+    try {
+      const zip = new JSZip();
+      let fetched = 0;
+
+      await Promise.all(
+        selectedMediumPhotos.map(async (photo, i) => {
+          const response = await fetch(photo.downloadUrl!);
+          const blob = await response.blob();
+          const ext = blob.type.includes('png') ? 'png' : 'jpg';
+          zip.file(`${album?.name || 'photo'}-${i + 1}.${ext}`, blob);
+          fetched += 1;
+          setFetchProgress({ current: fetched, total });
+        })
+      );
+
+      setDownloadStatus('zipping');
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+
+      const url = URL.createObjectURL(zipBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${album?.name || 'photos'}.zip`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      setDownloadStatus('done');
+      setTimeout(() => setDownloadStatus('idle'), 2000);
+    } catch (error) {
+      console.error('Bulk download failed:', error);
+      setDownloadStatus('idle');
+    }
   };
 
   const handleConfirmDelete = async () => {
@@ -458,6 +501,8 @@ function AlbumGallery(props: AlbumGalleryProps) {
 
       <DownloadSelectedButton
         selectedCount={selectedCount}
+        status={downloadStatus}
+        fetchProgress={fetchProgress}
         onDownload={handleDownloadSelected}
       />
     </div>
