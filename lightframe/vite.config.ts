@@ -14,6 +14,11 @@ export default defineConfig({
     host: '0.0.0.0',
     proxy: {
       '/api': 'http://localhost:8080',
+      '/photos-proxy': {
+        target: 'https://photos.iaingriesdale.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/photos-proxy/, ''),
+      },
     }
   },
   preview: {

@@ -28,7 +28,7 @@ import DeletePhotosModal from './delete-photos-modal';
 import Actions from './actions/actions';
 import { albumAPI } from '../api/album-api';
 import { statisticsAPI } from "@src/api/statistics-api";
-import { downloadPhoto } from '../utils/download-utils';
+import { downloadPhoto, toProxyUrl } from '../utils/download-utils';
 import type { AlbumResponse } from '../api/types';
 import type { SelectablePhoto, AlbumGalleryProps } from '@src/types/types';
 
@@ -252,7 +252,7 @@ function AlbumGallery(props: AlbumGalleryProps) {
 
       await Promise.all(
         selectedMediumPhotos.map(async (photo, i) => {
-          const response = await fetch(photo.downloadUrl!);
+          const response = await fetch(toProxyUrl(photo.downloadUrl!));
           const blob = await response.blob();
           const ext = blob.type.includes('png') ? 'png' : 'jpg';
           zip.file(`${album?.name || 'photo'}-${i + 1}.${ext}`, blob);
