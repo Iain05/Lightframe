@@ -55,3 +55,12 @@
   background: rgba(255, 255, 255, 0.9);
   transform: none;
 }
+
+.photo-hover-icon {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.react-photo-album--photo:hover .photo-hover-icon {
+  opacity: 1;
+}

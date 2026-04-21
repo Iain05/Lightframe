@@ -46,7 +46,7 @@ const PhotoOverlay = ({
       {/* Set Album Cover Button */}
       {isLoggedIn && enableOverlay && <Tooltip title="Set as Album Cover" placement="bottom">
         <div
-          className="absolute top-2 right-10 cursor-pointer z-10"
+          className="absolute top-2 right-10 cursor-pointer z-10 photo-hover-icon"
           onClick={(event) => {
             if (settingCoverPhotoId !== photo.id && coverSuccessPhotoId !== photo.id) {
               onSetAlbumCover(photo);
@@ -81,9 +81,10 @@ const PhotoOverlay = ({
       </Tooltip>}
 
       {/* Select Icon */}
-      {isLoggedIn && enableOverlay && (
+      {enableOverlay && (
         <SelectIcon
           selected={photo.selected}
+          className={photo.selected ? undefined : 'photo-hover-icon'}
           onClick={(event) => {
             onSelectPhoto(index);
             event.preventDefault();

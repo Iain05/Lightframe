@@ -1,5 +1,15 @@
 import { statisticsAPI } from "@src/api/statistics-api";
 
+const BUCKET_BASE = import.meta.env.VITE_BUCKET_BASE as string;
+
+// Route fetch() calls through nginx proxy to avoid CORS issues when fetching S3 blobs
+export function toProxyUrl(url: string): string {
+  if (BUCKET_BASE && url.startsWith(BUCKET_BASE)) {
+    return url.replace(BUCKET_BASE, '/photos-proxy/');
+  }
+  return url;
+}
+
 interface DownloadOptions {
   albumName?: string;
   photoId?: number;
@@ -8,7 +18,7 @@ interface DownloadOptions {
 }
 
 export const downloadPhoto = async ({ albumName, photoId, photoIndex, downloadUrl }: DownloadOptions): Promise<void> => {
-  const response = await fetch(downloadUrl);
+  const response = await fetch(toProxyUrl(downloadUrl));
   const blob = await response.blob();
   
   const fileName = `${albumName || 'photo'}-${photoIndex + 1}.jpg`;

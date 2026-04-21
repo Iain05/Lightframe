@@ -24,37 +24,30 @@ const Actions = ({ selectedCount, totalCount, onDeleteSelected, onSelectAll, onU
     }
   };
 
-  if (!isLoggedIn) {
-    return null; // Don't render actions if not logged in
-  }
-
   return (
-    <div className="flex justify-between items-center py-2 mb-2">
-      <div className="flex items-center gap-4">
-      </div>
-      
-      <div className="flex items-center gap-4">
-        {selectedCount > 0 && (
-          <span className="text-sm text-gray-600">
-            {selectedCount} photo{selectedCount > 1 ? 's' : ''} selected
-          </span>
+    <div className="flex justify-end items-center py-2 mb-2 gap-4">
+      {isLoggedIn && selectedCount > 0 && (
+        <span className="text-sm text-gray-600">
+          {selectedCount} photo{selectedCount > 1 ? 's' : ''} selected
+        </span>
+      )}
+      <button
+        onClick={handleSelectAllToggle}
+        className="flex items-center gap-2 cursor-pointer"
+        title={allSelected ? 'Unselect All' : 'Select All'}
+      >
+        {allSelected ? (
+          <CheckBoxIcon style={{ fontSize: 24, fontWeight: 'bold' }} />
+        ) : (
+          <CheckBoxOutlineBlankIcon style={{ fontSize: 24, fontWeight: 'bold' }} />
         )}
-        <button
-          onClick={handleSelectAllToggle}
-          className="flex items-center gap-2 cursor-pointer"
-          title={allSelected ? 'Unselect All' : 'Select All'}
-        >
-          {allSelected ? (
-            <CheckBoxIcon style={{ fontSize: 24, fontWeight: 'bold' }} />
-          ) : (
-            <CheckBoxOutlineBlankIcon style={{ fontSize: 24, fontWeight: 'bold' }} />
-          )}
-        </button>
+      </button>
+      {isLoggedIn && (
         <DeleteButton
           selectedCount={selectedCount}
           onClick={onDeleteSelected}
         />
-      </div>
+      )}
     </div>
   );
 };

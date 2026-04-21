@@ -23,15 +23,18 @@ import { useModalState, type EditingAlbum } from '../hooks/use-modal-state';
 import AlbumModals from '../collections/album-modals';
 import { useAlbumOperations } from '../hooks/use-album-operations';
 import PhotoOverlay from './photo-overlay';
+import DownloadSelectedButton from './download-selected-button';
 import DeletePhotosModal from './delete-photos-modal';
 import Actions from './actions/actions';
 import { albumAPI } from '../api/album-api';
 import { statisticsAPI } from "@src/api/statistics-api";
-import { downloadPhoto } from '../utils/download-utils';
+import { downloadPhoto, toProxyUrl } from '../utils/download-utils';
 import type { AlbumResponse } from '../api/types';
 import type { SelectablePhoto, AlbumGalleryProps } from '@src/types/types';
 
 import DownloadIcon from '@mui/icons-material/Download';
+import JSZip from 'jszip';
+import type { DownloadStatus } from './download-selected-button';
 
 
 const BREAKPOINTS = [1080, 640, 384, 256, 128, 96, 64, 48];
@@ -90,7 +93,7 @@ function generateLightboxPhotos(
 }
 
 function AlbumGallery(props: AlbumGalleryProps) {
-  const albumOperations = useAlbumOperations(""); 
+  const albumOperations = useAlbumOperations("");
   const [index, setIndex] = useState(-1);
 
   const modalState = useModalState();
@@ -101,6 +104,8 @@ function AlbumGallery(props: AlbumGalleryProps) {
   const [settingCoverPhotoId, setSettingCoverPhotoId] = useState<number | null>(null);
   const [coverSuccessPhotoId, setCoverSuccessPhotoId] = useState<number | null>(null);
   const [showLoading, setShowLoading] = useState(false);
+  const [downloadStatus, setDownloadStatus] = useState<DownloadStatus>('idle');
+  const [fetchProgress, setFetchProgress] = useState({ current: 0, total: 0 });
   const queryClient = useQueryClient();
 
   type ThumbnailsRef = {
@@ -233,6 +238,49 @@ function AlbumGallery(props: AlbumGalleryProps) {
     }
   };
 
+  const handleDownloadSelected = async () => {
+    const selectedMediumPhotos = mediumPhotos.filter((_, i) => photos[i]?.selected && mediumPhotos[i]?.downloadUrl);
+    const total = selectedMediumPhotos.length;
+    if (total === 0) return;
+
+    setDownloadStatus('fetching');
+    setFetchProgress({ current: 0, total });
+
+    try {
+      const zip = new JSZip();
+      let fetched = 0;
+
+      await Promise.all(
+        selectedMediumPhotos.map(async (photo, i) => {
+          const response = await fetch(toProxyUrl(photo.downloadUrl!));
+          const blob = await response.blob();
+          const ext = blob.type.includes('png') ? 'png' : 'jpg';
+          zip.file(`${album?.name || 'photo'}-${i + 1}.${ext}`, blob);
+          fetched += 1;
+          setFetchProgress({ current: fetched, total });
+        })
+      );
+
+      setDownloadStatus('zipping');
+      const zipBlob = await zip.generateAsync({ type: 'blob' });
+
+      const url = URL.createObjectURL(zipBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${album?.name || 'photos'}.zip`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      setDownloadStatus('done');
+      setTimeout(() => setDownloadStatus('idle'), 2000);
+    } catch (error) {
+      console.error('Bulk download failed:', error);
+      setDownloadStatus('idle');
+    }
+  };
+
   const handleConfirmDelete = async () => {
     const selectedPhotoIds = photos
       .filter(photo => photo.selected)
@@ -255,7 +303,7 @@ function AlbumGallery(props: AlbumGalleryProps) {
   useEffect(() => {
     statisticsAPI.sendAlbumView(props.albumId);
   }, []);
-  
+
   useEffect(() => {
     if (album?.name && location.pathname.startsWith('/album/')) document.title = album.name + " | Iain Griesdale";
   }, [album?.name]);
@@ -340,9 +388,9 @@ function AlbumGallery(props: AlbumGalleryProps) {
         editingAlbum={modalState.editingAlbum}
         onCloseAdd={modalState.closeAddModal}
         onCloseEdit={modalState.closeEditModal}
-        onSubmitAdd={() => {}}
+        onSubmitAdd={() => { }}
         onSubmitEdit={handleSubmitEdit}
-        onDelete={() => {}}
+        onDelete={() => { }}
       />
 
       {props.albumHeader &&
@@ -430,7 +478,7 @@ function AlbumGallery(props: AlbumGalleryProps) {
         }}
         toolbar={{
           buttons: [
-            ( !isFullscreen && <LightboxButton
+            (!isFullscreen && <LightboxButton
               key="download"
               onClick={() => {
                 const currentPhoto = mediumPhotos[index];
@@ -449,6 +497,13 @@ function AlbumGallery(props: AlbumGalleryProps) {
         onClose={() => setIsDeleteModalOpen(false)}
         onConfirm={handleConfirmDelete}
         selectedCount={selectedCount}
+      />
+
+      <DownloadSelectedButton
+        selectedCount={selectedCount}
+        status={downloadStatus}
+        fetchProgress={fetchProgress}
+        onDownload={handleDownloadSelected}
       />
     </div>
   );
