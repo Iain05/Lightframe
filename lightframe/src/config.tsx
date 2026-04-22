@@ -1,8 +1,8 @@
-const configs = import.meta.glob('../*.yml', { eager: true, import: 'default' });
-const configData = configs[`../${import.meta.env.VITE_CONFIG}`];
+const configs = import.meta.glob('../config/*.yml', { eager: true, import: 'default' });
+const configData = configs[`../config/${import.meta.env.VITE_CONFIG}`];
 
 if (!configData) {
-    throw new Error(`Config file not found: ../${import.meta.env.VITE_CONFIG} (set VITE_CONFIG in .env)`);
+    throw new Error(`Config file not found: ../config/${import.meta.env.VITE_CONFIG} (set VITE_CONFIG in .env)`);
 }
 
 export interface Config {
