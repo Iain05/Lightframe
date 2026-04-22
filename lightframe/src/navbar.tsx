@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom';
 import { useState } from 'react';
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
 import LoginOutlined from '@mui/icons-material/LoginOutlined';
+import Config from './config';
 import './css/navbar.css';
 
 const Navbar = () => {
@@ -19,7 +20,7 @@ const Navbar = () => {
             alt="Logo"
             style={{ height: '48px', width: '48px', marginRight: '10px', verticalAlign: 'middle' }}
           />
-          <span>Iain Griesdale</span>
+          <span>{Config.name}</span>
         </div>
         <div className='menu-icon' onClick={handleShowNavbar}>
           <MenuRoundedIcon />

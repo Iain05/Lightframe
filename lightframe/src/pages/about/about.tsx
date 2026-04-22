@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import config from '@src/config';
 import './about.css';
 
 const About: React.FC = () => {
@@ -47,20 +48,9 @@ const About: React.FC = () => {
         
         <div className="about-bio">
           <div className="bio-text fade-in-element">
-            <p>
-              My name is Iain Griesdale, I am a Computer Engineering student at the University of British Columbia, 
-              and member of the VEXU Robotics Team <a href='https://tntnvex.com'>TNTN</a>.
-            </p>
-
-            <p>
-              Most of my work is a mix of nature and urban photography, but I really 
-              enjoy all types of photography from landscapes to portraits. 
-            </p>
-            
-            <p>
-              I built this website myself over the course of a few weeks, and is still a work in progress. All the code
-              is available on GitHub to see.
-            </p>
+            {config.about.map((item, index) => (
+              <p key={index} dangerouslySetInnerHTML={{ __html: item }} />
+            ))}
           </div>
           
           <div className="bio-image fade-in-element">
