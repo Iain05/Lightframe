@@ -31,6 +31,7 @@ import { statisticsAPI } from "@src/api/statistics-api";
 import { downloadPhoto, toProxyUrl } from '../utils/download-utils';
 import type { AlbumResponse } from '../api/types';
 import type { SelectablePhoto, AlbumGalleryProps } from '@src/types/types';
+import config from '@src/config';
 
 import DownloadIcon from '@mui/icons-material/Download';
 import JSZip from 'jszip';
@@ -305,7 +306,7 @@ function AlbumGallery(props: AlbumGalleryProps) {
   }, []);
 
   useEffect(() => {
-    if (album?.name && location.pathname.startsWith('/album/')) document.title = album.name + " | Iain Griesdale";
+    if (album?.name && location.pathname.startsWith('/album/')) document.title = `${album.name} | ${config.name}`;
   }, [album?.name]);
 
   useEffect(() => {
