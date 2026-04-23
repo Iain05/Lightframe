@@ -26,12 +26,11 @@ const Collection = (props: CollectionProps) => {
   const albumOperations = useAlbumOperations(props.collection_id);
   const modalState = useModalState();
 
-  const { data: collection, isLoading } = useQuery<CollectionResponse, Error>(
+  const { data: collection, isSuccess, isError } = useQuery<CollectionResponse, Error>(
     ['fetchCollection', props.collection_id],
     async () => {
       const response = await api.get(`/api/collection?id=${props.collection_id}`);
       if (!response.ok) {
-        setFadeIn(true);
         throw new Error('Failed to fetch collection');
       }
       return response.json();
@@ -49,7 +48,7 @@ const Collection = (props: CollectionProps) => {
   }, [props.collection_id]);
 
   useEffect(() => {
-    if (collection && !isLoading) {
+    if (isSuccess || isError) {
       // Use requestAnimationFrame to ensure the DOM has rendered the initial state
       let timeoutId: NodeJS.Timeout;
       const rafId = requestAnimationFrame(() => {
@@ -60,7 +59,7 @@ const Collection = (props: CollectionProps) => {
         if (timeoutId) clearTimeout(timeoutId);
       };
     }
-  }, [collection, isLoading]);
+  }, [isSuccess, isError]);
 
   const handleEditAlbum = (e: React.MouseEvent, album: Album) => {
     e.stopPropagation(); 

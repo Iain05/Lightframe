@@ -16,6 +16,7 @@ export const titleMap: Record<string, string> = {
     "/albums": "Albums | Iain Griesdale",
     "/collections": "Collections | Iain Griesdale",
     "/collections/robotics": "Robotics | Iain Griesdale",
+    "/collections/tmb": "TMB | Iain Griesdale",
 };
 
 export function AppRoutes() {
