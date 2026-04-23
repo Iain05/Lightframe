@@ -28,9 +28,15 @@ const Navbar = () => {
         <div className={`nav-elements ${showNav && 'active'}`}>
           <ul>
             <li><NavLink to="/" className="nav-link" onClick={() => setShowNav(false)}>Portfolio</NavLink></li>
-            <li><NavLink to="/albums" className="nav-link" onClick={() => setShowNav(false)}>Albums</NavLink></li>
-            <li><NavLink to="/collections" className="nav-link" onClick={() => setShowNav(false)}>Collections</NavLink></li>
-            <li><NavLink to="/about" className="nav-link" onClick={() => setShowNav(false)}>About</NavLink></li>
+            {!Config.hiddenPages.includes('Albums') && (
+              <li><NavLink to="/albums" className="nav-link" onClick={() => setShowNav(false)}>Albums</NavLink></li>
+            )}
+            {!Config.hiddenPages.includes('Collections') && (
+              <li><NavLink to="/collections" className="nav-link" onClick={() => setShowNav(false)}>Collections</NavLink></li>
+            )}
+            {!Config.hiddenPages.includes('About') && (
+              <li><NavLink to="/about" className="nav-link" onClick={() => setShowNav(false)}>About</NavLink></li>
+            )}
             <li style={{ paddingRight: '30px' }}><NavLink to="/login" className="nav-link" onClick={() => setShowNav(false)}><LoginOutlined style={{ fontSize: '18px', fontWeight: 300 }} /></NavLink></li>
           </ul>
         </div>

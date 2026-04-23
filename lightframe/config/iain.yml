@@ -8,10 +8,14 @@ about:
   profilePhoto: profile.JPEG
   email: igriesdale@gmail.com
   location: Vancouver, British Columbia
-  socials:
-    - label: Instagram
-      url: https://instagram.com/iain05
-    - label: LinkedIn
-      url: https://linkedin.com/in/iaingriesdale
-    - label: GitHub
-      url: https://github.com/Iain05/lightframe
+
+socials:
+  - label: Instagram
+    url: https://instagram.com/iain05
+  - label: LinkedIn
+    url: https://linkedin.com/in/iaingriesdale
+  - label: GitHub
+    url: https://github.com/Iain05/lightframe
+
+# hiddenPages:
+#   - Collections

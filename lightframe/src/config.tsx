@@ -23,8 +23,9 @@ interface RawConfig {
         profilePhoto?: string;
         email?: string;
         location?: string;
-        socials?: Social[];
     };
+    socials?: Social[];
+    hiddenPages?: string[];
 }
 
 export interface Config {
@@ -36,6 +37,8 @@ export interface Config {
         location?: string;
         socials?: Social[];
     };
+    socials: Social[];
+    hiddenPages: string[];
 }
 
 const rawAbout = configData.about ?? {};
@@ -56,7 +59,8 @@ export const config: Config = {
         profilePhoto,
         email: rawAbout.email,
         location: rawAbout.location,
-        socials: rawAbout.socials,
     },
+    socials: configData.socials || [],
+    hiddenPages: configData.hiddenPages || [],
 };
 export default config;

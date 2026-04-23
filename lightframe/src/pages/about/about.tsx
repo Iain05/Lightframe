@@ -39,7 +39,8 @@ const About: React.FC = () => {
     };
   }, []);
 
-  const { paragraphs, profilePhoto, email, location, socials } = config.about;
+  const { paragraphs, profilePhoto, email, location } = config.about;
+  const { socials } = config;
   const hasBio = (paragraphs && paragraphs.length > 0) || profilePhoto;
   const hasContact = email || location || (socials && socials.length > 0);
 
