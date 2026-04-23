@@ -96,7 +96,7 @@ const Collection = (props: CollectionProps) => {
   // Data processing
   const albums: Album[] = collection?.albums
     .filter((album) => isLoggedIn || album.public)
-    .sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime())
+    // .sort((a, b) => new Date(b.dateCreated).getTime() - new Date(a.dateCreated).getTime())
     .map((album) => ({
       id: album.id,
       name: album.name,
