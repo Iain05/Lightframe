@@ -3,3 +3,5 @@ databaseChangeLog:
       file: db/changelog/changes/001-initial-schema.yaml
   - include:
       file: db/changelog/changes/002-set-views-default-20260124.yaml
+  - include:
+      file: db/changelog/changes/003-seed-portfolio-album-20260423.yaml

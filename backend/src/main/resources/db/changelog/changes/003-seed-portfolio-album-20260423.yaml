@@ -1,0 +1,37 @@
+databaseChangeLog:
+  - changeSet:
+      id: seed-portfolio-album-20260423
+      author: system
+      comment: On fresh databases only, insert a starter "Portfolio" album. Skipped on any existing deployment (albums table not empty).
+      preConditions:
+        - onFail: MARK_RAN
+        - sqlCheck:
+            expectedResult: 0
+            sql: SELECT COUNT(*) FROM albums
+      changes:
+        - insert:
+            tableName: albums
+            columns:
+              - column: { name: id,          value: portfolio }
+              - column: { name: name,        value: Portfolio }
+              - column: { name: public,      valueBoolean: true }
+              - column: { name: description, value: "" }
+              - column: { name: num_photos,  valueNumeric: 0 }
+              - column: { name: collection,  value: main-collection }
+              - column: { name: views,       valueNumeric: 0 }
+
+  - changeSet:
+      id: seed-home-album-metadata-20260423
+      author: system
+      comment: On fresh databases only, point the HOME_ALBUM metadata key at the starter album. Skipped if HOME_ALBUM already exists.
+      preConditions:
+        - onFail: MARK_RAN
+        - sqlCheck:
+            expectedResult: 0
+            sql: SELECT COUNT(*) FROM metadata WHERE `key` = 'HOME_ALBUM'
+      changes:
+        - insert:
+            tableName: metadata
+            columns:
+              - column: { name: key,   value: HOME_ALBUM }
+              - column: { name: value, value: portfolio }
