@@ -42,3 +42,10 @@ The backend and frontend both have .env files that they need to access. I promis
 ```sh
 scp -r dir/to/.oci/* user@remote-ip:~/Lightframe/backend/.oci/ 
 ```
+
+### Deploy
+Run with Docker Compose. The frontend defaults to port 81 — override with `FRONTEND_PORT` if needed:
+```sh
+docker compose up -d                        # uses port 81
+FRONTEND_PORT=8081 docker compose up -d    # custom port
+```

@@ -22,7 +22,7 @@ services:
     build:
       context: ./lightframe
     ports:
-      - "81:80"
+      - "${FRONTEND_PORT:-81}:80"
     depends_on:
       - backend
     networks:
