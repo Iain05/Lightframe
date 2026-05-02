@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import config from '@src/config';
 import './about.css';
 
 const About: React.FC = () => {
@@ -38,84 +39,79 @@ const About: React.FC = () => {
     };
   }, []);
 
+  const { paragraphs, profilePhoto, email, location } = config.about;
+  const { socials } = config;
+  const hasBio = (paragraphs && paragraphs.length > 0) || profilePhoto;
+  const hasContact = email || location || (socials && socials.length > 0);
+
   return (
     <div className="about-container" ref={aboutRef}>
       <div className="about-content">
         <div className="about-header fade-in-element">
           <h1>About Me</h1>
         </div>
-        
-        <div className="about-bio">
-          <div className="bio-text fade-in-element">
-            <p>
-              My name is Iain Griesdale, I am a Computer Engineering student at the University of British Columbia, 
-              and member of the VEXU Robotics Team <a href='https://tntnvex.com'>TNTN</a>.
-            </p>
 
-            <p>
-              Most of my work is a mix of nature and urban photography, but I really 
-              enjoy all types of photography from landscapes to portraits. 
-            </p>
-            
-            <p>
-              I built this website myself over the course of a few weeks, and is still a work in progress. All the code
-              is available on GitHub to see.
-            </p>
+        {hasBio && (
+          <div className="about-bio">
+            {paragraphs && paragraphs.length > 0 && (
+              <div className="bio-text fade-in-element">
+                {paragraphs.map((item, index) => (
+                  <p key={index} dangerouslySetInnerHTML={{ __html: item }} />
+                ))}
+              </div>
+            )}
+
+            {profilePhoto && (
+              <div className="bio-image fade-in-element">
+                <div className="placeholder-image">
+                    <img src={profilePhoto} alt={config.name} />
+                </div>
+              </div>
+            )}
           </div>
-          
-          <div className="bio-image fade-in-element">
-            <div className="placeholder-image">
-                <img src="/profile.JPEG" alt="Iain Griesdale" />
+        )}
+
+        {hasContact && (
+          <div className="contact-section fade-in-element">
+            <h2>Get In Touch</h2>
+            <div className="contact-info">
+              {email && (
+                <div className="contact-item">
+                  <span className="contact-label">Email:</span>
+                  <a href={`mailto:${email}`} className="contact-link">
+                    {email}
+                  </a>
+                </div>
+              )}
+
+              {location && (
+                <div className="contact-item">
+                  <span className="contact-label">Location:</span>
+                  <span>{location}</span>
+                </div>
+              )}
             </div>
+
+            {socials && socials.length > 0 && (
+              <div className="social-links">
+                <h3>Socials</h3>
+                <div className="social-icons">
+                  {socials.map((social) => (
+                    <a
+                      key={social.url}
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="social-link"
+                    >
+                      {social.label}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-        </div>
-        
-        <div className="contact-section fade-in-element">
-          <h2>Get In Touch</h2>
-          <div className="contact-info">
-            <div className="contact-item">
-              <span className="contact-label">Email:</span>
-              <a href="mailto:your.email@example.com" className="contact-link">
-                igriesdale@gmail.com
-              </a>
-            </div>
-            
-            <div className="contact-item">
-              <span className="contact-label">Location:</span>
-              <span>Vancouver, British Columbia</span>
-            </div>
-          </div>
-          
-          <div className="social-links">
-            <h3>Socials</h3>
-            <div className="social-icons">
-              <a 
-                href="https://instagram.com/iain05" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="social-link"
-              >
-                Instagram
-              </a>
-              <a 
-                href="https://linkedin.com/in/iaingriesdale" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="social-link"
-              >
-                LinkedIn
-              </a>
-              <a 
-                href="https://github.com/Iain05/lightframe" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="social-link"
-              >
-                GitHub
-              </a>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

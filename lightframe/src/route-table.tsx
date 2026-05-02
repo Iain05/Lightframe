@@ -7,15 +7,17 @@ import Login from './auth/login';
 import About from '@src/pages/about';
 import Home from '@src/pages/home';
 import Groups from '@src/pages/collections';
+import config from '@src/config';
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const titleMap: Record<string, string> = {
-    "/": "Iain Griesdale",
-    "/about": "About | Iain Griesdale",
-    "/login": "Login | Iain Griesdale",
-    "/albums": "Albums | Iain Griesdale",
-    "/collections": "Collections | Iain Griesdale",
-    "/collections/robotics": "Robotics | Iain Griesdale",
+    "/": config.name,
+    "/about": `About | ${config.name}`,
+    "/login": `Login | ${config.name}`,
+    "/albums": `Albums | ${config.name}`,
+    "/collections": `Collections | ${config.name}`,
+    "/collections/robotics": `Robotics | ${config.name}`,
+    "/collections/tmb": `TMB | ${config.name}`,
 };
 
 export function AppRoutes() {
@@ -47,7 +49,7 @@ export function LocationTracker() {
         }
 
         // Set document title using lookup table
-        document.title = titleMap[location.pathname] || "Iain Griesdale";
+        document.title = titleMap[location.pathname] || config.name;
     }, [location]);
 
     return null;

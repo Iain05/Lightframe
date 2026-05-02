@@ -2,7 +2,6 @@ package com.example.backend.api.controller;
 
 
 import com.example.backend.api.model.Collection;
-import com.example.backend.exception.CollectionNotFoundException;
 import com.example.backend.service.CollectionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,10 +47,7 @@ public class CollectionController {
     @GetMapping("")
     public Collection getCollection(@RequestParam String id) {
         try {
-            Collection collection = collectionService.getCollection(id);
-            return collection;
-        } catch (CollectionNotFoundException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+            return collectionService.getCollection(id);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
