@@ -38,59 +38,57 @@ import JSZip from 'jszip';
 import type { DownloadStatus } from './download-selected-button';
 
 
-const BREAKPOINTS = [1080, 640, 384, 256, 128, 96, 64, 48];
+// this is kinda stupid, really should be database stored or something
+const SMALL_MAX_DIM = 1024;
+const MEDIUM_MAX_DIM = 2048;
 
-function generatePhotos(albumPhotos: AlbumResponse['photos'], basePath: string, breakpoints: number[]): SelectablePhoto[] {
-  return albumPhotos
-    .map(({ url, width, height, id, dateTaken }) => ({
-      src: `${basePath}/${url}`,
-      width: width,
-      height: height,
-      id: id,
-      dateTaken: dateTaken,
-      srcSet: breakpoints.map((breakpoint) => ({
-        src: `${basePath}/${url}`,
-        width: breakpoint,
-        height: Math.round((height / width) * breakpoint),
-      })),
-    }))
-    .sort((a, b) => {
-      // Sort by date taken descending (newest first)
-      if (!a.dateTaken && !b.dateTaken) return 0;
-      if (!a.dateTaken) return 1;
-      if (!b.dateTaken) return -1;
-      return new Date(b.dateTaken).getTime() - new Date(a.dateTaken).getTime();
-    });
+function fitWithinSquare(width: number, height: number, maxDim: number): { width: number; height: number } {
+  const aspectRatio = width / height;
+  return aspectRatio > 1
+    ? { width: maxDim, height: Math.round(maxDim / aspectRatio) }
+    : { width: Math.round(maxDim * aspectRatio), height: maxDim };
 }
 
-function generateLightboxPhotos(
-  albumPhotos: AlbumResponse['photos'],
-  basePath: string,
-  fullResPath: string,
-  breakpoints: number[]):
-  SelectablePhoto[] {
+function sortByDateTaken(a: { dateTaken?: string }, b: { dateTaken?: string }) {
+  if (!a.dateTaken && !b.dateTaken) return 0;
+  if (!a.dateTaken) return 1;
+  if (!b.dateTaken) return -1;
+  return new Date(b.dateTaken).getTime() - new Date(a.dateTaken).getTime();
+}
+
+function generatePhotos(albumPhotos: AlbumResponse['photos'], bucketBase: string): SelectablePhoto[] {
   return albumPhotos
-    .map(({ url, width, height, id, downloads, dateTaken }) => ({
-      src: `${basePath}/${url}`,
-      width: width,
-      height: height,
-      id: id,
-      downloads: downloads,
-      dateTaken: dateTaken,
-      downloadUrl: `${fullResPath}/${url}`,
-      srcSet: breakpoints.map((breakpoint) => ({
-        src: `${basePath}/${url}`,
-        width: breakpoint,
-        height: Math.round((height / width) * breakpoint),
-      })),
-    }))
-    .sort((a, b) => {
-      // Sort by date taken descending (newest first)
-      if (!a.dateTaken && !b.dateTaken) return 0;
-      if (!a.dateTaken) return 1;
-      if (!b.dateTaken) return -1;
-      return new Date(b.dateTaken).getTime() - new Date(a.dateTaken).getTime();
-    });
+    .map(({ url, width, height, id, dateTaken }) => {
+      const small = fitWithinSquare(width, height, SMALL_MAX_DIM);
+      const medium = fitWithinSquare(width, height, MEDIUM_MAX_DIM);
+      return {
+        src: `${bucketBase}small/${url}`,
+        width: small.width,
+        height: small.height,
+        id: id,
+        dateTaken: dateTaken,
+        srcSet: [{ src: `${bucketBase}medium/${url}`, width: medium.width, height: medium.height }],
+      };
+    })
+    .sort(sortByDateTaken);
+}
+
+function generateLightboxPhotos(albumPhotos: AlbumResponse['photos'], bucketBase: string): SelectablePhoto[] {
+  return albumPhotos
+    .map(({ url, width, height, id, downloads, dateTaken }) => {
+      const medium = fitWithinSquare(width, height, MEDIUM_MAX_DIM);
+      return {
+        src: `${bucketBase}medium/${url}`,
+        width: medium.width,
+        height: medium.height,
+        id: id,
+        downloads: downloads,
+        dateTaken: dateTaken,
+        downloadUrl: `${bucketBase}large/${url}`,
+        srcSet: [{ src: `${bucketBase}large/${url}`, width: width, height: height }],
+      };
+    })
+    .sort(sortByDateTaken);
 }
 
 function AlbumGallery(props: AlbumGalleryProps) {
@@ -161,15 +159,11 @@ function AlbumGallery(props: AlbumGalleryProps) {
   );
 
   const smallPhotos = useMemo(() => {
-    return album ? generatePhotos(album.photos, `${import.meta.env.VITE_BUCKET_BASE}small`, BREAKPOINTS) : [];
+    return album ? generatePhotos(album.photos, import.meta.env.VITE_BUCKET_BASE) : [];
   }, [album]);
 
   const mediumPhotos = useMemo(() => {
-    return album ? generateLightboxPhotos(
-      album.photos,
-      `${import.meta.env.VITE_BUCKET_BASE}medium`,
-      `${import.meta.env.VITE_BUCKET_BASE}large`,
-      BREAKPOINTS) : [];
+    return album ? generateLightboxPhotos(album.photos, import.meta.env.VITE_BUCKET_BASE) : [];
   }, [album]);
 
   const [photos, setPhotos] = useState<SelectablePhoto[]>([]);

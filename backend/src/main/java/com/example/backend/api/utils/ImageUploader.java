@@ -46,17 +46,44 @@ public class ImageUploader {
             }
         }
 
-        BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        Graphics2D g2d = resizedImage.createGraphics();
-        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
-        g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_SPEED);
-        g2d.drawImage(originalImage, 0, 0, width, height, null);
-        g2d.dispose();
+        BufferedImage resizedImage = progressiveScale(originalImage, width, height);
 
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ImageIO.write(resizedImage, "jpg", outputStream);
         return outputStream.toByteArray();
+    }
+
+    /**
+     * Downscales in steps of at most 2x per pass. A single large-ratio bilinear
+     * pass only samples a small neighborhood per output pixel instead of
+     * averaging the source region, which aliases fine detail/sensor noise into
+     * visible grain rather than smoothing it out. Halving repeatedly keeps each
+     * pass close to a proper area-average.
+     */
+    private BufferedImage progressiveScale(BufferedImage src, int targetWidth, int targetHeight) {
+        int currentWidth = src.getWidth();
+        int currentHeight = src.getHeight();
+        BufferedImage current = src;
+
+        while (currentWidth / 2 > targetWidth && currentHeight / 2 > targetHeight) {
+            currentWidth = Math.max(currentWidth / 2, targetWidth);
+            currentHeight = Math.max(currentHeight / 2, targetHeight);
+            current = scaleStep(current, currentWidth, currentHeight);
+        }
+
+        return scaleStep(current, targetWidth, targetHeight);
+    }
+
+    private BufferedImage scaleStep(BufferedImage src, int width, int height) {
+        BufferedImage resizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g2d = resizedImage.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.drawImage(src, 0, 0, width, height, null);
+        g2d.dispose();
+        return resizedImage;
     }
 
     /**
