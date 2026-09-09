@@ -44,6 +44,19 @@ public class AlbumService {
     }
 
     /**
+     * @param id the unique identifier of the album to get
+     * @return the Album on its own, without loading its photos
+     * @throws AlbumNotFoundException if the album doesn't exist
+     */
+    public Album getAlbumDetails(String id) throws AlbumNotFoundException {
+        Album album = albumRepository.findAlbumById(id);
+
+        if (album == null) throw new AlbumNotFoundException("Album with id " + id + " not found");
+
+        return album;
+    }
+
+    /**
      * Create a new album with the given parameters.
      * @param name the name of the album
      * @param description the description of the album

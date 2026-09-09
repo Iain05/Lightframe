@@ -37,7 +37,7 @@ Starts Vite on port 3000. All `/api` requests are proxied to `localhost:8080`.
 
 | File | Purpose |
 |------|---------|
-| `backend/.env` | DB credentials, R2 credentials, JWT secret, admin password |
+| `backend/.env` | DB credentials, R2 credentials, JWT secret, admin password, `PUBLIC_SITE_URL` / `PUBLIC_BUCKET_BASE` / `PUBLIC_SITE_NAME` (used to build absolute URLs in link previews) |
 | `lightframe/.env` | `VITE_API_URL`, `VITE_BUCKET_BASE`, `VITE_GA_ID` |
 
 ---
@@ -66,6 +66,10 @@ The backend waits for MySQL to pass its healthcheck before starting.
 - Serves the React SPA from `/usr/share/nginx/html`
 - Proxies `/api/` to `http://backend:8080/api/` on the internal Docker network
 - Allows up to 30MB request bodies (for photo uploads)
+- Routes `/album/{id}` requests from link-preview crawlers (Discord, Slack, iMessage, ...)
+  to the backend's `/api/og/album/{id}` instead of the SPA, so the embed shows the album's
+  own name and cover photo. Matched by User-Agent via the `$is_crawler` map; real browsers
+  are unaffected. Test with `curl -A "Discordbot/2.0" https://iaingriesdale.com/album/<id>`.
 
 ### 3. Stopping
 
