@@ -48,12 +48,12 @@ const AlbumHeader = ({ album, onUpload, onEditAlbum }: AlbumHeaderProps) => {
             <>
               <span>•</span>
               <span>{album.eventDate}</span>
-              {isLoggedIn && <>
-                <span>•</span>
-                <span>{album.views} views</span>
-              </>}
             </>
           )}
+          {isLoggedIn && <>
+            <span>•</span>
+            <span>{album.views} views</span>
+          </>}
         </span>
       </div>
     </div>
